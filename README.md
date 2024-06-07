@@ -1,2 +1,2 @@
-# libversion
-A C and a C++ version library with CMake
+# libversa
+A C++ 20 library of small common functionality

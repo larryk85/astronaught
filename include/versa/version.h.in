@@ -1,0 +1,217 @@
+/**
+ * @file version.h.in
+ * @brief Header file containing version information and related functions.
+ *
+ * This header file defines macros and functions related to version information.
+ * It provides functions to retrieve the major, minor, patch, and tweak version numbers,
+ * as well as the version suffix and git hash. It also includes functions to create and
+ * manipulate a version_info struct, and compare version numbers.
+ */
+
+#pragma once
+
+#include <stdint.h>
+#include <stdlib.h>
+
+#include <versa/constants.h>
+
+/**
+ * @def NS(NM)
+ * @brief Macro to concatenate namespace with name.
+ *
+ * This macro concatenates the namespace with the given name using the preprocessor.
+ */
+
+#define NS(NM) @LV_NAMESPACE@_ ## NM
+#ifdef __cplusplus
+#define SPEC0 consteval
+#define SPEC1 constexpr
+#define ST std::string_view
+#include <string_view>
+#else
+#define SPEC0
+#define SPEC1
+#define ST const char*
+#endif
+
+/**
+ * @fn uint16_t NS(version_major)()
+ * @brief Retrieves the major version number.
+ * @return The major version number.
+ */
+
+/**
+ * @fn uint16_t NS(version_minor)()
+ * @brief Retrieves the minor version number.
+ * @return The minor version number.
+ */
+
+/**
+ * @fn uint16_t NS(version_patch)()
+ * @brief Retrieves the patch version number.
+ * @return The patch version number.
+ */
+
+/**
+ * @fn uint16_t NS(version_tweak)()
+ * @brief Retrieves the tweak version number.
+ * @return The tweak version number.
+ */
+
+/**
+ * @fn uint16_t NS(version_major_s)()
+ * @brief Retrieves the major version number as a string.
+ * @return The major version number as a string.
+ */
+
+/**
+ * @fn uint16_t NS(version_minor_s)()
+ * @brief Retrieves the minor version number as a string.
+ * @return The minor version number as a string.
+ */
+
+/**
+ * @fn uint16_t NS(version_patch_s)()
+ * @brief Retrieves the patch version number as a string.
+ * @return The patch version number as a string.
+ */
+
+/**
+ * @fn uint16_t NS(version_tweak_s)()
+ * @brief Retrieves the tweak version number as a string.
+ * @return The tweak version number as a string.
+ */
+
+/**
+ * @fn ST NS(version_suffix)()
+ * @brief Retrieves the version suffix.
+ * @return The version suffix.
+ */
+
+/**
+ * @fn ST NS(version_git_hash)()
+ * @brief Retrieves the git hash.
+ * @return The git hash.
+ */
+
+/**
+ * @fn uint64_t NS(version_number)()
+ * @brief Retrieves the version number as a single 64-bit integer.
+ * @return The version number as a single 64-bit integer.
+ */
+
+/**
+ * @struct lv_version_info
+ * @brief Struct to hold version information.
+ *
+ * This struct holds the major, minor, patch, tweak version numbers, as well as the version suffix.
+ */
+
+/**
+ * @typedef lv_version_info_t
+ * @brief Typedef for lv_version_info struct.
+ */
+
+/**
+ * @fn lv_version_info_t* lv_create_version_info(uint16_t major, uint16_t minor, uint16_t patch, uint16_t tweak, ST suffix)
+ * @brief Creates a version_info struct with the given parameters.
+ * @param major The major version number.
+ * @param minor The minor version number.
+ * @param patch The patch version number.
+ * @param tweak The tweak version number.
+ * @param suffix The version suffix.
+ * @return A pointer to the created version_info struct.
+ */
+
+/**
+ * @fn void lv_free_version_info(lv_version_info_t* v)
+ * @brief Frees the memory allocated for a version_info struct.
+ * @param v A pointer to the version_info struct to free.
+ */
+
+/**
+ * @fn lv_version_info_t* NS(create_version_info)()
+ * @brief Creates a version_info struct with the current version numbers and suffix.
+ * @return A pointer to the created version_info struct.
+ */
+
+/**
+ * @fn uint64_t lv_version_number(lv_version_info_t* v)
+ * @brief Retrieves the version number from a version_info struct as a single 64-bit integer.
+ * @param v A pointer to the version_info struct.
+ * @return The version number as a single 64-bit integer.
+ */
+
+/**
+ * @fn int64_t lv_version_cmp(lv_version_info_t* a, lv_version_info_t* b)
+ * @brief Compares two version_info structs and returns the difference in version numbers.
+ * @param a A pointer to the first version_info struct.
+ * @param b A pointer to the second version_info struct.
+ * @return The difference in version numbers.
+ */
+
+SPEC0 static inline uint16_t NS(version_major)() { return @LV_MAJOR@; }
+SPEC0 static inline uint16_t NS(version_minor)() { return @LV_MINOR@; }
+SPEC0 static inline uint16_t NS(version_patch)() { return @LV_PATCH@; }
+SPEC0 static inline uint16_t NS(version_tweak)() { return @LV_TWEAK@; }
+
+SPEC0 static inline ST NS(version_major_s)() { return "@LV_MAJOR@"; }
+SPEC0 static inline ST NS(version_minor_s)() { return "@LV_MINOR@"; }
+SPEC0 static inline ST NS(version_patch_s)() { return "@LV_PATCH@"; }
+SPEC0 static inline ST NS(version_tweak_s)() { return "@LV_TWEAK@"; }
+
+SPEC0 static inline ST NS(version_suffix)() { return "@LV_SUFFIX@"; }
+SPEC0 static inline ST NS(version_git_hash)() { return "@LV_GIT_HASH@"; }
+
+SPEC0 static inline uint64_t NS(version_number)() { 
+   return NS(version_major)() * 1000000000L + 
+          NS(version_minor)() * 1000000L + 
+          NS(version_patch)() * 1000L + 
+          NS(version_tweak)();
+}
+
+struct lv_version_info {
+   uint16_t major;
+   uint16_t minor;
+   uint16_t patch;
+   uint16_t tweak;
+   ST suffix;
+   ST git_hash;
+} typedef lv_version_info_t;
+
+static inline lv_version_info_t* lv_create_version_info(uint16_t major, uint16_t minor, uint16_t patch, uint16_t tweak, ST suffix, ST git_hash) {
+    lv_version_info_t* v = (lv_version_info_t*)malloc(sizeof(lv_version_info_t));
+    v->major = major;
+    v->minor = minor;
+    v->patch = patch;
+    v->tweak = tweak;
+    v->suffix = suffix;
+    v->suffix = git_hash;
+    return v;
+}
+
+static inline void lv_free_version_info(lv_version_info_t* v) {
+    free(v);
+}
+
+static inline lv_version_info_t* NS(create_version_info)() {
+   return lv_create_version_info(NS(version_major)(), 
+                                 NS(version_minor)(), 
+                                 NS(version_patch)(), 
+                                 NS(version_tweak)(), 
+                                 NS(version_suffix)(),
+                                 NS(version_git_hash)());
+}
+
+SPEC1 static inline uint64_t lv_version_number(lv_version_info_t* v) {
+   return v->major * 1000000000L + v->minor * 1000000L + v->patch * 1000L + v->tweak;
+}
+
+SPEC1 static inline int64_t lv_version_cmp(lv_version_info_t* a, lv_version_info_t* b) {
+   return lv_version_number(a) - lv_version_number(b);
+}
+
+#undef NS
+#undef SPEC0
+#undef SPEC1
+#undef ST
