@@ -10,11 +10,23 @@
 #include <type_traits>
 #include <vector>
 
+#include "constants.hpp"
+
 /**
  * @namespace versa::util
  * @brief Contains utility functions for the Versa library.
  */
 namespace versa::util {
+   //[[noreturn]] inline void unreachable() {
+      //constexpr auto compiler_info = info::get_compiler_info();
+      //if constexpr (compiler_info == info::compilers::msvc) {
+      //   __assume(false);
+      //} else if constexpr (compiler_info == info::compilers::gcc || compiler_info == info::compilers::clang) {
+      //   __builtin_unreachable();
+      //} else {
+      //   throw std::runtime_error("Unreachable code reached.");
+      //}
+   //}
    /**
     * @brief Checks a condition and throws a runtime_error if the condition is false.
     * @param condition The condition to check.

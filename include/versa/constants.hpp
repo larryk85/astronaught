@@ -8,79 +8,92 @@
 #include <versa/constants.inc>
 
 namespace versa::info {
-   enum class architectures : uint32_t {
-      unknown = 0x0,    /**< Unknown architecture */
-      x86     = 0x1,    /**< x86 architecture */
-      x64     = 0x2,    /**< x64 architecture */
-      arm32   = 0x4,    /**< ARM32 architecture */
-      arm64   = 0x8,    /**< ARM64 architecture */
-      sparc32 = 0x10,   /**< SPARC32 architecture */
-      sparc64 = 0x20,   /**< SPARC64 architecture */
-      mips32  = 0x40,   /**< MIPS32 architecture */
-      mips64  = 0x80,   /**< MIPS64 architecture */
-      ppc32   = 0x100,  /**< PPC32 architecture */
-      ppc64   = 0x200,  /**< PPC64 architecture */
-      riscv32 = 0x400,  /**< RISC-V 32-bit architecture */
-      riscv64 = 0x800,  /**< RISC-V 64-bit architecture */
-      s390    = 0x1000, /**< S390 architecture */
-      s390x   = 0x2000, /**< S390X architecture */
-      wasm32  = 0x4000, /**< WebAssembly 32-bit architecture */
-      wasm64  = 0x8000, /**< WebAssembly 64-bit architecture */
+   enum class architecture : uint32_t {
+      unknown = 0x0,                 /**< Unknown architecture */
+      x86     = VERSA_X86_ARCH,      /**< x86 architecture */
+      amd64   = VERSA_AMD64_ARCH,    /**< x64 architecture */
+      arm32   = VERSA_ARM32_ARCH,    /**< ARM32 architecture */
+      arm64   = VERSA_ARM64_ARCH,    /**< ARM64 architecture */
+      sparc32 = VERSA_SPARC32_ARCH,  /**< SPARC32 architecture */
+      sparc64 = VERSA_SPARC64_ARCH,  /**< SPARC64 architecture */
+      mips32  = VERSA_MIPS32_ARCH,   /**< MIPS32 architecture */
+      mips64  = VERSA_MIPS64_ARCH,   /**< MIPS64 architecture */
+      ppc32   = VERSA_PPC32_ARCH,    /**< PPC32 architecture */
+      ppc64   = VERSA_PPC64_ARCH,    /**< PPC64 architecture */
+      riscv32 = VERSA_RISCV32_ARCH,  /**< RISC-V 32-bit architecture */
+      riscv64 = VERSA_RISCV64_ARCH,  /**< RISC-V 64-bit architecture */
+      s390    = VERSA_S390_ARCH,     /**< S390 architecture */
+      s390x   = VERSA_S390X_ARCH,    /**< S390X architecture */
+      wasm32  = VERSA_WASM32_ARCH,   /**< WebAssembly 32-bit architecture */
+      wasm64  = VERSA_WASM64_ARCH    /**< WebAssembly 64-bit architecture */
    };
 
-   enum class operating_systems : uint16_t {
-      unknown = 0x0,  /**< Unknown operating system */
-      windows = 0x1,  /**< Windows operating system */
-      macos   = 0x2,  /**< macOS operating system */
-      ios     = 0x4,  /**< iOS operating system */
-      linux   = 0x8,  /**< Linux operating system */
-      unix    = 0x10, /**< Unix operating system */
-      bsd     = 0x20, /**< BSD operating system */
-      android = 0x40, /**< Android operating system */
-      wasi    = 0x80, /**< WebAssembly System Interface operating system */
-      posix   = 0x100 /**< POSIX operating system */
+   enum class operating_system : uint16_t {
+      unknown = 0x0,                 /**< Unknown operating system */
+      windows = VERSA_WINDOWS_BUILD, /**< Windows operating system */
+      macos   = VERSA_MACOS_BUILD,   /**< macOS operating system */
+      ios     = VERSA_IOS_BUILD,     /**< iOS operating system */
+      linux   = VERSA_LINUX_BUILD,   /**< Linux operating system */
+      unix    = VERSA_UNIX_BUILD,    /**< Unix operating system */
+      bsd     = VERSA_BSD_BUILD,     /**< BSD operating system */
+      android = VERSA_ANDROID_BUILD, /**< Android operating system */
+      wasi    = VERSA_WASI_BUILD,    /**< WebAssembly System Interface operating system */
+      posix   = VERSA_POSIX_BUILD    /**< POSIX operating system */
    };
 
-   enum class compilers : uint16_t {
-      unknown = 0x0, /**< Unknown compiler */
-      msvc    = 0x1, /**< Microsoft Visual C++ compiler */
-      gcc     = 0x2, /**< GNU Compiler Collection */
-      clang   = 0x4, /**< Clang compiler */
-      cl430   = 0x8, /**< TI MSP430 C/C++ Compiler */
-      intel   = 0x10 /**< Intel C++ Compiler */
+   enum class compiler : uint16_t {
+      unknown = 0x0,               /**< Unknown compiler */
+      msvc    = VERSA_MSVC_BUILD,  /**< Microsoft Visual C++ compiler */
+      gcc     = VERSA_GCC_BUILD,   /**< GNU Compiler Collection */
+      clang   = VERSA_CLANG_BUILD, /**< Clang compiler */
+      cl430   = VERSA_CL430_BUILD, /**< TI MSP430 C/C++ Compiler */
+      intel   = VERSA_INTEL_BUILD  /**< Intel C++ Compiler */
    };
 
-   enum class build_types : uint16_t {
-      unknown                 = 0x0,  /**< Unknown build */
-      debug                   = 0x1,  /**< Debug build */
-      release                 = 0x2,  /**< Release build */
-      release_with_debug_info = 0x4,  /**< Release with debug info build */
-      profile                 = 0x8,  /**< Profiling build */
-      trace                   = 0x10, /**< Tracing build */
-      minimum_size            = 0x20  /**< Minimum size build */
+   enum class build_type : uint16_t {
+      unknown                 = 0x0,                 /**< Unknown build */
+      debug                   = VERSA_DEBUG_BUILD,   /**< Debug build */
+      release                 = VERSA_RELEASE_BUILD, /**< Release build */
+      profile                 = VERSA_PROFILE_BUILD, /**< Profiling build */
+      trace                   = VERSA_TRACE_BUILD,   /**< Tracing build */
+      minimum_size            = VERSA_MIN_SIZE_BUILD /**< Minimum size build */
    };
 
-   enum class endianesses : uint8_t {
-      unknown = 0x0, /**< Unknown endianness */
-      little  = 0x1, /**< Little-endian */
-      big     = 0x2  /**< Big-endian */
+   enum class byte_order : uint8_t {
+      unknown = 0x0,                 /**< Unknown endianness */
+      little  = VERSA_LITTLE_ENDIAN, /**< Little-endian */
+      big     = VERSA_BIG_ENDIAN,    /**< Big-endian */
+      pdp     = VERSA_PDP_ENDIAN     /**< PDP-endian */
    };
 
-   enum class languages : uint8_t {
-      unknown = 0x0, /**< Unknown language */
-      c       = 0x1, /**< C language */
-      cpp     = 0x2  /**< C++ language */
+   enum class language : uint8_t {
+      unknown = 0x0,           /**< Unknown language */
+      c       = VERSA_C_LANG,  /**< C language */
+      cpp     = VERSA_CPP_LANG /**< C++ language */
    };
 
    struct build_info {
-      architectures arch = architectures::unknown;
-      endianesses endianess = endianesses::unknown;
-      operating_systems os = operating_systems::unknown;
-      compilers compiler = compilers::unknown;
+      architecture arch         = architecture::unknown;
+      byte_order   order        = byte_order::unknown;
+      operating_system os       = operating_system::unknown;
+      compiler compiler         = compiler::unknown;
       uint64_t compiler_version = 0;
-      languages language = languages::unknown;
-      build_types build = build_types::unknown;
+      language language         = language::unknown;
+      uint64_t language_version = 0;
+      build_type build          = build_type::unknown;
    };
+
+   constexpr static inline build_info build_info_v = 
+      {
+         static_cast<architecture>(VERSA_ARCH), 
+         static_cast<byte_order>(VERSA_BYTE_ORDER), 
+         static_cast<operating_system>(VERSA_OS), 
+         static_cast<compiler>(VERSA_COMPILER), 
+         VERSA_COMPILER_VERSION, 
+         static_cast<language>(VERSA_LANG), 
+         VERSA_LANG_VERSION, 
+         static_cast<build_type>(VERSA_BUILD)
+      };
 
    struct version_t {
       uint64_t major : 16;
@@ -167,5 +180,3 @@ namespace versa::info {
    };
 
 } // namespace versa::info
-
-#define VERSA_BUILD_INFO \

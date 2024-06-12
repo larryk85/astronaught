@@ -9,76 +9,85 @@
 #define UI32(X) static_cast<uint32_t>(X)
 TEST_CASE("Constants Tests", "[constants_tests]") {
    SECTION("Check Architecture") {
-      REQUIRE(UI32(versa::info::architectures::unknown) == 0x0);
-      REQUIRE(UI32(versa::info::architectures::x86) == 0x1);
-      REQUIRE(UI32(versa::info::architectures::x64) == 0x2);
-      REQUIRE(UI32(versa::info::architectures::arm32) == 0x4);
-      REQUIRE(UI32(versa::info::architectures::arm64) == 0x8);
-      REQUIRE(UI32(versa::info::architectures::sparc32) == 0x10);
-      REQUIRE(UI32(versa::info::architectures::sparc64) == 0x20);
-      REQUIRE(UI32(versa::info::architectures::mips32) == 0x40);
-      REQUIRE(UI32(versa::info::architectures::mips64) == 0x80);
-      REQUIRE(UI32(versa::info::architectures::ppc32) == 0x100);
-      REQUIRE(UI32(versa::info::architectures::ppc64) == 0x200);
-      REQUIRE(UI32(versa::info::architectures::riscv32) == 0x400);
-      REQUIRE(UI32(versa::info::architectures::riscv64) == 0x800);
-      REQUIRE(UI32(versa::info::architectures::s390) == 0x1000);
-      REQUIRE(UI32(versa::info::architectures::s390x) == 0x2000);
-      REQUIRE(UI32(versa::info::architectures::wasm32) == 0x4000);
-      REQUIRE(UI32(versa::info::architectures::wasm64) == 0x8000);
+      REQUIRE(UI32(versa::info::architecture::unknown) == 0x0);
+      REQUIRE(UI32(versa::info::architecture::x86) == 0x1);
+      REQUIRE(UI32(versa::info::architecture::amd64) == 0x2);
+      REQUIRE(UI32(versa::info::architecture::arm32) == 0x4);
+      REQUIRE(UI32(versa::info::architecture::arm64) == 0x8);
+      REQUIRE(UI32(versa::info::architecture::sparc32) == 0x10);
+      REQUIRE(UI32(versa::info::architecture::sparc64) == 0x20);
+      REQUIRE(UI32(versa::info::architecture::mips32) == 0x40);
+      REQUIRE(UI32(versa::info::architecture::mips64) == 0x80);
+      REQUIRE(UI32(versa::info::architecture::ppc32) == 0x100);
+      REQUIRE(UI32(versa::info::architecture::ppc64) == 0x200);
+      REQUIRE(UI32(versa::info::architecture::riscv32) == 0x400);
+      REQUIRE(UI32(versa::info::architecture::riscv64) == 0x800);
+      REQUIRE(UI32(versa::info::architecture::s390) == 0x1000);
+      REQUIRE(UI32(versa::info::architecture::s390x) == 0x2000);
+      REQUIRE(UI32(versa::info::architecture::wasm32) == 0x4000);
+      REQUIRE(UI32(versa::info::architecture::wasm64) == 0x8000);
    }
 
    SECTION("Check Operating Systems") {
-      REQUIRE(UI32(versa::info::operating_systems::unknown) == 0x0);
-      REQUIRE(UI32(versa::info::operating_systems::windows) == 0x1);
-      REQUIRE(UI32(versa::info::operating_systems::macos) == 0x2);
-      REQUIRE(UI32(versa::info::operating_systems::ios) == 0x4);
+      REQUIRE(UI32(versa::info::operating_system::unknown) == 0x0);
+      REQUIRE(UI32(versa::info::operating_system::windows) == 0x1);
+      REQUIRE(UI32(versa::info::operating_system::macos) == 0x2);
+      REQUIRE(UI32(versa::info::operating_system::ios) == 0x4);
    }
 
    SECTION("Check Compilers") {
-      REQUIRE(UI32(versa::info::compilers::unknown) == 0x0);
-      REQUIRE(UI32(versa::info::compilers::msvc) == 0x1);
-      REQUIRE(UI32(versa::info::compilers::gcc) == 0x2);
-      REQUIRE(UI32(versa::info::compilers::clang) == 0x4);
-      REQUIRE(UI32(versa::info::compilers::cl430) == 0x8);
-      REQUIRE(UI32(versa::info::compilers::intel) == 0x10);
+      REQUIRE(UI32(versa::info::compiler::unknown) == 0x0);
+      REQUIRE(UI32(versa::info::compiler::gcc) == 0x1);
+      REQUIRE(UI32(versa::info::compiler::msvc) == 0x2);
+      REQUIRE(UI32(versa::info::compiler::clang) == 0x4);
+      REQUIRE(UI32(versa::info::compiler::intel) == 0x8);
+      REQUIRE(UI32(versa::info::compiler::cl430) == 0x10);
    }
 
    SECTION("Check Build Types") {
-      REQUIRE(UI32(versa::info::build_types::unknown) == 0x0);
-      REQUIRE(UI32(versa::info::build_types::debug) == 0x1);
-      REQUIRE(UI32(versa::info::build_types::release) == 0x2);
-      REQUIRE(UI32(versa::info::build_types::release_with_debug_info) == 0x4);
-      REQUIRE(UI32(versa::info::build_types::profile) == 0x8);
-      REQUIRE(UI32(versa::info::build_types::trace) == 0x10);
-      REQUIRE(UI32(versa::info::build_types::minimum_size) == 0x20);
+      REQUIRE(UI32(versa::info::build_type::unknown) == 0x0);
+      REQUIRE(UI32(versa::info::build_type::release) == 0x1);
+      REQUIRE(UI32(versa::info::build_type::debug) == 0x2);
+      REQUIRE(UI32(versa::info::build_type::minimum_size) == 0x4);
+      REQUIRE(UI32(versa::info::build_type::profile) == 0x8);
+      REQUIRE(UI32(versa::info::build_type::trace) == 0x10);
    }
 
    SECTION("Check Endianesses") {
-      REQUIRE(UI32(versa::info::endianesses::unknown) == 0x0);
-      REQUIRE(UI32(versa::info::endianesses::little) == 0x1);
-      REQUIRE(UI32(versa::info::endianesses::big) == 0x2);
+      REQUIRE(UI32(versa::info::byte_order::unknown) == 0x0);
+      REQUIRE(UI32(versa::info::byte_order::little) == 0x1);
+      REQUIRE(UI32(versa::info::byte_order::big) == 0x2);
+      REQUIRE(UI32(versa::info::byte_order::pdp) == 0x4);
    }
 
    SECTION("Check Languages") {
-      REQUIRE(UI32(versa::info::languages::unknown) == 0x0);
-      REQUIRE(UI32(versa::info::languages::c) == 0x1);
-      REQUIRE(UI32(versa::info::languages::cpp) == 0x2);
+      REQUIRE(UI32(versa::info::language::unknown) == 0x0);
+      REQUIRE(UI32(versa::info::language::c) == 0x1);
+      REQUIRE(UI32(versa::info::language::cpp) == 0x2);
    }
 }
 
 TEST_CASE("build_info Tests", "[build_info_tests]") {
    SECTION("Checking Default Values") {
       versa::info::build_info info;
-      REQUIRE(info.arch == versa::info::architectures::unknown);
-      REQUIRE(info.endianess == versa::info::endianesses::unknown);
-      REQUIRE(info.os == versa::info::operating_systems::unknown);
-      REQUIRE(info.compiler == versa::info::compilers::unknown);  
+      REQUIRE(info.arch == versa::info::architecture::unknown);
+      REQUIRE(info.order == versa::info::byte_order::unknown);
+      REQUIRE(info.os == versa::info::operating_system::unknown);
+      REQUIRE(info.compiler == versa::info::compiler::unknown);  
       REQUIRE(info.compiler_version == 0 );
-      REQUIRE(info.build == versa::info::build_types::unknown);
-      REQUIRE(info.language == versa::info::languages::unknown);
+      REQUIRE(info.build == versa::info::build_type::unknown);
+      REQUIRE(info.language == versa::info::language::unknown);
    }
 
+   SECTION("Checking Compiled Values") {
+      std::cout << "COMPILER " << int32_t(VERSA_COMPILER) << "\n";
+      std::cout << "COMP " << static_cast<uint32_t>(versa::info::build_info_v.compiler) << "\n";
+      std::cout << "V " << versa::info::build_info_v.compiler_version << "\n";
+      std::cout << ((VERSA_COMPILER & VERSA_CLANG_BUILD) == VERSA_CLANG_BUILD) << std::endl;
+   }
+}
+
+TEST_CASE("Util Tests", "[util_tests]") {
    using namespace versa::util;
    check(true, "This should not throw an exception");
 
@@ -112,5 +121,4 @@ TEST_CASE("build_info Tests", "[build_info_tests]") {
    REQUIRE(a == 0);
    check(false, [&a]() { a = 1; });
    REQUIRE(a == 1);
-
 }

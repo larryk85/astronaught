@@ -5,6 +5,7 @@
 #include <cstring>
 
 #include <array>
+#include <bit>
 #include <concepts>
 #include <limits>
 #include <stdexcept>
@@ -33,50 +34,79 @@ namespace versa::util {
          constexpr static inline std::size_t value = N;
          constexpr static inline bool        is_dynamic = dynamic;
       };
+
+      template <typename T, typename U, std::size_t N>
+      constexpr static inline void memcpy(T* dest, const U(&src)[N]) noexcept {
+         for (std::size_t i = 0; i < N; ++i) {
+            dest[i] = std::bit_cast<T>(src[i]);
+         }
+      }
+
+      template <typename T, typename U, std::size_t N>
+      constexpr static inline void memcpy(T* dest, const std::array<U,N>& src) noexcept {
+         for (std::size_t i = 0; i < N; ++i) {
+            dest[i] = std::bit_cast<T>(src[i]);
+         }
+      }
+
+      template <std::size_t N>
+      struct wrapper {
+         constexpr inline wrapper(const char(&data)[N]) noexcept : data{data} {}
+
+         const char data[N];
+         constexpr static inline std::size_t size = N;
+      };
    } // namespace detail
 
-
-
    template <std::size_t N>
-   using extent_t = detail::extent<N, false>;
-
-   template <std::size_t N>
-   constexpr static inline auto extent_v = extent_t<N>::value;
-
-   using dynamic_extent_t = detail::extent<0, true>;
-   constexpr static inline auto dynamic_extent_v = dynamic_extent_t::value;
-
-   template <std::size_t N, class Extent>
    struct fixed_bytes {
-
       fixed_bytes() = default;
       fixed_bytes(const fixed_bytes&) = default;
       fixed_bytes(fixed_bytes&&) = default;
 
-      //template <typename T>
-      //constexpr static inline bytes_t& copy(bytes_t& data, T&& other) noexcept {
-      //   std::copy(data.begin(), data.end(), begin());
-      //}
-      
-      template <typename T, Extent=extent_t<N>>
+      template <typename T, std::enable_if_t<!std::is_same_v<T,char>, int> = 0>
       constexpr inline fixed_bytes(const T(&data)[N]) noexcept {
-         std::memcpy(_data, data, Extent::value);
+         detail::memcpy(_data, data);
       }
 
-      template <Extent=extent_t<N-1>>
-      constexpr inline fixed_bytes(const char(&data)[N]) noexcept {
-         std::memcpy(_data, data, Extent::value);
+      //template <std::size_t M, std::enable_if_t<M==N+1, int> = 0>
+      constexpr inline fixed_bytes(const char(&data)[N+1]) noexcept { 
+         detail::memcpy(_data, data); 
       }
-      
+
       template <typename T>
-      constexpr inline fixed_bytes(const std::array<T,N>& data, Extent _=extent_v<N>) noexcept { 
-         std::memcpy(_data, data, Extent::value);
+      constexpr inline fixed_bytes(const std::array<T,N>& data) noexcept { 
+         detail::memcpy(_data, data); 
       }
 
       template <template <typename> class U, typename T>
       requires detail::valid_type<U<T>> && detail::byte_type<T>
-      constexpr inline fixed_bytes(const U<T>& data, Extent _=dynamic_extent_v) {
-         util::check(data.size() == N, "Size of data does not match size of fixed_string");
+      constexpr inline fixed_bytes(const U<T>& data) {
+         util::check(data.size() <= N, "Size of data is not less than or equal to size of fixed_string");
+         copy(data);
+      }
+
+      ~fixed_bytes() = default;
+
+      fixed_bytes& operator=(const fixed_bytes&) = default;
+      fixed_bytes& operator=(fixed_bytes&&) = default;
+
+      template <typename T>
+      constexpr inline fixed_bytes& operator=(const T(&data)[N]) noexcept {
+         std::memcpy(_data, data, sizeof(T)*N);
+         return *this;
+      }
+
+      template <std::size_t M, std::enable_if_t<M==N+1, int> = 0>
+      constexpr inline fixed_bytes& operator=(const char(&data)[M]) noexcept { std::memcpy(_data, data, N); return *this; }
+
+      template <typename T>
+      constexpr inline fixed_bytes& operator=(const std::array<T,N>& data) noexcept { std::memcpy(_data, data.data(), sizeof(T)*N); return *this; }
+
+      template <template <typename> class U, typename T>
+      requires detail::valid_type<U<T>> && detail::byte_type<T>
+      constexpr inline fixed_bytes& operator=(const U<T>& data) {
+         util::check(data.size() <= N, "Size of data is not less than or equal to size of fixed_string");
          copy(data);
       }
 
@@ -133,35 +163,17 @@ namespace versa::util {
          return std::memcmp(_data, other._data, N);
       }
 
-      //fixed_bytes& operator=(const fixed_bytes&) = default;
-      //fixed_bytes& operator=(fixed_bytes&&) = default;
-
-      //template <typename T>
-      //constexpr inline fixed_bytes& operator=(T&& data) noexcept { 
-      //   std::memcpy(_data, detail::wrapper(std::forward<T>(data)).data(), sizeof(T)*N); 
-      //   return *this;
-      //}
-
-      //template <template <typename> class U, typename T>
-      //requires detail::valid_type<U<T>> && detail::byte_type<T>
-      //constexpr inline fixed_bytes& operator=(const U<T>& data) {
-      //   util::check(data.size() == sizeof(T)*N, "Size of data does not match size of fixed_string");
-      //   std::memcpy(_data, data.data(), sizeof(T)*N); 
-      //}
-
-      ~fixed_bytes() = default;
 
       alignas(uint64_t) std::byte _data[N];
-      const std::size_t _size = N;
    };
 
-   template <std::size_t N, typename E>
-   constexpr static inline std::string to_string(const fixed_bytes<N,E>& data) {
+   template <std::size_t N>
+   constexpr static inline std::string to_string(const fixed_bytes<N>& data) {
       return std::string(data.data(), N);
    }
    
-   template <std::size_t N, typename E>
-   constexpr static inline std::string_view to_string_view(const fixed_bytes<N,E>& data) {
+   template <std::size_t N>
+   constexpr static inline std::string_view to_string_view(const fixed_bytes<N>& data) {
       return std::string_view(data.data(), N);
    }
 
