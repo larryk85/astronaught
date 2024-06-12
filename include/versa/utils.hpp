@@ -2,11 +2,13 @@
 
 #include <cstddef>
 
+#include <array>
 #include <concepts>
 #include <stdexcept>
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <vector>
 
 /**
  * @namespace versa::util

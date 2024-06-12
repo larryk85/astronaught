@@ -6,7 +6,7 @@ include(../LibVersa.cmake)
 add_executable( 
    libversa_unit_tests 
    versa_tests.cpp
-   fixed_string_tests.cpp
+   fixed_bytes_tests.cpp
 )
 
 versa_setup_target( libversa_unit_tests
