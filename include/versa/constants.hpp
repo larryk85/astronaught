@@ -33,8 +33,8 @@ namespace versa::info {
       windows = VERSA_WINDOWS_BUILD, /**< Windows operating system */
       macos   = VERSA_MACOS_BUILD,   /**< macOS operating system */
       ios     = VERSA_IOS_BUILD,     /**< iOS operating system */
-      linux   = VERSA_LINUX_BUILD,   /**< Linux operating system */
-      unix    = VERSA_UNIX_BUILD,    /**< Unix operating system */
+      lnux    = VERSA_LINUX_BUILD,   /**< Linux operating system */
+      unx     = VERSA_UNIX_BUILD,    /**< Unix operating system */
       bsd     = VERSA_BSD_BUILD,     /**< BSD operating system */
       android = VERSA_ANDROID_BUILD, /**< Android operating system */
       wasi    = VERSA_WASI_BUILD,    /**< WebAssembly System Interface operating system */
@@ -73,14 +73,14 @@ namespace versa::info {
    };
 
    struct build_info {
-      architecture arch         = architecture::unknown;
-      byte_order   order        = byte_order::unknown;
-      operating_system os       = operating_system::unknown;
-      compiler compiler         = compiler::unknown;
-      uint64_t compiler_version = 0;
-      language language         = language::unknown;
-      uint64_t language_version = 0;
-      build_type build          = build_type::unknown;
+      architecture arch     = architecture::unknown;
+      byte_order   order    = byte_order::unknown;
+      operating_system os   = operating_system::unknown;
+      compiler comp         = compiler::unknown;
+      uint64_t comp_version = 0;
+      language lang         = language::unknown;
+      uint64_t lang_version = 0;
+      build_type build      = build_type::unknown;
    };
 
    constexpr static inline build_info build_info_v = 
@@ -96,10 +96,14 @@ namespace versa::info {
       };
 
    struct version_t {
-      uint64_t major : 16;
-      uint64_t minor : 16;
-      uint64_t patch : 16;
-      uint64_t tweak : 16; 
+      version_t(const version_t&) = default;
+      version_t(version_t&&) = default;
+      constexpr inline version_t(std::uint16_t major=0, std::uint16_t minor=0, std::uint16_t patch=0, std::uint16_t tweak=0)
+         : major(major), minor(minor), patch(patch), tweak(tweak) {}
+      uint64_t major : 16 = 0;
+      uint64_t minor : 16 = 0;
+      uint64_t patch : 16 = 0;
+      uint64_t tweak : 16 = 0; 
    };
 
    struct version_info : public version_t {
@@ -112,8 +116,8 @@ namespace versa::info {
          git_hash /**< Git hash */
       }; 
 
-      std::string suffix;
-      std::string git_hash;
+      std::string_view suffix;
+      std::string_view git_hash;
       
       version_info() = default;
       version_info(const version_info&) = default;

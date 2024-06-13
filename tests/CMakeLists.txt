@@ -7,7 +7,7 @@ add_executable(
    libversa_unit_tests 
    memory_tests.cpp
    versa_tests.cpp
-   #fixed_bytes_tests.cpp
+   handler_tests.cpp
 )
 
 versa_setup_target( libversa_unit_tests

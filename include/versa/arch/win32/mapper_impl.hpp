@@ -7,7 +7,8 @@
 
 #include <limits>
 
-#include "../../mapper.hpp"
+#include "../../mapper_base.hpp"
+#include "../../modes.hpp"
 
 namespace versa::memory {
    constexpr static inline uint8_t access_mode_to_win_mode(access_mode mode) {
@@ -54,8 +55,7 @@ namespace versa::memory {
 
    constexpr static inline std::size_t base_page_size = 4096;
 
-   template <std::size_t PageSize=base_page_size>
-   class memory_mapper : public mapper_base<memory_mapper<PageSize>> {
+   class memory_mapper : public mapper_base<memory_mapper> {
       public:
 
          inline void* map_impl(std::size_t sz, access_mode mode) {
@@ -64,14 +64,13 @@ namespace versa::memory {
             return addr;
          }
 
-         inline access_mode protect_impl(void* ptr, std::size_t sz, access_mode mode) {
-            DWORD old_protect;
-            util::check(VirtualProtect(ptr, sz, access_mode_to_win_mode(mode), &old_protect), "Failed to protect memory");
-            return win_mode_to_access_mode(old_protect);
+         inline void protect_impl(void* ptr, std::size_t sz, access_mode mode) {
+            DWORD _;
+            util::check(VirtualProtect(ptr, sz, access_mode_to_win_mode(mode), &_), "Failed to protect memory");
          }
 
-         inline int32_t unmap_impl(void* ptr) {
-            util::check(VirtualFree(ptr, 0, MEM_RELEASE), "Failed to unmap memory");
+         inline int32_t unmap_impl(void* ptr, std::size_t sz) {
+            util::check(VirtualFree(ptr, sz, MEM_RELEASE), "Failed to unmap memory");
             return 1;
          }
 

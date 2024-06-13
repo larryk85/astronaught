@@ -457,4 +457,6 @@
    #define VERSA_BUILD VERSA_PROFILE_BUILD
 #elif defined(TRACE) || defined(TRACE_BUILD) || defined(__TRACE) || defined(__TRACE__) || defined(_TRACE_)
    #define VERSA_BUILD VERSA_TRACE_BUILD
+#else
+   #define VERSA_BUILD VERSA_RELEASE_BUILD
 #endif

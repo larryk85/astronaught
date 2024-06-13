@@ -73,16 +73,16 @@ TEST_CASE("build_info Tests", "[build_info_tests]") {
       REQUIRE(info.arch == versa::info::architecture::unknown);
       REQUIRE(info.order == versa::info::byte_order::unknown);
       REQUIRE(info.os == versa::info::operating_system::unknown);
-      REQUIRE(info.compiler == versa::info::compiler::unknown);  
-      REQUIRE(info.compiler_version == 0 );
+      REQUIRE(info.comp == versa::info::compiler::unknown);  
+      REQUIRE(info.comp_version == 0 );
       REQUIRE(info.build == versa::info::build_type::unknown);
-      REQUIRE(info.language == versa::info::language::unknown);
+      REQUIRE(info.lang == versa::info::language::unknown);
    }
 
    SECTION("Checking Compiled Values") {
       std::cout << "COMPILER " << int32_t(VERSA_COMPILER) << "\n";
-      std::cout << "COMP " << static_cast<uint32_t>(versa::info::build_info_v.compiler) << "\n";
-      std::cout << "V " << versa::info::build_info_v.compiler_version << "\n";
+      std::cout << "COMP " << static_cast<uint32_t>(versa::info::build_info_v.comp) << "\n";
+      std::cout << "V " << versa::info::build_info_v.comp_version << "\n";
       std::cout << ((VERSA_COMPILER & VERSA_CLANG_BUILD) == VERSA_CLANG_BUILD) << std::endl;
    }
 }

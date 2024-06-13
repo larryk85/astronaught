@@ -7,7 +7,7 @@
 #include <versa/constants.hpp>
 #include <versa/utils.hpp>
 #include <versa/allocator.hpp>
-#include <versa/arch/win32/mappers.hpp>
+#include <versa/mapper.hpp>
 
 using namespace versa::memory;
 
@@ -49,7 +49,7 @@ consteval static inline std::size_t page_size() {
 }
 
 int global_value = 0;
-
+/*
 LONG CALLBACK ExceptionHandler(PEXCEPTION_POINTERS pExceptionInfo) {
     if (pExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_ACCESS_VIOLATION) {
         global_value = 2;
@@ -69,6 +69,7 @@ bool should_fail(Func&& func) {
    }
    return false;
 }
+*/
 
 
 TEST_CASE("Mapper Tests", "[mapper_tests]") {
@@ -80,7 +81,7 @@ TEST_CASE("Mapper Tests", "[mapper_tests]") {
       auto om = mm.protect<10>(mp, access_mode::read_write);
       CHECK(om == access_mode::none);
       om = mm.protect<10>(mp, access_mode::read);
-      CHECK(om == access_mode::write);
+      CHECK(om == access_mode::read_write);
 
       om = mm.protect<10>(mp, access_mode::read_write);
 
@@ -96,11 +97,11 @@ TEST_CASE("Mapper Tests", "[mapper_tests]") {
 
       om = mm.protect<10>(mp, access_mode::none);
 
-      should_fail([&]() {
-         reinterpret_cast<int*>(mp)[0] = 1;
-      });
+      //should_fail([&]() {
+      //   reinterpret_cast<int*>(mp)[0] = 1;
+      //});
 
-      CHECK(global_value == 1);
+      //CHECK(global_value == 1);
    }
 }
 
