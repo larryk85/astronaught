@@ -40,8 +40,6 @@ namespace versa::signals {
             func();
          }
 
-         inline bool set() { return util::get_jmp().set(); }
-
       private:
          std::tuple<Handlers...> handlers;
    };
@@ -49,4 +47,3 @@ namespace versa::signals {
 
 #define VERSA_TRY(ex /*executor with handlers set*/) if (sigsetjmp(*versa::util::get_jmp().get(), 1)==0) 
 #define VERSA_CATCH   else 
-//#define VERSA_FINALLY /**/ 

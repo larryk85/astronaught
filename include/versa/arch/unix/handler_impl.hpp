@@ -54,11 +54,11 @@ namespace versa::signals {
       }
 
       inline ~handler() {
-         //struct sigaction sa;
-         //sa.sa_flags = SA_SIGINFO | SA_NODEFER;
-         //sigemptyset(&sa.sa_mask);
-         //sa.sa_sigaction = SIG_DFL;
-         //util::check(sigaction(signaln, &sa, nullptr) == 0, "Failed to reset signal handler");
+         struct sigaction sa;
+         sa.sa_flags = SA_SIGINFO | SA_NODEFER;
+         sigemptyset(&sa.sa_mask);
+         sa.sa_sigaction = SIG_DFL;
+         util::check(sigaction(signaln, &sa, nullptr) == 0, "Failed to reset signal handler");
       }
    };
 } // namespace versa::err

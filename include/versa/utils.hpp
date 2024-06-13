@@ -126,16 +126,17 @@ namespace versa::util {
       } while (false);
    }
 
-#include <signal.h>
 
+#if 0
    struct closure {
-      template <typename Ret, typename T>
-      static constexpr inline Ret exec(int i, siginfo_t* s, void* data) {
-         return (Ret) (*(T*)fn<T>())(i, s, data);
+      template <typename Ret, typename T, typename... Ts>
+      static constexpr inline Ret exec(Ts&&... args) {
+         return (Ret) (*(T*)fn<T>())(args...);
       }
 
-      template <typename Ret = void, typename F = Ret(*)(int, siginfo_t*, void*), typename T>
-      static inline F ptr(T& t) {
+      //template <typename Ret = void, typename F = Ret(*)(int, siginfo_t*, void*), typename T>
+      template <>
+      static inline F ptr(CB&& cb) {
          fn<T>(&t);
          return (F) exec<Ret, T>;
       }
@@ -148,5 +149,5 @@ namespace versa::util {
          return fn;
       }
    };
-
+#endif
 } // namespace versa::util
