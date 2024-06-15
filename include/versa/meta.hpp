@@ -1,5 +1,14 @@
 #pragma once
 
+#if __has_include(<cxxabi.h>)
+   #include <cxxabi.h>
+#endif
+
+#include <type_traits>
+#include <string_view>
+
+#include "constants.hpp"
+
 namespace versa::meta {
    namespace detail::return_ty {
       template <typename T>
@@ -47,8 +56,11 @@ namespace versa::meta {
 
    } // namespace detail::return_ty
 
+   template <typename F>
+   using return_type = typename detail::return_ty::return_type<F>::type;
+
    template <auto F>
-   using return_type_t = typename detail::return_ty::return_type<decltype(F)>::type;
+   using return_type_t = return_type<decltype(F)>;
 
    namespace detail::param_ty {
       template <typename T>
@@ -95,8 +107,12 @@ namespace versa::meta {
       };
    } // namespace detail::param_ty
 
+   template <class F>
+   using param_type = typename detail::param_ty::param_type<F>::type;
+
    template <auto F>
-   using param_type_t = typename detail::param_ty::param_type<decltype(F)>::type;
+   using param_type_t = param_type<decltype(F)>;
+
 
    namespace detail::func_ty {
       template <typename T>
@@ -141,44 +157,82 @@ namespace versa::meta {
       struct function_type<R(C::*)(Args...) noexcept > {
          using type = R(Args...);
       };
+
+      template <typename R, typename... Args>
+      struct function_ptr;
+
+      template <typename R, typename... Args>
+      struct function_ptr<R(Args...)> {
+         using type = R(*)(Args...);
+      };
    } // namespace detail::func_ty
 
+   template <typename F>
+   using function_type = typename detail::func_ty::function_type<F>::type;
+
    template <auto F>
-   using function_type_t = typename detail::func_ty::function_type<decltype(F)>::type;
+   using function_type_t = function_type<decltype(F)>;
+
+   template <typename F>
+   using function_ptr = typename detail::func_ty::function_ptr<F>::type;
+
+   template <auto F>
+   using function_ptr_t = function_ptr<decltype(F)>;
+
+#if 0
+#define VERSA_META_NAME_OF_IMPL(...)                       \
+   template <__VA_ARGS__>                                  \
+   consteval static inline std::string_view name_of() {    \
+      using versa::info;                                   \
+      constexpr std::string_view full_name =               \
+         (info::build_info_v.comp == compiler::msvc)       \
+            ? __FUNCSIG__                                  \
+            : __PRETTY_FUNCTION__;                         \
+      constexpr auto start =                               \
+         (info::build_info_v.comp == compiler::msvc)       \
+            ? full_name.find("type_name<") + 10;           \
+            : full_name.find("T = ") + 4;                  \
+      constexpr auto end =                                 \
+         (info::build_info_v.comp == compiler::msvc)       \
+            ? full_name.rfind(">")                         \
+            : (info::build_info_v.comp == compiler::clang) \
+               ? full_name.find("]")                       \
+               : full_name.find(";");                      \
+      return full_name.substr(start, end - start);         \
+   }
+#endif
+
+   namespace detail::meta {
+      consteval static inline std::string_view munch(std::string_view sv) {
+         using namespace versa::info;
+         if constexpr (info::build_info_v.comp == compiler::msvc) {
+            return sv.substr(sv.find("type_name<") + 10, sv.rfind(">"));
+         } else if constexpr (info::build_info_v.comp == compiler::clang) {
+            return sv.substr(sv.find("T = ") + 4, sv.find("]"));
+         } else {
+            return sv.substr(sv.find("T = ") + 4, sv.find(";"));
+         }
+      }
+   } // namespace detail::meta
+
+   consteval static inline std::string_view function_name(std::string_view fn=__builtin_FUNCTION()) { return fn; }
+   consteval static inline std::string_view file_name(std::string_view fn=__builtin_FILE()) { return fn; }
+   consteval static inline std::size_t line_number(std::size_t ln=__builtin_LINE()) { return ln; }
 
    template <typename T>
-   constexpr inline std::string_view type_name() {
-      constexpr std::string_view full_name = 
-   #ifdef __clang__
-         __PRETTY_FUNCTION__;
-   #elif __GNUC__
-         __PRETTY_FUNCTION__;
-   #elif _MSC_VER
-         __FUNCSIG__;
-   #else
-   #error "Currently only supporting Clang, GCC, and MSVC compilers"
-   #endif
+   consteval static inline std::string_view nameof() {
+      return detail::meta::munch(VERSA_PRETTY_FUNCTION);
+   }
 
-      constexpr auto start = 
-   #ifdef _MSC_VER
-         full_name.find("type_name<") + 10;
-   #else
-         full_name.find("T = ") + 4;
-   #endif
-
-      constexpr auto end = 
-   #ifdef __clang__
-         full_name.find("]");
-   #elif __GNUC__
-         full_name.find(";");
-   #elif _MSC_VER
-         full_name.rfind(">");
-   #endif
-
-      return full_name.substr(start, end - start);
+   template <auto X>
+   consteval static inline std::string_view nameof() {
+      return detail::meta::munch(VERSA_PRETTY_FUNCTION);
    }
 
    template <typename T>
-   constexpr static inline std::string_view type_name_v = type_name<T>();
+   constexpr static inline std::string_view type_name_v = nameof<T>();
+
+   template <typename Enum>
+   concept enum_type = std::is_enum_v<Enum>;
 
 } // namespace versa::meta

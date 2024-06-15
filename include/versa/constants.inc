@@ -460,3 +460,15 @@
 #else
    #define VERSA_BUILD VERSA_RELEASE_BUILD
 #endif
+
+#if (VERSA_COMPILER & VERSA_MSVC_BUILD) == VERSA_MSVC_BUILD
+   #define VERSA_PRETTY_FUNCTION __FUNCSIG__
+#else
+   #define VERSA_PRETTY_FUNCTION __PRETTY_FUNCTION__
+#endif
+
+#if defined(VERSA_COMPILE_TIME_CONSTEVAL)
+   #define VERSA_CT_CONST consteval
+#else
+   #define VERSA_CT_CONST constexpr
+#endif

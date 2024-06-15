@@ -5,19 +5,11 @@ include(../LibVersa.cmake)
 # ##################################################################################################
 add_executable( 
    libversa_unit_tests 
+   compile_time_tools_tests.cpp
    memory_tests.cpp
    versa_tests.cpp
    #handler_tests.cpp
-   meta_tests.cpp
-)
-
-versa_setup_target( libversa_unit_tests
-   NAMESPACE test_version_0
-   MAJOR 1
-   MINOR 0
-   PATCH 0
-   TWEAK 0
-   SUFFIX alpha
+   #meta_tests.cpp
 )
 
 target_link_libraries( libversa_unit_tests PRIVATE versa Catch2::Catch2WithMain )

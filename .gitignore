@@ -33,5 +33,7 @@
 
 build/*
 build-clang/*
+build-gcc/*
+build-msvc/*
 .history/*
 .vscode/*
