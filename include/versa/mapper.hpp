@@ -2,7 +2,7 @@
 
 #include "constants.hpp"
 
-#ifdef VERSA_PLATFORM_WINDOWS
+#if VERSA_OS == VERSA_WINDOWS_BUILD
    #include "arch/win32/mapper_impl.hpp"
 #else
    #include "arch/unix/mapper_impl.hpp"

@@ -20,7 +20,7 @@
  */
 namespace versa::util {
    [[noreturn]] inline void unreachable() {
-      #if VERSA_OS == VERSA_OS_WINDOWS
+      #if VERSA_OS == VERSA_WINDOWS_BUILD
          __assume(false);
       #else
          __builtin_unreachable();
