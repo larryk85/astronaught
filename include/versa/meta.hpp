@@ -7,7 +7,8 @@
 #include <type_traits>
 #include <string_view>
 
-#include "constants.hpp"
+#include "info.hpp"
+#include "definitions.pp"
 
 namespace versa::meta {
    namespace detail::return_ty {
@@ -178,29 +179,6 @@ namespace versa::meta {
 
    template <auto F>
    using function_ptr_t = function_ptr<decltype(F)>;
-
-#if 0
-#define VERSA_META_NAME_OF_IMPL(...)                       \
-   template <__VA_ARGS__>                                  \
-   consteval static inline std::string_view name_of() {    \
-      using versa::info;                                   \
-      constexpr std::string_view full_name =               \
-         (info::build_info_v.comp == compiler::msvc)       \
-            ? __FUNCSIG__                                  \
-            : __PRETTY_FUNCTION__;                         \
-      constexpr auto start =                               \
-         (info::build_info_v.comp == compiler::msvc)       \
-            ? full_name.find("type_name<") + 10;           \
-            : full_name.find("T = ") + 4;                  \
-      constexpr auto end =                                 \
-         (info::build_info_v.comp == compiler::msvc)       \
-            ? full_name.rfind(">")                         \
-            : (info::build_info_v.comp == compiler::clang) \
-               ? full_name.find("]")                       \
-               : full_name.find(";");                      \
-      return full_name.substr(start, end - start);         \
-   }
-#endif
 
    namespace detail::meta {
       consteval static inline std::string_view munch(std::string_view sv) {

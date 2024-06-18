@@ -5,6 +5,7 @@
 #include <fstream>
 
 #include <versa/compile_time.hpp>
+#include <versa/compile_time_tester.hpp>
 
 using namespace versa::util;
 
@@ -13,7 +14,32 @@ void print_string() {
    std::cout << S.data() << std::endl;
 }
 
+class foo {
+   public:
+      template <typename T>
+      foo(T a) {
+         static_assert(sizeof(a) == 3, "A must be 1 and B must not be 2");
+      }
+};
+
+template <typename, typename>
+struct is_valid : std::false_type {};
+
+template <typename T>
+struct is_valid<std::void_t<T>, T> : std::true_type {};
+
+#define IS_VALID(EXPR) is_valid<std::void_t<decltype(EXPR)>, decltype(EXPR)>::value
+
+template <typename T>
+constexpr static inline bool test0() { return IS_VALID(T{}); }
+
+template <typename T, typename... Args>
+constexpr static inline bool test(Args&&... args) { return IS_VALID(T{std::forward<Args>(args)...}); }
+
 TEST_CASE("Compile Time String Tests", "[ct_string_tests]") {
+   constexpr auto ppack = param_pack<1, 2>{};
+   std::cout << "FOOd " << test<foo>((float)34) << std::endl;
+   using dv = decltype(foo((int)34));
    SECTION("Check compile time string construction") {
       fixed_string str("Hello, World!");
 
@@ -155,5 +181,42 @@ TEST_CASE("Compile Time String Tests", "[ct_string_tests]") {
 
       constexpr auto rev_hello = hello.reverse();
       CHECK(rev_hello == "olleh"_fs);
+   }
+
+   SECTION("Check compile time string conversions and printing") {
+      using namespace versa::literals;
+      using namespace versa::util;
+
+      constexpr fixed_string hello = "hello"_fs;
+      constexpr fixed_string world = "world"_fs;
+
+      auto hello_world_str = to_string(hello + world);
+      CHECK(hello_world_str == "helloworld");
+
+      constexpr auto helloworldworld = hello+world+world;
+      CHECK(helloworldworld.to_string_view() == "helloworldworld");
+
+      constexpr auto one = "1"_fs;
+      int one_int = to_integral<int, one>();
+      CHECK(one_int == 1);
+
+      constexpr auto num = "123456789"_fs;
+      int num_int = to_integral<int, num>();
+      CHECK(num_int == 123456789);
+
+      constexpr auto num2 = "-12345678"_fs;
+      constexpr int num2_int = to_integral<int, num2>();
+      CHECK(num2_int == -12345678);
+
+      constexpr auto byte = "255"_fs;
+      unsigned char byte_char = to_integral_v<unsigned char, byte>;
+      CHECK(byte_char == 255);
+
+      // This should not compile successfully and should throw a static_assert
+      // constexpr auto byte2 = "256"_fs;
+      // byte_char = to_integral_v<unsigned char, byte2>;
+      // CHECK(byte_char == 256);
+
+      //print_string<hello_world>();
    }
 }

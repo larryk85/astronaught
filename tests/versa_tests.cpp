@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 
-#include <versa/constants.hpp>
+#include <versa/info.hpp>
 #include <versa/utils.hpp>
 
 #define UI32(X) static_cast<uint32_t>(X)

@@ -7,6 +7,7 @@
 #include <compare>
 #include <concepts>
 #include <limits>
+#include <string>
 #include <string_view>
 
 #include "utils.hpp"
@@ -222,6 +223,10 @@ namespace versa::util {
          return std::string_view(data(), size_v);
       }
 
+      inline std::string to_string() const noexcept {
+         return std::string(data(), size_v);
+      }
+
       template <std::size_t... Is>
       VERSA_CT_CONST inline auto reverse(std::index_sequence<Is...>) const noexcept {
          return std::array{_data[size_v-Is-1]...,'\0'};
@@ -292,6 +297,56 @@ namespace versa::util {
       }
    }
 
+   template <std::size_t N>
+   static inline std::string to_string(fixed_string<N> fs) noexcept {
+      return std::string(fs.data(), fs.size());
+   }
+
+   template <auto V, bool B>
+   struct checker_v {
+      constexpr static inline bool value = B;
+   };
+
+   template <typename T, bool B>
+   struct checker {
+      constexpr static inline bool value = B;
+   };
+
+   template <auto T>
+   struct $ {};
+
+   template <typename CS, typename... Ts>
+   [[deprecated]] constexpr static inline void ct_dump() noexcept {}
+  
+   #define CT_DUMP(...) ct_dump< __VA_ARGS__>()
+
+   namespace detail {
+      template <std::integral I, fixed_string FS>
+      constexpr static inline I to_integral() noexcept {
+         I result = 0;
+         for (std::size_t i = 0; i < FS.size(); ++i) {
+            result = (result * 10) + (FS[i] - '0');
+         }
+         return result;
+      }
+   } // namespace versa::util::detail
+
+   template <std::integral I, fixed_string FS>
+   constexpr static inline I to_integral() noexcept {
+      constexpr auto digs = std::numeric_limits<I>::digits;
+      if constexpr (FS[0] == '-') {
+         constexpr auto res = detail::to_integral<std::size_t, FS.substr(range<1>{})>();
+         static_assert(res < (1ul << digs), "Integral value out of range");
+         return -static_cast<I>(res);
+      } else {
+         constexpr auto res = detail::to_integral<std::size_t, FS>();
+         static_assert(res < (1ul << (sizeof(I)*8)), "Integral value out of range");
+         return static_cast<I>(res);
+      }
+   }
+
+   template <std::integral I, fixed_string FS>
+   constexpr static inline I to_integral_v = to_integral<I, FS>();
 
 } // namespace versa::util
 

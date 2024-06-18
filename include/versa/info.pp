@@ -1,62 +1,8 @@
+#ifndef VERSA_INFO_PP_
+
 /**
  * @file constants.inc
  * @brief This file contains constants and macros related to the library version, platform, compiler, architecture, and byte order.
- */
-
-/**
- * @def VERSA_NAMESPACE
- * @brief The namespace used in the library.
- */
-
-/**
- * @def VERSA_NAMESPACE_X(NM)
- * @brief Macro to concatenate the namespace with another name.
- * @param NM The name to concatenate with the namespace.
- */
-
-/**
- * @def VERSA_MAJOR_VERSION
- * @brief The major version number of the library.
- */
-
-/**
- * @def VERSA_MINOR_VERSION
- * @brief The minor version number of the library.
- */
-
-/**
- * @def VERSA_PATCH_VERSION
- * @brief The patch version number of the library.
- */
-
-/**
- * @def VERSA_TWEAK_VERSION
- * @brief The tweak version number of the library.
- */
-
-/**
- * @def VERSA_USE_SUFFIX
- * @brief Flag indicating whether a suffix is used in the version number.
- */
-
-/**
- * @def VERSA_USE_GIT_HASH
- * @brief Flag indicating whether the git hash is used in the version number.
- */
-
-/**
- * @def VERSA_VERSION_SUFFIX
- * @brief The suffix used in the version number.
- */
-
-/**
- * @def VERSA_GIT_HASH
- * @brief The git hash of the library.
- */
-
-/**
- * @def VERSA_VERSION_STRING
- * @brief The version string of the library, including the major, minor, patch, tweak, suffix, and git hash.
  */
 
 /**
@@ -269,27 +215,6 @@
  * @brief The architecture used in the library.
  */
 
-#define VERSA_NAMESPACE       _VERSA_PROJECT_NAMESPACE        /**< The namespace used in the library. */
-#define VERSA_NAMESPACE_X(NM) VERSA_NAMESPACE ## _ ## NM      /**< Macro to concatenate the namespace with another name. */
-#define VERSA_MAJOR_VERSION   _VERSA_PROJECT_MAJOR_VERSION    /**< The major version number of the library. */
-#define VERSA_MINOR_VERSION   _VERSA_PROJECT_MINOR_VERSION    /**< The minor version number of the library. */
-#define VERSA_PATCH_VERSION   _VERSA_PROJECT_PATCH_VERSION    /**< The patch version number of the library. */
-#define VERSA_TWEAK_VERSION   _VERSA_PROJECT_TWEAK_VERSION    /**< The tweak version number of the library. */
-#define VERSA_USE_SUFFIX      _VERSA_PROJECT_USE_SUFFIX       /**< Flag indicating whether a suffix is used in the version number. */
-#define VERSA_USE_GIT_HASH    _VERSA_PROJECT_USE_GIT_HASH     /**< Flag indicating whether the git hash is used in the version number. */
-#define VERSA_VERSION_SUFFIX  _VERSA_PROJECT_VERSION_SUFFIX   /**< The suffix used in the version number. */
-#define VERSA_GIT_HASH        _VERSA_PROJECT_VERSION_GIT_HASH /**< The git hash of the library. */
-
-#if (VERSA_USE_SUFFIX == 1 && LV_USE_GIT_HASH == 1)
-   #define VERSA_VERSION_STRING "@LV_MAJOR@.@LV_MINOR@.@LV_PATCH@.@LV_TWEAK@-@LV_SUFFIX@ (@LV_GIT_HASH@)"
-#elif (VERSA_USE_SUFFIX == 1)
-   #define VERSA_VERSION_STRING "@LV_MAJOR@.@LV_MINOR@.@LV_PATCH@.@LV_TWEAK@-@LV_SUFFIX@"
-#elif (VERSA_USE_GIT_HASH == 1)
-   #define VERSA_VERSION_STRING "@LV_MAJOR@.@LV_MINOR@.@LV_PATCH@.@LV_TWEAK@ (@LV_GIT_HASH@)"
-#else
-   #define VERSA_VERSION_STRING "@LV_MAJOR@.@LV_MINOR@.@LV_PATCH@.@LV_TWEAK@"
-#endif
-
 #define VERSA_C_LANG      0x1
 #define VERSA_CPP_LANG    0x2
 
@@ -461,14 +386,4 @@
    #define VERSA_BUILD VERSA_RELEASE_BUILD
 #endif
 
-#if (VERSA_COMPILER & VERSA_MSVC_BUILD) == VERSA_MSVC_BUILD
-   #define VERSA_PRETTY_FUNCTION __FUNCSIG__
-#else
-   #define VERSA_PRETTY_FUNCTION __PRETTY_FUNCTION__
-#endif
-
-#if defined(VERSA_COMPILE_TIME_CONSTEVAL)
-   #define VERSA_CT_CONST consteval
-#else
-   #define VERSA_CT_CONST constexpr
-#endif
+#endif // VERSA_INFO_PP_

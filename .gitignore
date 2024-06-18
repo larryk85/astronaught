@@ -37,3 +37,6 @@ build-gcc/*
 build-msvc/*
 .history/*
 .vscode/*
+codeql_*
+codeql-*
+_codeql*

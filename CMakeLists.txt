@@ -29,6 +29,16 @@ target_include_directories(versa INTERFACE
    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
    $<INSTALL_INTERFACE:include>)
+
+#target_compile_definitions(versa INTERFACE
+#   $<$<CONFIG:Debug>:VERSALIB_DEBUG>
+#   $<$<CONFIG:Release>:VERSALIB_RELEASE>
+#   $<$<CONFIG:RelWithDebInfo>:VERSALIB_RELWITHDEBINFO>
+#   $<$<CONFIG:MinSizeRel>:VERSALIB_MINSIZEREL>)
+
+target_compile_options(versa INTERFACE
+   $<$<CXX_COMPILER_ID:CLANG>: "-W#pragma-messages" >)
+
 add_library(versa::versa ALIAS versa)
 
 include(FetchContent)

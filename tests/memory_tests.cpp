@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-#include <versa/constants.hpp>
+#include <versa/info.hpp>
 #include <versa/utils.hpp>
 #include <versa/allocator.hpp>
 #include <versa/mapper.hpp>
