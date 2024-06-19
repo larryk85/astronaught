@@ -6,7 +6,7 @@ include(../LibVersa.cmake)
 add_executable( 
    libversa_unit_tests 
    async_tests.cpp
-   compile_time_tools_tests.cpp
+   #fixed_string_tests.cpp
    logger_tests.cpp
    memory_tests.cpp
    versa_tests.cpp

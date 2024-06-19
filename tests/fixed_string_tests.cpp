@@ -4,42 +4,11 @@
 #include <iostream>
 #include <fstream>
 
-#include <versa/compile_time.hpp>
-#include <versa/compile_time_tester.hpp>
+#include <versa/utils/fixed_string.hpp>
 
 using namespace versa::util;
 
-template <auto S>
-void print_string() {
-   std::cout << S.data() << std::endl;
-}
-
-class foo {
-   public:
-      template <typename T>
-      foo(T a) {
-         static_assert(sizeof(a) == 3, "A must be 1 and B must not be 2");
-      }
-};
-
-template <typename, typename>
-struct is_valid : std::false_type {};
-
-template <typename T>
-struct is_valid<std::void_t<T>, T> : std::true_type {};
-
-#define IS_VALID(EXPR) is_valid<std::void_t<decltype(EXPR)>, decltype(EXPR)>::value
-
-template <typename T>
-constexpr static inline bool test0() { return IS_VALID(T{}); }
-
-template <typename T, typename... Args>
-constexpr static inline bool test(Args&&... args) { return IS_VALID(T{std::forward<Args>(args)...}); }
-
 TEST_CASE("Compile Time String Tests", "[ct_string_tests]") {
-   constexpr auto ppack = param_pack<1, 2>{};
-   std::cout << "FOOd " << test<foo>((float)34) << std::endl;
-   using dv = decltype(foo((int)34));
    SECTION("Check compile time string construction") {
       fixed_string str("Hello, World!");
 
@@ -216,7 +185,5 @@ TEST_CASE("Compile Time String Tests", "[ct_string_tests]") {
       // constexpr auto byte2 = "256"_fs;
       // byte_char = to_integral_v<unsigned char, byte2>;
       // CHECK(byte_char == 256);
-
-      //print_string<hello_world>();
    }
 }

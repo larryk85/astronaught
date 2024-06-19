@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 
-namespace versa::util {
-} // namespace versa::util
+namespace versa::async {
+} // namespace versa::async
 inline static int32_t execute(std::string_view prog, const std::vector<std::string>& args) {
    std::string cmd{prog};
    for (const auto& arg : args) {

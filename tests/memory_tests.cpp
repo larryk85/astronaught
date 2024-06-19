@@ -6,8 +6,7 @@
 
 #include <versa/info.hpp>
 #include <versa/utils.hpp>
-#include <versa/allocator.hpp>
-#include <versa/mapper.hpp>
+#include <versa/memory.hpp>
 
 using namespace versa::memory;
 

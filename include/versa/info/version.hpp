@@ -8,7 +8,7 @@
 
 #include <versa/version.pp>
 
-#include "compile_time.hpp"
+#include "../utils/fixed_string.hpp"
 
 namespace versa::info {
    struct version_t {

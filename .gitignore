@@ -40,3 +40,5 @@ build-msvc/*
 codeql_*
 codeql-*
 _codeql*
+
+.fake

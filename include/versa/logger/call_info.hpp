@@ -6,8 +6,8 @@
 
 //#include <format>
 
-#include "../meta.hpp"
-#include "../utils.hpp"
+#include "../utils/misc.hpp"
+#include "../meta/traits.hpp"
 
 namespace versa::logger {
    namespace detail {

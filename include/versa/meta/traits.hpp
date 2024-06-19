@@ -7,8 +7,8 @@
 #include <type_traits>
 #include <string_view>
 
-#include "info.hpp"
-#include "definitions.pp"
+#include "../info/build_info.hpp"
+#include "../utils/definitions.pp"
 
 namespace versa::meta {
    namespace detail::return_ty {

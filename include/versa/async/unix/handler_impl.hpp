@@ -12,7 +12,7 @@
 #include "../../jmp.hpp"
 #include "../../signals.hpp"
 
-namespace versa::signals {
+namespace versa::async {
    constexpr static inline uint32_t signal_to_unix_signal(signal sig) {
       switch (sig) {
          case signal::access_violation:
@@ -61,4 +61,4 @@ namespace versa::signals {
          util::check(sigaction(signaln, &sa, nullptr) == 0, "Failed to reset signal handler");
       }
    };
-} // namespace versa::err
+} // namespace versa::async

@@ -10,7 +10,7 @@
 #include "../../process_base.hpp"
 #include "../../utils.hpp"
 
-namespace versa::util {
+namespace versa::async {
    class process : public process_base<process> {
       public:
          inline process(std::string p) 
@@ -59,4 +59,4 @@ namespace versa::util {
          pid_t _pid = 0;
    };
 
-} // namespace versa::util
+} // namespace versa::async

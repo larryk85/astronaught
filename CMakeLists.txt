@@ -36,9 +36,6 @@ target_include_directories(versa INTERFACE
 #   $<$<CONFIG:RelWithDebInfo>:VERSALIB_RELWITHDEBINFO>
 #   $<$<CONFIG:MinSizeRel>:VERSALIB_MINSIZEREL>)
 
-target_compile_options(versa INTERFACE
-   $<$<CXX_COMPILER_ID:CLANG>: "-W#pragma-messages" >)
-
 add_library(versa::versa ALIAS versa)
 
 include(FetchContent)
