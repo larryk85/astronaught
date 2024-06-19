@@ -3,7 +3,7 @@
 #include <cstdint>
 
 #include "misc.hpp"
-#include "fixed_string.hpp"
+#include "../frozen/string.hpp"
 
 namespace versa::util {
    /**
@@ -17,7 +17,7 @@ namespace versa::util {
           * 
           * @param fmt The format string.
           */
-         format(fixed_string<N> fmt) : _fmt(fmt) {}
+         format(frozen::string<N> fmt) : _fmt(fmt) {}
 
          /**
           * @brief Format the string with the given arguments.

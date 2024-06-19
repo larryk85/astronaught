@@ -4,11 +4,11 @@
 #include <iostream>
 #include <fstream>
 
-#include <versa/meta.hpp>
+#include <versa/frozen.hpp>
 #include <versa/utils.hpp>
 
 using namespace versa;
-using namespace versa::meta;
+using namespace versa::frozen;
 
 int test_func_0(int, float, char) { return 0; }
 float test_func_1(float, std::string, std::ofstream) { return 0; }
@@ -41,9 +41,9 @@ void call_cb(void (*cb)(int, int, char)) {
 
          //template <auto CB>
          //static inline auto ptr() {
-         //   using func_type = meta::function_type_t<&decltype(CB)::operator()>;
-         //   using ret_type  = meta::return_type_t<&decltype(CB)::operator()>;
-         //   using param_type = meta::param_type_t<&decltype(CB)::operator()>;
+         //   using func_type = frozen::function_type_t<&decltype(CB)::operator()>;
+         //   using ret_type  = frozen::return_type_t<&decltype(CB)::operator()>;
+         //   using param_type = frozen::param_type_t<&decltype(CB)::operator()>;
          //   fn<func_type>(CB);
          //   return (func_type) exec<ret_type, func_type, param_type>(std::make_index_sequence<std::tuple_size<param_type>::value>());
          //}
@@ -70,7 +70,7 @@ void call_cb(void (*cb)(int, int, char)) {
       }
    };
 
-TEST_CASE("Meta Tests", "[meta_tests]") {
+TEST_CASE("frozen Tests", "[frozen_tests]") {
    SECTION("Check return types") {
       CHECK(std::is_same_v<return_type_t<test_func_0>, int>);
       CHECK(std::is_same_v<return_type_t<test_func_1>, float>);

@@ -10,7 +10,7 @@
 #include "../info/build_info.hpp"
 #include "../utils/defs.hpp"
 
-namespace versa::meta {
+namespace versa::frozen {
    namespace detail::return_ty {
       template <typename T>
       struct return_type;
@@ -184,7 +184,7 @@ namespace versa::meta {
    //template <auto F>
    //using function_ptr_t = function_ptr<decltype(F)>;
 
-   namespace detail::meta {
+   namespace detail::frozen {
       consteval static inline std::string_view munch(std::string_view sv) {
          using namespace versa::info;
          if constexpr (info::build_info_v.comp == compiler::msvc) {
@@ -195,7 +195,7 @@ namespace versa::meta {
             return sv.substr(sv.find("T = ") + 4, sv.find(";"));
          }
       }
-   } // namespace detail::meta
+   } // namespace detail::frozen
 
    consteval static inline std::string_view function_name(std::string_view fn=__builtin_FUNCTION()) { return fn; }
    consteval static inline std::string_view file_name(std::string_view fn=__builtin_FILE()) { return fn; }
@@ -203,12 +203,12 @@ namespace versa::meta {
 
    template <typename T>
    consteval static inline std::string_view nameof() {
-      return detail::meta::munch(VERSA_PRETTY_FUNCTION);
+      return detail::frozen::munch(VERSA_PRETTY_FUNCTION);
    }
 
    template <auto X>
    consteval static inline std::string_view nameof() {
-      return detail::meta::munch(VERSA_PRETTY_FUNCTION);
+      return detail::frozen::munch(VERSA_PRETTY_FUNCTION);
    }
 
    template <typename T>
@@ -217,4 +217,4 @@ namespace versa::meta {
    template <typename Enum>
    concept enum_type = std::is_enum_v<Enum>;
 
-} // namespace versa::meta
+} // namespace versa::frozen

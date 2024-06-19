@@ -11,7 +11,7 @@ add_executable(
    memory_tests.cpp
    versa_tests.cpp
    #handler_tests.cpp
-   meta_tests.cpp
+   frozen_tests.cpp
    #process_tests.cpp
 )
 

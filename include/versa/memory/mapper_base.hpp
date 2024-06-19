@@ -5,7 +5,7 @@
 
 #include <limits>
 
-#include "utils.hpp"
+#include "../utils.hpp"
 #include "modes.hpp"
 
 namespace versa::memory {

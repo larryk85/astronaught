@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "../info/build_info.hpp"
-#include "../meta/traits.hpp"
+#include "../frozen/traits.hpp"
 
 #include "defs.hpp"
 
@@ -157,9 +157,9 @@ namespace versa::util {
 
          template <auto CB>
          static inline auto ptr() {
-            using func_type = meta::function_type_t<&decltype(CB)::operator()>;
-            using ret_type  = meta::return_type_t<&decltype(CB)::operator()>;
-            using param_type = meta::param_type_t<&decltype(CB)::operator()>;
+            using func_type = frozen::function_type_t<&decltype(CB)::operator()>;
+            using ret_type  = frozen::return_type_t<&decltype(CB)::operator()>;
+            using param_type = frozen::param_type_t<&decltype(CB)::operator()>;
             fn<func_type>(CB);
             return (func_type) exec<ret_type, func_type, param_type>(std::make_index_sequence<std::tuple_size<param_type>::value>());
          }

@@ -7,7 +7,7 @@
 //#include <format>
 
 #include "../utils/misc.hpp"
-#include "../meta/traits.hpp"
+#include "../frozen/traits.hpp"
 
 namespace versa::logger {
    namespace detail {

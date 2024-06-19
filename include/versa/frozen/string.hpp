@@ -10,9 +10,9 @@
 #include <string>
 #include <string_view>
 
-#include "misc.hpp"
+#include "../utils/misc.hpp"
 
-namespace versa::util {
+namespace versa::frozen {
    namespace detail {
       template <std::size_t N, char... Cs>
       struct cstr_to_int;
@@ -67,25 +67,25 @@ namespace versa::util {
    };
 
    template <std::size_t N>
-   struct fixed_string {
-      using self_t = fixed_string<N>;
+   struct string {
+      using self_t = string<N>;
 
       template <std::size_t M>
-      using templ_t = fixed_string<M>;
+      using templ_t = string<M>;
 
       constexpr static inline auto size_v = N-1;
 
-      fixed_string() = delete;
-      fixed_string(const fixed_string&) = default;
-      fixed_string(fixed_string&&) = default;
-      fixed_string& operator=(const fixed_string&) = default;
-      fixed_string& operator=(fixed_string&&) = default;
+      string() = delete;
+      string(const string&) = default;
+      string(string&&) = default;
+      string& operator=(const string&) = default;
+      string& operator=(string&&) = default;
 
-      constexpr inline fixed_string(const char (&str)[N]) noexcept {
+      constexpr inline string(const char (&str)[N]) noexcept {
          std::copy_n(str, size_v, _data);
       }
 
-      constexpr inline fixed_string(const std::array<char, N>& arr) noexcept {
+      constexpr inline string(const std::array<char, N>& arr) noexcept {
          std::copy_n(arr.begin(), size_v, _data);
       }
 
@@ -96,7 +96,7 @@ namespace versa::util {
       constexpr inline char& operator[](std::size_t i) noexcept { return _data[i]; }
 
       constexpr inline char& at(std::size_t i) {
-         check(i < size_v, "Index out of range");
+         util::check(i < size_v, "Index out of range");
          return _data[i];
       }
 
@@ -114,7 +114,7 @@ namespace versa::util {
       constexpr inline char* rend() noexcept { return _data-1; }
 
       template <std::size_t M>
-      VERSA_CT_CONST inline std::strong_ordering compare(fixed_string<M> other) const noexcept {
+      VERSA_CT_CONST inline std::strong_ordering compare(string<M> other) const noexcept {
          if constexpr (size_v < decltype(other)::size_v) {
             return std::strong_ordering::less;
          } else if constexpr (size_v > decltype(other)::size_v) {
@@ -131,12 +131,12 @@ namespace versa::util {
       }
 
       template <std::size_t M>
-      VERSA_CT_CONST inline std::strong_ordering operator<=>(fixed_string<M> other) const noexcept {
+      VERSA_CT_CONST inline std::strong_ordering operator<=>(string<M> other) const noexcept {
          return compare(other);
       }
 
       template <std::size_t M>
-      VERSA_CT_CONST inline bool operator==(fixed_string<M> other) const noexcept {
+      VERSA_CT_CONST inline bool operator==(string<M> other) const noexcept {
          if constexpr (size_v != decltype(other)::size_v) {
             return false;
          } else if constexpr (size_v == decltype(other)::size_v) {
@@ -152,7 +152,7 @@ namespace versa::util {
       }
 
       template <std::size_t M>
-      VERSA_CT_CONST inline bool operator<(fixed_string<M> other) const noexcept {
+      VERSA_CT_CONST inline bool operator<(string<M> other) const noexcept {
          if constexpr (size_v < decltype(other)::size_v) {
             return true;
          } else if constexpr (size_v > decltype(other)::size_v) {
@@ -182,7 +182,7 @@ namespace versa::util {
 
 
       template <std::size_t M>
-      VERSA_CT_CONST inline bool starts_with(fixed_string<M> other) const noexcept {
+      VERSA_CT_CONST inline bool starts_with(string<M> other) const noexcept {
          constexpr auto osz = decltype(other)::size_v;
          if constexpr (size_v < osz) {
             return false;
@@ -192,7 +192,7 @@ namespace versa::util {
       }
 
       template <std::size_t M>
-      VERSA_CT_CONST inline bool ends_with(fixed_string<M> other) const noexcept {
+      VERSA_CT_CONST inline bool ends_with(string<M> other) const noexcept {
          constexpr auto osz = decltype(other)::size_v;
          if constexpr (size_v < osz) {
             return false;
@@ -206,7 +206,7 @@ namespace versa::util {
       }
 
       template <std::size_t M>
-      VERSA_CT_CONST inline auto concat(fixed_string<M> other) const noexcept {
+      VERSA_CT_CONST inline auto concat(string<M> other) const noexcept {
          constexpr std::size_t sz = size_v + M;
          std::array<char, sz> arr;
          std::copy_n(begin(), size_v, arr.begin());
@@ -215,7 +215,7 @@ namespace versa::util {
       }
 
       template <std::size_t M>
-      VERSA_CT_CONST inline decltype(auto) operator+(fixed_string<M> other) const noexcept {
+      VERSA_CT_CONST inline decltype(auto) operator+(string<M> other) const noexcept {
          return concat(other);
       }
 
@@ -256,13 +256,13 @@ namespace versa::util {
    };
 
    template <class T>
-   concept fixed_string_type  = requires {
+   concept string_type  = requires {
       {T::size_v} -> std::convertible_to<std::size_t>;
       {T::_data} -> std::convertible_to<const char*>;
    };
 
    template <auto a, auto b, std::size_t i=0>
-   requires (fixed_string_type<decltype(a)> && fixed_string_type<decltype(b)>)
+   requires (string_type<decltype(a)> && frozen::string_type<decltype(b)>)
    VERSA_CT_CONST static inline auto find() noexcept {
       constexpr auto a_sz = decltype(a)::size_v;
       constexpr auto b_sz = decltype(b)::size_v;
@@ -280,7 +280,7 @@ namespace versa::util {
    }
 
    template <auto a, auto b, std::size_t i=decltype(a)::size_v>
-   requires (fixed_string_type<decltype(a)> && fixed_string_type<decltype(b)>)
+   requires (string_type<decltype(a)> && frozen::string_type<decltype(b)>)
    VERSA_CT_CONST static inline auto rfind() noexcept {
       constexpr auto a_sz = decltype(a)::size_v;
       constexpr auto b_sz = decltype(b)::size_v;
@@ -298,7 +298,7 @@ namespace versa::util {
    }
 
    template <std::size_t N>
-   static inline std::string to_string(fixed_string<N> fs) noexcept {
+   static inline std::string to_string(string<N> fs) noexcept {
       return std::string(fs.data(), fs.size());
    }
 
@@ -321,7 +321,7 @@ namespace versa::util {
    #define CT_DUMP(...) ct_dump< __VA_ARGS__>()
 
    namespace detail {
-      template <std::integral I, fixed_string FS>
+      template <std::integral I, string FS>
       constexpr static inline I to_integral() noexcept {
          I result = 0;
          for (std::size_t i = 0; i < FS.size(); ++i) {
@@ -329,9 +329,9 @@ namespace versa::util {
          }
          return result;
       }
-   } // namespace versa::util::detail
+   } // namespace versa::frozen::detail
 
-   template <std::integral I, fixed_string FS>
+   template <std::integral I, string FS>
    constexpr static inline I to_integral() noexcept {
       constexpr auto digs = std::numeric_limits<I>::digits;
       if constexpr (FS[0] == '-') {
@@ -345,18 +345,18 @@ namespace versa::util {
       }
    }
 
-   template <std::integral I, fixed_string FS>
+   template <std::integral I, string FS>
    constexpr static inline I to_integral_v = to_integral<I, FS>();
 
-} // namespace versa::util
+} // namespace versa::frozen
 
 namespace versa::literals {
-   template <util::fixed_string S>
+   template <frozen::string S>
    consteval inline auto operator""_fs() { return S; }
 
    template <char... Cs>
    consteval inline auto operator""_int() {
-      return util::integral<std::size_t, util::cstr_to_int_v<Cs...>>{};
+      return frozen::integral<std::size_t, frozen::cstr_to_int_v<Cs...>>{};
    }
 
 } // namespace versa::literals
