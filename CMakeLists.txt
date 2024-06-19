@@ -24,6 +24,16 @@ if (MSVC)
    endif()
 endif()
 
+include(LibVersa.cmake)
+
+   set(oneValueArgs NAMESPACE MAJOR MINOR PATCH TWEAK SUFFIX INCLUDE_DIR)
+
+versa_create_version_info(
+   NAMESPACE "versa"
+   SUFFIX "rc1"
+   GIT_HASH
+)
+
 add_library(versa INTERFACE)
 target_include_directories(versa INTERFACE
    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

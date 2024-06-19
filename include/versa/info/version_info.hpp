@@ -6,8 +6,6 @@
 #include <optional>
 #include <string_view>
 
-#include <versa/version.pp>
-
 #include "../utils/fixed_string.hpp"
 
 namespace versa::info {

@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace versa::util {
+namespace versa::async {
    template <class Derived>
    class process_base {
       public:

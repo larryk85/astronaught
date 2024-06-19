@@ -14,7 +14,7 @@
 #include "../info/build_info.hpp"
 #include "../meta/traits.hpp"
 
-#include "definitions.pp"
+#include "defs.hpp"
 
 /**
  * @namespace versa::util
@@ -142,6 +142,7 @@ namespace versa::util {
       return std::strong_ordering::equal; 
    }
 
+   #if 0
    namespace detail {
       struct closure_wrapper {
          template <typename R, typename FP, typename... Args>
@@ -183,5 +184,6 @@ namespace versa::util {
 
    template <class CB>
    static inline decltype(auto) closure(CB&& cb) { return closure<cb>();}
+   #endif
 
 } // namespace versa::util

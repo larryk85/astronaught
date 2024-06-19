@@ -7,8 +7,8 @@
 
 #include <limits>
 
-#include "../../mapper_base.hpp"
-#include "../../modes.hpp"
+#include "../mapper_base.hpp"
+#include "../modes.hpp"
 
 namespace versa::memory {
    constexpr static inline uint8_t access_mode_to_win_mode(access_mode mode) {

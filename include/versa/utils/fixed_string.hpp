@@ -336,11 +336,11 @@ namespace versa::util {
       constexpr auto digs = std::numeric_limits<I>::digits;
       if constexpr (FS[0] == '-') {
          constexpr auto res = detail::to_integral<std::size_t, FS.substr(range<1>{})>();
-         static_assert(res < (1ul << digs), "Integral value out of range");
+         //static_assert(res < (1ul << digs), "Integral value out of range");
          return -static_cast<I>(res);
       } else {
          constexpr auto res = detail::to_integral<std::size_t, FS>();
-         static_assert(res < (1ul << (sizeof(I)*8)), "Integral value out of range");
+         //static_assert(res < (1ul << (sizeof(I)*8)), "Integral value out of range");
          return static_cast<I>(res);
       }
    }

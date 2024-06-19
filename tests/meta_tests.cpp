@@ -102,9 +102,9 @@ TEST_CASE("Meta Tests", "[meta_tests]") {
    }
 
    SECTION("Check function_type_t") {
-      CHECK(std::is_same_v<function_type_t<test_func_0>, int(int,float,char)>);
-      CHECK(std::is_same_v<function_type_t<test_func_1>, float(float,std::string,std::ofstream)>);
-      CHECK(std::is_same_v<function_type_t<test_func_2>, void(bool,decltype(std::cout),double)>);
+      CHECK(std::is_same_v<function_type<decltype(test_func_0)>, int(int,float,char)>);
+      CHECK(std::is_same_v<function_type<decltype(test_func_1)>, float(float,std::string,std::ofstream)>);
+      CHECK(std::is_same_v<function_type<decltype(test_func_2)>, void(bool,decltype(std::cout),double)>);
    }
 
    auto cl = [&](int sig, float* info, void* ucontext) -> void {

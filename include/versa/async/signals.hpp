@@ -35,7 +35,7 @@ namespace versa::signals {
          template <typename Func>
          requires std::invocable<Func>
          inline void operator()(Func&& func) {
-            int32_t v = sigsetjmp(*util::get_jmp().get(), 1);
+            int32_t v = setjmp(*util::get_jmp().get());
             util::check(v == 0, "signal handler failure");
             func();
          }

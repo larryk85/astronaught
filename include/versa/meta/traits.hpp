@@ -8,7 +8,7 @@
 #include <string_view>
 
 #include "../info/build_info.hpp"
-#include "../utils/definitions.pp"
+#include "../utils/defs.hpp"
 
 namespace versa::meta {
    namespace detail::return_ty {
@@ -168,17 +168,21 @@ namespace versa::meta {
       };
    } // namespace detail::func_ty
 
+   template <class T, class U>
+   constexpr inline U&& make_dependent(U&& u) { return std::forward<U>(u); }
+   #define VERSA_WORKAROUND(x) make_dependent<decltype(x)>(x)
+
    template <typename F>
    using function_type = typename detail::func_ty::function_type<F>::type;
 
-   template <auto F>
-   using function_type_t = function_type<decltype(F)>;
+   //template <auto F>
+   //using function_type_t = function_type<decltype(F)>;
 
    template <typename F>
    using function_ptr = typename detail::func_ty::function_ptr<F>::type;
 
-   template <auto F>
-   using function_ptr_t = function_ptr<decltype(F)>;
+   //template <auto F>
+   //using function_ptr_t = function_ptr<decltype(F)>;
 
    namespace detail::meta {
       consteval static inline std::string_view munch(std::string_view sv) {

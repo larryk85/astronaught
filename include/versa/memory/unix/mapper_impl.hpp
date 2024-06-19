@@ -11,8 +11,8 @@
 #include <limits>
 #include <unordered_map>
 
-#include "../../mapper_base.hpp"
-#include "../../modes.hpp"
+#include "../mapper_base.hpp"
+#include "../modes.hpp"
 
 namespace versa::memory {
    constexpr static inline uint8_t access_mode_to_unix_mode(access_mode mode) {

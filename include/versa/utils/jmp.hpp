@@ -4,6 +4,8 @@
 
 #include <atomic>
 
+#include "defs.hpp"
+
 namespace versa::util {
    class jmp {
       public:
@@ -14,16 +16,16 @@ namespace versa::util {
          jmp& operator=(jmp&&) = delete;
          ~jmp() = default;
 
-         __attribute__((always_inline))
+         //VERSA_ALWAYS_INLINE
          inline bool set() { 
-            int32_t v = sigsetjmp(env, 1);
+            int32_t v = setjmp(env);
             return v == 0; 
          }
-         inline sigjmp_buf* get() { return &env; }
-         inline void jump(int32_t s=0) { siglongjmp(env, s); }
+         inline jmp_buf* get() { return &env; }
+         inline void jump(int32_t s=0) { longjmp(env, s); }
 
       private:
-         sigjmp_buf env;
+         jmp_buf env;
    };
 
    static inline jmp& get_jmp() {

@@ -3,7 +3,7 @@
 #include <cstdint>
 
 #include "misc.hpp"
-#include "../fixed_string.hpp"
+#include "fixed_string.hpp"
 
 namespace versa::util {
    /**
