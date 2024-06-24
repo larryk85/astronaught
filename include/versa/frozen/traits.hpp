@@ -185,15 +185,68 @@ namespace versa::frozen {
    //using function_ptr_t = function_ptr<decltype(F)>;
 
    namespace detail::frozen {
-      consteval static inline std::string_view munch(std::string_view sv) {
-         using namespace versa::info;
-         if constexpr (info::build_info_v.comp == compiler::msvc) {
-            return sv.substr(sv.find("type_name<") + 10, sv.rfind(">"));
-         } else if constexpr (info::build_info_v.comp == compiler::clang) {
-            return sv.substr(sv.find("T = ") + 4, sv.find("]"));
+      template <auto V>
+      struct frozen_wrapper {
+         static constexpr auto value = V;
+      };
+
+      template <typename T>
+      concept wrapper_type = requires {
+         { std::is_base_of_v<frozen_wrapper<T::value>, T> };
+      };
+
+      consteval bool msvc_() {
+         return versa::info::build_info_v.comp == versa::info::compiler::msvc;
+      }
+
+      template <typename T>
+      consteval static inline std::string_view start_str() {
+         if constexpr (msvc_()) {
+            return "type_name<";
          } else {
-            return sv.substr(sv.find("T = ") + 4, sv.find(";"));
+            if constexpr (wrapper_type<T>) {
+               return "frozen_wrapper<";
+            } else {
+               return "T = ";
+            }
          }
+      }
+
+      template <typename T>
+      consteval static inline std::string_view end_str() {
+         if constexpr (msvc_()) {
+            return ">";
+         } else {
+            if constexpr (wrapper_type<T>) {
+               return ">";
+            } else {
+               return "]";
+            }
+         }
+      }
+
+      template <typename T>
+      consteval static inline std::string_view nameof() {
+         using namespace versa::info;
+
+         static_assert(info::build_info_v.comp == compiler::msvc  ||
+                       info::build_info_v.comp == compiler::clang ||
+                       info::build_info_v.comp == compiler::gcc,
+                       "Compiler not supported");
+
+         constexpr auto full_name = std::string_view{VERSA_PRETTY_FUNCTION};
+         constexpr auto start     = full_name.find(start_str<T>());
+         constexpr auto offset    = start_str<T>().size();
+         constexpr auto end       = full_name.find(end_str<T>());
+
+         return full_name.substr(start+offset, end-start-offset);
+      }
+
+      template <typename T>
+      consteval static inline std::string_view nameof_only() {
+         constexpr auto sv = nameof<T>();
+         constexpr auto start = sv.rfind("::");
+         return sv.substr(start+2, sv.size()-start-2);
       }
    } // namespace detail::frozen
 
@@ -201,20 +254,29 @@ namespace versa::frozen {
    consteval static inline std::string_view file_name(std::string_view fn=__builtin_FILE()) { return fn; }
    consteval static inline std::size_t line_number(std::size_t ln=__builtin_LINE()) { return ln; }
 
-   template <typename T>
+   template <typename T, bool FullName=true>
    consteval static inline std::string_view nameof() {
-      return detail::frozen::munch(VERSA_PRETTY_FUNCTION);
+      if constexpr (FullName) {
+         return detail::frozen::nameof<T>();
+      } else {
+         return detail::frozen::nameof_only<T>();
+      }
    }
 
-   template <auto X>
+   template <auto X, bool FullName=true>
    consteval static inline std::string_view nameof() {
-      return detail::frozen::munch(VERSA_PRETTY_FUNCTION);
+      return nameof<detail::frozen::frozen_wrapper<X>, FullName>();
    }
 
-   template <typename T>
-   constexpr static inline std::string_view type_name_v = nameof<T>();
+   template <typename T, bool FullName=true>
+   constexpr static inline std::string_view type_name_v = nameof<T, FullName>();
 
-   template <typename Enum>
-   concept enum_type = std::is_enum_v<Enum>;
+   template <typename E, bool FullName=true>
+   requires std::is_enum_v<E>
+   constexpr static inline std::string_view enum_name_v = nameof<E, FullName>();
+
+   template <auto V, bool FullName=true>
+   requires std::is_enum_v<decltype(V)>
+   constexpr static inline std::string_view enum_value_name_v = nameof<V, FullName>();
 
 } // namespace versa::frozen

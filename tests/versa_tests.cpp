@@ -5,6 +5,7 @@
 
 #include <versa/info.hpp>
 #include <versa/utils.hpp>
+#include <versa/frozen/traits.hpp>
 
 #define UI32(X) static_cast<uint32_t>(X)
 TEST_CASE("Constants Tests", "[constants_tests]") {
@@ -64,6 +65,19 @@ TEST_CASE("Constants Tests", "[constants_tests]") {
       REQUIRE(UI32(versa::info::language::unknown) == 0x0);
       REQUIRE(UI32(versa::info::language::c) == 0x1);
       REQUIRE(UI32(versa::info::language::cpp) == 0x2);
+   }
+
+   SECTION("Check Frozen") {
+      enum class foo : uint32_t {
+         bar,
+         baz,
+         qux
+      };
+
+      constexpr foo f = foo::bar;
+
+      std::cout << "enum typename " << versa::frozen::enum_name_v<decltype(f)> << "\n";
+      std::cout << "enum value name " << versa::frozen::enum_value_name_v<f> << "\n";
    }
 }
 
