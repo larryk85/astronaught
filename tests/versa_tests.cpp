@@ -6,6 +6,38 @@
 #include <versa/info.hpp>
 #include <versa/utils.hpp>
 #include <versa/frozen/traits.hpp>
+#include <versa/frozen/meta.hpp>
+
+template <typename E>
+constexpr auto val(std::size_t v) { return static_cast<E>(-128+v); }
+
+template<typename E, E V>
+auto n() noexcept {
+   constexpr auto type_name = versa::frozen::type_name_v<versa::frozen::detail::frozen_wrapper<V>>;
+#if defined(__GNUC__) || defined(__clang__)
+    return pretty_name({ __PRETTY_FUNCTION__, sizeof(__PRETTY_FUNCTION__) - 2 });
+#elif defined(_MSC_VER)
+    return std::string_view{ __FUNCSIG__, sizeof(__FUNCSIG__) };
+#endif
+}
+
+template<typename E, E V>
+auto is_valid()
+{
+   constexpr E v = static_cast<E>(V);
+   constexpr auto nev = versa::frozen::type_name_v<E, false>;
+   std::cout << "n(E) " << nev << std::endl;
+   std::cout << "n{E}" << n<E,V>() << std::endl;
+   return !n<E, V>().empty();
+}
+
+template <typename E, std::size_t... Is>
+auto values(std::index_sequence<Is...>) noexcept {
+   bool valid[sizeof...(Is)] = { is_valid<E, val<E>(Is)>()... };
+   //for (std::int32_t i=-128; i < 128; i++) {
+   //   std::cout << "Valid["<<i<<"] = " << std::boolalpha << valid[i] << std::endl;
+   //}
+}
 
 #define UI32(X) static_cast<uint32_t>(X)
 TEST_CASE("Constants Tests", "[constants_tests]") {
@@ -66,19 +98,6 @@ TEST_CASE("Constants Tests", "[constants_tests]") {
       REQUIRE(UI32(versa::info::language::c) == 0x1);
       REQUIRE(UI32(versa::info::language::cpp) == 0x2);
    }
-
-   SECTION("Check Frozen") {
-      enum class foo : uint32_t {
-         bar,
-         baz,
-         qux
-      };
-
-      constexpr foo f = foo::bar;
-
-      std::cout << "enum typename " << versa::frozen::enum_name_v<decltype(f)> << "\n";
-      std::cout << "enum value name " << versa::frozen::enum_value_name_v<f> << "\n";
-   }
 }
 
 TEST_CASE("build_info Tests", "[build_info_tests]") {
@@ -135,4 +154,16 @@ TEST_CASE("Util Tests", "[util_tests]") {
    REQUIRE(a == 0);
    check(false, [&a]() { a = 1; });
    REQUIRE(a == 1);
+
+   enum class foo {
+      a,
+      b,
+      c
+   };
+
+   values<foo>(std::make_index_sequence<357>());
+
+   std::cout << "FFD " << versa::frozen::type_name_v<foo, false> << std::endl;
+   
+   std::cout << "FFE " << versa::frozen::enum_name_v<foo::a> << std::endl;
 }
