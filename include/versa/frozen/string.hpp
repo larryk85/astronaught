@@ -240,7 +240,10 @@ namespace versa::frozen {
          return std::array{_data[Is+LB]..., '\0'};
       }
 
+#pragma warning( push )
+#pragma warning( disable : 4200 )
       char _data[size_v];
+#pragma warning( pop )
    };
 
    template <typename T>

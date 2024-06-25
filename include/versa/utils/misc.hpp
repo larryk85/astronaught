@@ -130,6 +130,7 @@ namespace versa::util {
       } while (false);
    }
 
+   // helper where memcmp is not constexpr
    template <typename T, typename U, std::size_t N>
    constexpr static inline std::strong_ordering memcmp(const T (&lhs)[N], const U (&rhs)[N]) {
       for (std::size_t i = 0; i < N; ++i) {
@@ -186,4 +187,9 @@ namespace versa::util {
    static inline decltype(auto) closure(CB&& cb) { return closure<cb>();}
    #endif
 
+   template <auto Tag>
+   struct tag_type {
+      constexpr static inline auto value = Tag;
+   };
+   
 } // namespace versa::util

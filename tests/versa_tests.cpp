@@ -2,41 +2,37 @@
 #include <catch2/catch_test_macros.hpp>
 #include <iostream>
 #include <fstream>
+#include <source_location>
 
 #include <versa/info.hpp>
 #include <versa/utils.hpp>
 #include <versa/frozen/traits.hpp>
 #include <versa/frozen/meta.hpp>
 
-template <typename E>
-constexpr auto val(std::size_t v) { return static_cast<E>(-128+v); }
+template <typename E, auto V>
+constexpr static inline auto val() { return static_cast<E>(-128+V); }
 
-template<typename E, E V>
-auto n() noexcept {
-   constexpr auto type_name = versa::frozen::type_name_v<versa::frozen::detail::frozen_wrapper<V>>;
-#if defined(__GNUC__) || defined(__clang__)
-    return pretty_name({ __PRETTY_FUNCTION__, sizeof(__PRETTY_FUNCTION__) - 2 });
-#elif defined(_MSC_VER)
-    return std::string_view{ __FUNCSIG__, sizeof(__FUNCSIG__) };
-#endif
-}
-
-template<typename E, E V>
-auto is_valid()
-{
-   constexpr E v = static_cast<E>(V);
-   constexpr auto nev = versa::frozen::type_name_v<E, false>;
-   std::cout << "n(E) " << nev << std::endl;
-   std::cout << "n{E}" << n<E,V>() << std::endl;
-   return !n<E, V>().empty();
+template<typename E, auto V>
+/*constexpr*/ static inline bool is_valid() {
+   /*constexpr*/ auto en = versa::frozen::enum_name_v<val<E,V>(), false>;
+   std::cout << "VV " << en << std::endl;
+   //if (!en.empty()) {
+   //   std::cout << "I " << V << std::endl;
+   //   std::cout << "EN " << en << std::endl;
+   //}
+   return !en.empty();
 }
 
 template <typename E, std::size_t... Is>
 auto values(std::index_sequence<Is...>) noexcept {
-   bool valid[sizeof...(Is)] = { is_valid<E, val<E>(Is)>()... };
-   //for (std::int32_t i=-128; i < 128; i++) {
-   //   std::cout << "Valid["<<i<<"] = " << std::boolalpha << valid[i] << std::endl;
-   //}
+   bool valid[sizeof...(Is)] = { is_valid<E, Is>()... };
+   for (std::int32_t i=-128; i < 128; i++) {
+      std::cout << "Valid["<<i<<"] = " << (int32_t)valid[i+128] << std::endl;
+   }
+}
+
+inline void print_function_name(const std::source_location& location = std::source_location::current()) {
+   std::cout << "FN NAME " << location.function_name() << std::endl;
 }
 
 #define UI32(X) static_cast<uint32_t>(X)
@@ -161,9 +157,9 @@ TEST_CASE("Util Tests", "[util_tests]") {
       c
    };
 
-   values<foo>(std::make_index_sequence<357>());
+   versa::frozen::detail::enums::values<foo>(std::make_index_sequence<VERSA_ENUM_MAX_ELEMS>());
 
    std::cout << "FFD " << versa::frozen::type_name_v<foo, false> << std::endl;
-   
-   std::cout << "FFE " << versa::frozen::enum_name_v<foo::a> << std::endl;
+   std::cout << "FFE " << versa::frozen::enum_name_v<static_cast<foo>(1), false> << std::endl;
+   std::cout << "FFG " << versa::frozen::enum_name_v<static_cast<foo>(1)> << std::endl;
 }

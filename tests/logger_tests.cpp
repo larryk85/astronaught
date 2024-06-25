@@ -36,7 +36,7 @@ TEST_CASE("Logger Tests", "[logger_tests]") {
       }();
 
       CHECK(info3.file == "logger_tests.cpp");
-      CHECK(info3.func == "operator()");
+      CHECK((info3.func == "operator()" || info3.func == "operator ()"));
       CHECK(info3.line == 34);
    }
 }

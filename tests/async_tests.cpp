@@ -13,9 +13,9 @@ TEST_CASE("Async Tests", "[async_tests]") {
       double d = 3.14;
       uint32_t ui = 340;
 
-      executor exec{[ui, &d](int x, const std::string& y) -> uint32_t {
+      executor exec{[ui, &d](int x, const std::string& y) -> std::size_t {
          d += 3.5;
-         return x+ui+y.size();
+         return int64_t(x+ui)+y.size();
       }};
 
       auto v1= exec.exec(42, "Call from exec(...)");

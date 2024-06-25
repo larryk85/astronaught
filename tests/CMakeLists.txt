@@ -8,6 +8,7 @@ add_executable(
    async_tests.cpp
    fixed_string_tests.cpp
    logger_tests.cpp
+   map_tests.cpp
    memory_tests.cpp
    versa_tests.cpp
    #handler_tests.cpp

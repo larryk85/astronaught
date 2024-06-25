@@ -1,6 +1,8 @@
 #pragma once
 
+#include <source_location>
 #include <type_traits>
+#include <utility>
 
 #include "traits.hpp"
 #include "string.hpp"
@@ -9,6 +11,11 @@ namespace versa::frozen {
    template <typename T>
    struct meta {
    };
+
+   consteval static inline std::string_view function_name(std::string_view fn=std::source_location::current().function_name()) { return fn; }
+   consteval static inline std::string_view file_name(std::string_view fn=std::source_location::current().file_name()) { return fn; }
+   consteval static inline std::size_t line_number(std::size_t ln=std::source_location::current().line()) { return ln; }
+   consteval static inline std::size_t column_number(std::size_t cn=std::source_location::current().column()) { return cn; }
 
    namespace detail {
       template <auto V>
@@ -87,18 +94,10 @@ namespace versa::frozen {
 
       template <typename T>
       consteval static inline auto nameof() {
-         using namespace versa::info;
-
-         static_assert(info::build_info_v.comp == compiler::msvc  ||
-                       info::build_info_v.comp == compiler::clang ||
-                       info::build_info_v.comp == compiler::gcc,
-                       "Compiler not supported");
-
          constexpr auto full_name = std::string_view{VERSA_PRETTY_FUNCTION};
          constexpr auto start     = full_name.find(start_str<T>().to_string_view());
          constexpr auto offset    = start_str<T>().size();
          constexpr auto end       = full_name.find(end_str<T>().to_string_view());
-
          return full_name.substr(start+offset, end-start-offset);
       }
 
@@ -118,50 +117,76 @@ namespace versa::frozen {
          return full_name.substr(start+offset, end-start-offset);
       }
 
-      //template <typename E, auto V>
-      //consteval static inline auto vnameof() {
-      //   return vnameof<E, static_cast<E>(V)>();
-      //}
-
       template <enum_type E, E v>
       consteval static inline auto vnameof_only() {
          constexpr auto sv    = vnameof<E,v>();
          constexpr auto start = sv.rfind("::");
          return sv.substr(start+2, sv.size()-start-2);
       }
+
+      constexpr static inline bool is_valid_nm(std::string_view sv) {
+         for (auto c : sv) {
+            if (c == ')' || c == '(' || c == '{' || c == '}' || c == '<' || c == '>')
+               return false;
+         }
+         return true;
+      }
+
+      constexpr static inline auto valid_vnameof(std::string_view sv) { 
+         return is_valid_nm(sv) ? sv : "";
+      }
    } // namespace detail::frozen
 
-   consteval static inline std::string_view function_name(std::string_view fn=__builtin_FUNCTION()) { return fn; }
-   consteval static inline std::string_view file_name(std::string_view fn=__builtin_FILE()) { return fn; }
-   consteval static inline std::size_t line_number(std::size_t ln=__builtin_LINE()) { return ln; }
-
-   template <typename T, bool FullName=true>
+   template <typename T, bool Full=true>
    consteval static inline std::string_view nameof() {
-      if constexpr (FullName) {
+      if constexpr (Full) {
          return detail::nameof<T>();
       } else {
          return detail::nameof_only<T>();
       }
    }
 
-   template <auto X, bool FullName=true>
+   template <auto X, bool Full=true>
    consteval static inline std::string_view nameof() {
-      return nameof<detail::frozen_wrapper<X>, FullName>();
+      return nameof<detail::frozen_wrapper<X>, Full>();
    }
 
-   template <detail::enum_type E, E v, bool FullName=true>
+   template <detail::enum_type E, E v, bool Full=true>
    consteval static inline std::string_view vnameof() {
-      if constexpr (FullName) {
+      if constexpr (Full) {
          return detail::vnameof<E,v>();
       } else {
          return detail::vnameof_only<E,v>();
       }
    }
 
-   template <typename T, bool FullName=true>
-   constexpr static inline std::string_view type_name_v = nameof<T, FullName>();
+   template <typename T, bool Full=true>
+   constexpr static inline std::string_view type_name_v = nameof<T, Full>();
 
-   template <auto V, bool FullName=true>
-   constexpr static inline std::string_view enum_name_v = vnameof<std::decay_t<decltype(V)>, V, FullName>();
+   template <auto V, bool Full=true>
+   constexpr static inline std::string_view enum_name_v = detail::valid_vnameof(
+                                                            vnameof<std::decay_t<decltype(V)>, V, Full>());
 
-} // namespace versa::frozen::meta
+   constexpr static inline int32_t enum_lb_v    = VERSA_ENUM_LOWER_BOUND;
+   constexpr static inline int32_t enum_ub_v    = VERSA_ENUM_UPPER_BOUND;
+   constexpr static inline auto    enum_range_v = VERSA_ENUM_MAX_ELEMS;
+
+   using enum_idx_mapping_t = std::pair<std::string_view, int64_t>;
+   using enum_name_mapping_t = std::pair<int64_t, std::string_view>;
+
+   namespace detail::enums {
+      template <typename E, auto V>
+       static inline bool check() {
+         return !versa::frozen::enum_name_v<static_cast<E>(V), false>.empty();
+      }
+
+      template <typename E, std::size_t... Is>
+       static inline auto values(std::index_sequence<Is...>) noexcept {
+         /*constexpr*/ bool valid[sizeof...(Is)] = { check<E, Is>()... };
+         for (std::int32_t i=enum_lb_v; i < enum_ub_v; i++) {
+            //std::cout << "Valid["<<i<<"] = " << (int32_t)valid[i+128] << std::endl;
+         }
+      }
+   } // namespace versa::frozen::detail::enums
+
+} // namespace versa::frozen

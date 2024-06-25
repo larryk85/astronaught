@@ -84,7 +84,7 @@ TEST_CASE("Mapper Tests", "[mapper_tests]") {
 
       om = mm.protect<10>(mp, access_mode::read_write);
 
-      for (std::size_t i = 0; i < 10; ++i) {
+      for (int i = 0; i < 10; ++i) {
          reinterpret_cast<int*>(mp)[i] = i;
       }
 
@@ -120,7 +120,7 @@ TEST_CASE("Allocator Tests", "[allocator_tests]") {
       CHECK(ta.check_ptr(ptr2) == true);
       CHECK(ta.check_ptr(ptr2 + 4) == true);
       CHECK(ta.check_ptr(ptr2 + 5) == false);
-
+      //
       CHECK_THROWS_MATCHES(ta.allocate<int>(1), std::runtime_error, Catch::Matchers::Message("Out of memory"));
    }
 
