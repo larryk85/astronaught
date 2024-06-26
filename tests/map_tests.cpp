@@ -14,8 +14,8 @@ using namespace versa::frozen;
 
 TEST_CASE("Map Tests", "[map_tests]") {
    SECTION("Testing Constructors") {
-      using le = map<int,float,1>::elem_t;
-      auto m0  = map<int,float,1>{le{1l,2.4f}};
+      auto el = std::pair<int,float>{1l,2.4f};
+      auto m0  = map{el};
 
       CHECK(m0.size() == 1);
 
@@ -53,4 +53,36 @@ TEST_CASE("Map Tests", "[map_tests]") {
       CHECK(f3.has_value());
       CHECK(f3.value() == 34);
    }
+
+   SECTION("Testing pair_generator") {
+      using genny = versa::util::pair_generator<std::string_view, double>;
+      using elem_t = genny::pair_t;
+      constexpr auto g = genny{};
+      
+      auto p1 = g("hello", 13.4);
+      auto p2 = g("foo", 42.42);
+      auto p3 = g("bar", 1234.2345);
+
+      CHECK(p1 == std::pair<std::string_view,double>("hello", 13.4));
+      CHECK(p2 == std::pair<std::string_view,double>("foo", 42.42));
+      CHECK(p3 == std::pair<std::string_view,double>("bar", 1234.2345));
+
+      CHECK(p1.first == "hello");
+      CHECK(p1.second == 13.4);
+
+      CHECK(p2.first == "foo");
+      CHECK(p2.second == 42.42);
+
+      CHECK(p3.first == "bar");
+      CHECK(p3.second == 1234.2345);
+   }
+
+   SECTION("Testing Maps") {
+      using genny = versa::util::pair_generator<std::string_view, double>;
+      using elem_t = genny::pair_t;
+      constexpr auto g = genny{};
+
+      auto m0 = map(g("foo", 12.12), g("bar", 23.23), g("baz", 34.34), 
+                    g("qux", 45.45), g("quux", 56.56));
+   }      
 }

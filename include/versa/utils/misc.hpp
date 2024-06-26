@@ -187,9 +187,15 @@ namespace versa::util {
    static inline decltype(auto) closure(CB&& cb) { return closure<cb>();}
    #endif
 
-   template <auto Tag>
-   struct tag_type {
-      constexpr static inline auto value = Tag;
+   template <typename F, typename S>
+   struct pair_generator {
+      using first_t  = F;
+      using second_t = S;
+      using pair_t   = std::pair<F,S>;
+
+      constexpr inline auto operator()(const first_t& f, const second_t& s) const noexcept { 
+         return std::make_pair(f,s); 
+      }
    };
    
 } // namespace versa::util

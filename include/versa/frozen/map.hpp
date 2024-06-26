@@ -9,9 +9,11 @@
 
 namespace versa::frozen {
 
-   template <typename A, typename B, std::size_t N>
+   //template <template <typename, typename> class Elem, typename A, typename B, Elem<A,B>... Elems>
+   template <typename A, typename B, std::pair<A,B>... Elems>
    class map {
       public:
+
          using elem_t       = std::pair<A,B>;
          using iter_t       = elem_t*;
          using const_iter_t = const iter_t;
@@ -41,14 +43,12 @@ namespace versa::frozen {
          map(const map&) = default;
          map(map&&)      = default;
 
-         template <typename... Elems>
-         constexpr inline map(Elems&&... elems)
-            : _data(std::forward<Elems>(elems)...) {}
+         constexpr inline map(Elems... elems) : _data(elems...) {}
          
          map& operator=(const map&) = default;
          map& operator=(map&&)      = default;
 
-         constexpr static inline std::size_t size() noexcept { return N; }
+         constexpr static inline std::size_t size() noexcept { return sizeof...(Elems); }
 
          constexpr inline const_iter_t begin() const noexcept { return &_data[0]; }
          constexpr inline iter_t begin() noexcept { return &_data[0]; }
@@ -87,5 +87,9 @@ namespace versa::frozen {
       private:
          std::array<elem_t, size()> _data;
    };
+
+   // Deduction guide
+   //template <template <typename, typename> class Elem, typename A, typename B, typename... Args>
+   //map(Elem<A, B>, Args...) -> map<Elem, A, B, Elem<A, B>, Args...>;
 
 } // namespace versa::frozen
