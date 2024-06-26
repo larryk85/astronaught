@@ -1,7 +1,5 @@
 #pragma once
-
 #include <cstdint>
-
 #if (VERSA_COMPILER & VERSA_MSVC_BUILD) == VERSA_MSVC_BUILD
    #define VERSA_PRETTY_FUNCTION __FUNCSIG__
    #define VERSA_ALWAYS_INLINE __forceinline
@@ -16,10 +14,6 @@
    #define VERSA_CT_CONST constexpr
 #endif
 
-#ifndef VERSA_ENUM_MAX_ELEMS
-   #define VERSA_ENUM_MAX_ELEMS 128ll
-#endif
-
 namespace versa::util {
    template <std::size_t Num, std::size_t Den>
    constexpr static inline int64_t lower_bound_v = Num/Den;
@@ -28,5 +22,22 @@ namespace versa::util {
    constexpr static inline int64_t upper_bound_v = Num/Den + !(Num%Den == 0);
 } // namespace versa::util
 
-#define VERSA_ENUM_UPPER_BOUND versa::util::upper_bound_v<VERSA_ENUM_MAX_ELEMS, 2>
-#define VERSA_ENUM_LOWER_BOUND (-versa::util::lower_bound_v<VERSA_ENUM_MAX_ELEMS, 2>)
+#ifndef VERSA_ENUM_MAX_ELEMS
+   #define VERSA_ENUM_MAX_ELEMS 1024ll
+#endif
+
+#ifndef VERSA_ENUM_UPPER_BOUND
+   #ifndef VERSA_ENUM_LOWER_BOUND
+      #define VERSA_ENUM_UPPER_BOUND versa::util::upper_bound_v<VERSA_ENUM_MAX_ELEMS, 2>
+      #define VERSA_ENUM_LOWER_BOUND (-versa::util::lower_bound_v<VERSA_ENUM_MAX_ELEMS, 2>)
+   #else
+      #define VERSA_ENUM_UPPER_BOUND VERSA_ENUM_LOWER_BOUND + VERSA_ENUM_MAX_ELEMS
+   #endif
+#else
+   #ifndef VERSA_ENUM_LOWER_BOUND
+      #define VERSA_ENUM_LOWER_BOUND VERSA_ENUM_UPPER_BOUND - VERSA_ENUM_MAX_ELEMS
+   #else
+      #undef VERSA_ENUM_MAX_ELEMS
+      #define VERSA_ENUM_MAX_ELEMS VERSA_ENUM_UPPER_BOUND + (-VERSA_ENUM_LOWER_BOUND)
+   #endif
+#endif

@@ -140,22 +140,25 @@ TEST_CASE("Util Tests", "[util_tests]") {
    };
 
    //versa::frozen::detail::enums::values<foo>(std::make_index_sequence<VERSA_ENUM_MAX_ELEMS>());
+   constexpr auto mapp = versa::frozen::detail::enums::mappings<foo>();
+
+   constexpr auto nm = mapp[0].first.first;
 
    //std::cout << "FFD " << versa::frozen::type_name_v<foo, false> << std::endl;
    //std::cout << "FFE " << versa::frozen::enum_name_v<static_cast<foo>(1), false> << std::endl;
    //std::cout << "FFG " << versa::frozen::enum_name_v<static_cast<foo>(1)> << std::endl;
 
    //std::cout << "name(22) " << versa::frozen::detail::enums::name<foo, 0>() << std::endl;
-   foo fa = foo::a;
+   //foo fa = foo::a;
 
-   auto name = magic_enum::enum_name(fa);
-   auto value = magic_enum::enum_integer(fa);
-   auto color2 = magic_enum::enum_cast<foo>("a");
-   auto color3 = magic_enum::enum_cast<foo>(0);
-   auto colors = magic_enum::enum_values<foo>();
-   auto names = magic_enum::enum_names<foo>();
+   //auto name = magic_enum::enum_name(fa);
+   //auto value = magic_enum::enum_integer(fa);
+   //auto color2 = magic_enum::enum_cast<foo>("a");
+   //auto color3 = magic_enum::enum_cast<foo>(0);
+   //auto colors = magic_enum::enum_values<foo>();
+   //auto names = magic_enum::enum_names<foo>();
 
-   std::cout << "name " << name << " value " << value << std::endl;
+   //std::cout << "name " << name << " value " << value << std::endl;
 
 
 }
