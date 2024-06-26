@@ -10,7 +10,6 @@
 namespace versa::frozen {
 
    template <template <typename, typename> class Elem, typename A, typename B, typename... Elems>
-   //template <typename A, typename B, std::pair<A,B>... Elems>
    class map {
       public:
 

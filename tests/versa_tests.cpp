@@ -8,28 +8,7 @@
 #include <versa/utils.hpp>
 #include <versa/frozen/traits.hpp>
 #include <versa/frozen/meta.hpp>
-
-template <typename E, auto V>
-constexpr static inline auto val() { return static_cast<E>(-128+V); }
-
-template<typename E, auto V>
-/*constexpr*/ static inline bool is_valid() {
-   /*constexpr*/ auto en = versa::frozen::enum_name_v<val<E,V>(), false>;
-   std::cout << "VV " << en << std::endl;
-   //if (!en.empty()) {
-   //   std::cout << "I " << V << std::endl;
-   //   std::cout << "EN " << en << std::endl;
-   //}
-   return !en.empty();
-}
-
-template <typename E, std::size_t... Is>
-auto values(std::index_sequence<Is...>) noexcept {
-   bool valid[sizeof...(Is)] = { is_valid<E, Is>()... };
-   for (std::int32_t i=-128; i < 128; i++) {
-      std::cout << "Valid["<<i<<"] = " << (int32_t)valid[i+128] << std::endl;
-   }
-}
+#include <versa/magic_enum.hpp>
 
 inline void print_function_name(const std::source_location& location = std::source_location::current()) {
    std::cout << "FN NAME " << location.function_name() << std::endl;
@@ -154,12 +133,29 @@ TEST_CASE("Util Tests", "[util_tests]") {
    enum class foo {
       a,
       b,
-      c
+      c,
+      d = -44,
+      e = 100,
+      f = 200
    };
 
-   versa::frozen::detail::enums::values<foo>(std::make_index_sequence<VERSA_ENUM_MAX_ELEMS>());
+   //versa::frozen::detail::enums::values<foo>(std::make_index_sequence<VERSA_ENUM_MAX_ELEMS>());
 
-   std::cout << "FFD " << versa::frozen::type_name_v<foo, false> << std::endl;
-   std::cout << "FFE " << versa::frozen::enum_name_v<static_cast<foo>(1), false> << std::endl;
-   std::cout << "FFG " << versa::frozen::enum_name_v<static_cast<foo>(1)> << std::endl;
+   //std::cout << "FFD " << versa::frozen::type_name_v<foo, false> << std::endl;
+   //std::cout << "FFE " << versa::frozen::enum_name_v<static_cast<foo>(1), false> << std::endl;
+   //std::cout << "FFG " << versa::frozen::enum_name_v<static_cast<foo>(1)> << std::endl;
+
+   //std::cout << "name(22) " << versa::frozen::detail::enums::name<foo, 0>() << std::endl;
+   foo fa = foo::a;
+
+   auto name = magic_enum::enum_name(fa);
+   auto value = magic_enum::enum_integer(fa);
+   auto color2 = magic_enum::enum_cast<foo>("a");
+   auto color3 = magic_enum::enum_cast<foo>(0);
+   auto colors = magic_enum::enum_values<foo>();
+   auto names = magic_enum::enum_names<foo>();
+
+   std::cout << "name " << name << " value " << value << std::endl;
+
+
 }

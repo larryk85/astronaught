@@ -176,16 +176,33 @@ namespace versa::frozen {
 
    namespace detail::enums {
       template <typename E, auto V>
-       static inline bool check() {
-         return !versa::frozen::enum_name_v<static_cast<E>(V), false>.empty();
+      consteval static inline decltype(auto) name() noexcept {
+         return versa::frozen::enum_name_v<static_cast<E>(V), false>;
+      }
+
+      template <typename P, std::size_t N>
+      constexpr static inline auto filter(std::array<P,N> ms) noexcept {
+         std::size_t i = 0;
+         for ( const auto& e : ms ) {
+            if ( !e.first.empty() ) {
+               ms[i++] = e;
+            }
+         }
+         return std::make_pair(ms,i);
       }
 
       template <typename E, std::size_t... Is>
        static inline auto values(std::index_sequence<Is...>) noexcept {
-         /*constexpr*/ bool valid[sizeof...(Is)] = { check<E, Is>()... };
-         for (std::int32_t i=enum_lb_v; i < enum_ub_v; i++) {
-            //std::cout << "Valid["<<i<<"] = " << (int32_t)valid[i+128] << std::endl;
+         constexpr auto mappings = filter(std::array{ std::make_pair(name<E, enum_lb_v+Is>(), enum_lb_v+Is)... });
+         for (std::size_t i=0; i < mappings.second; i++) {
+            std::cout << "Mappings : " << mappings.first[i].first << " @ " << mappings.first[i].second << std::endl;
          }
+         //for (std::int32_t i=0; i < enum_range_v; i++) {
+         //   if (![i].empty()) {
+         //      std::cout << "Valid @" << (enum_lb_v+i) << " " << names[i] << std::endl;
+         //   }
+         //   //std::cout << "Valid["<<i<<"] = " << (int32_t)valid[i+128] << std::endl;
+         //}
       }
    } // namespace versa::frozen::detail::enums
 

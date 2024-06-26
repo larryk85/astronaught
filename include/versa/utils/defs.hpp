@@ -17,7 +17,7 @@
 #endif
 
 #ifndef VERSA_ENUM_MAX_ELEMS
-   #define VERSA_ENUM_MAX_ELEMS 512ll
+   #define VERSA_ENUM_MAX_ELEMS 128ll
 #endif
 
 namespace versa::util {
