@@ -9,8 +9,8 @@
 
 namespace versa::frozen {
 
-   //template <template <typename, typename> class Elem, typename A, typename B, Elem<A,B>... Elems>
-   template <typename A, typename B, std::pair<A,B>... Elems>
+   template <template <typename, typename> class Elem, typename A, typename B, typename... Elems>
+   //template <typename A, typename B, std::pair<A,B>... Elems>
    class map {
       public:
 
@@ -19,7 +19,7 @@ namespace versa::frozen {
          using const_iter_t = const iter_t;
 
          struct a_tag { 
-            using type = typename B; 
+            using type = B; 
             constexpr static inline auto first_ptr  = &elem_t::first;
             constexpr static inline auto second_ptr = &elem_t::second;
          };
@@ -27,7 +27,7 @@ namespace versa::frozen {
          constexpr static inline auto a_tag_v = a_tag{};
 
          struct b_tag { 
-            using type = typename A; 
+            using type = A; 
             constexpr static inline auto first_ptr  = &elem_t::second;
             constexpr static inline auto second_ptr = &elem_t::first;
          };
@@ -43,7 +43,8 @@ namespace versa::frozen {
          map(const map&) = default;
          map(map&&)      = default;
 
-         constexpr inline map(Elems... elems) : _data(elems...) {}
+         constexpr inline map(const Elems&... elems) : _data({elems...}) {}
+         constexpr inline map(Elems&&... elems) : _data({std::forward<Elems>(elems)...}) {}
          
          map& operator=(const map&) = default;
          map& operator=(map&&)      = default;
@@ -81,15 +82,12 @@ namespace versa::frozen {
          constexpr inline auto operator[](const A& k) const noexcept { return at(k, a_tag{}); }
          constexpr inline auto operator[](const A& k) noexcept { return at(k, a_tag{}); }
 
-         template <typename K, typename Tag>
-         constexpr static inline friend std::pair<K,Tag> operator,(const K& k, Tag) { return std::make_pair(k, Tag{}); }
-
       private:
          std::array<elem_t, size()> _data;
    };
 
    // Deduction guide
-   //template <template <typename, typename> class Elem, typename A, typename B, typename... Args>
-   //map(Elem<A, B>, Args...) -> map<Elem, A, B, Elem<A, B>, Args...>;
+   template <template <typename, typename> class Elem, typename A, typename B, typename... Args>
+   map(Elem<A, B>, Args...) -> map<Elem, A, B, Elem<A, B>, Args...>;
 
 } // namespace versa::frozen

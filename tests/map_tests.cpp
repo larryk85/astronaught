@@ -48,7 +48,7 @@ TEST_CASE("Map Tests", "[map_tests]") {
 
       CHECK(beg->second == 1234.1234f);
 
-      auto f3 = m0[1234.1234f, m0.b_tag_v];
+      auto f3 = m0.at(1234.1234f, m0.b_tag_v);
 
       CHECK(f3.has_value());
       CHECK(f3.value() == 34);
@@ -84,5 +84,15 @@ TEST_CASE("Map Tests", "[map_tests]") {
 
       auto m0 = map(g("foo", 12.12), g("bar", 23.23), g("baz", 34.34), 
                     g("qux", 45.45), g("quux", 56.56));
+
+      CHECK(m0.size() == 5);
+      CHECK(m0["foo"].value() == 12.12);
+      CHECK(m0["bar"].value() == 23.23);
+      CHECK(m0["baz"].value() == 34.34);
+      CHECK(m0["qux"].value() == 45.45);
+      CHECK(m0["quux"].value() == 56.56);
+      CHECK(m0["fuzz"].has_value() == false);
+      m0["foo"].value().get() = 123.123;
+      CHECK(m0["foo"].value() == 123.123);
    }      
 }

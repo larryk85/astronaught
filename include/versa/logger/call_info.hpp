@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <source_location>
 #include <string>
 #include <string_view>
 
@@ -35,13 +34,11 @@ namespace versa::logger {
       constexpr inline call_info(std::string_view path=__builtin_FILE(),
                                  std::string_view file=__builtin_FILE(), 
                                  std::string_view func=__builtin_FUNCTION(), 
-                                 std::uint32_t line=__builtin_LINE(),
-                                 std::uint32_t column=__builtin_COLUMN()) noexcept 
-         : path(detail::only_path(path)), file(detail::only_file_name(file)), func(func), line(line), column(column) {}
+                                 std::uint32_t line=__builtin_LINE()) noexcept 
+         : path(detail::only_path(path)), file(detail::only_file_name(file)), func(func), line(line) {}
       std::string_view path;
       std::string_view file;
       std::string_view func;
       std::uint32_t    line;
-      std::uint32_t    column;
    };
 } // namespace versa::util
