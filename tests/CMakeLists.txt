@@ -11,10 +11,14 @@ add_executable(
    map_tests.cpp
    memory_tests.cpp
    versa_tests.cpp
+   interpolate_tests.cpp
    #handler_tests.cpp
    #frozen_tests.cpp
    #process_tests.cpp
 )
+
+target_link_libraries( versa_unit_tests PRIVATE versa Catch2::Catch2WithMain )
+catch_discover_tests( versa_unit_tests )
 
 add_executable(
    versa_enum_1_tests
@@ -36,7 +40,6 @@ add_executable(
    enum_defs_4_tests.cpp
 )
 
-target_link_libraries( versa_unit_tests PRIVATE versa Catch2::Catch2WithMain )
 target_link_libraries( versa_enum_1_tests PRIVATE versa Catch2::Catch2WithMain )
 target_compile_definitions( versa_enum_1_tests PRIVATE 
    -DVERSA_ENUM_MAX_ELEMS=50
@@ -60,7 +63,6 @@ target_compile_definitions( versa_enum_4_tests PRIVATE
    -DVERSA_ENUM_UPPER_BOUND=1313
 )
 
-catch_discover_tests( versa_unit_tests )
 catch_discover_tests( versa_enum_1_tests )
 catch_discover_tests( versa_enum_2_tests )
 catch_discover_tests( versa_enum_3_tests )

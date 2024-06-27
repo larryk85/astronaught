@@ -1,8 +1,5 @@
-#include <string>
 #define CATCH_CONFIG_WINDOWS_SEH
 #include <catch2/catch_all.hpp>
-#include <iostream>
-#include <type_traits>
 
 #include <versa/utils.hpp>
 

@@ -142,7 +142,7 @@ TEST_CASE("Util Tests", "[util_tests]") {
    //versa::frozen::detail::enums::values<foo>(std::make_index_sequence<VERSA_ENUM_MAX_ELEMS>());
    constexpr auto mapp = versa::frozen::detail::enums::mappings<foo>();
 
-   constexpr auto nm = mapp[0].first.first;
+   //constexpr auto nm = mapp[0].first.first;
 
    //std::cout << "FFD " << versa::frozen::type_name_v<foo, false> << std::endl;
    //std::cout << "FFE " << versa::frozen::enum_name_v<static_cast<foo>(1), false> << std::endl;

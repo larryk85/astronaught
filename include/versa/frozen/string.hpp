@@ -12,6 +12,12 @@
 
 #include "../utils/misc.hpp"
 
+/**
+ * @brief This file contains the implementation of the `string` class template and related concepts and functions.
+ * The `string` class template represents a compile-time string with a fixed size. It provides various operations
+ * such as comparison, concatenation, substring extraction, and more. The file also defines the `range` struct template,
+ * which represents a range of indices, and provides utility functions for working with compile-time strings.
+ */
 namespace versa::frozen {
    namespace detail {
       template <std::size_t N, char... Cs>
