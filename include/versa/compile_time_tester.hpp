@@ -5,7 +5,6 @@
 #include <tuple>
 #include <type_traits>
 
-
 namespace versa::util {
    template <auto... Vs>
    struct param_pack {

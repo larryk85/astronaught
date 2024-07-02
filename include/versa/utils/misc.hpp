@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "../info/build_info.hpp"
-#include "../frozen/traits.hpp"
+#include "../compile_time/traits.hpp"
 
 #include "defs.hpp"
 
@@ -143,6 +143,8 @@ namespace versa::util {
       return std::strong_ordering::equal; 
    }
 
+   
+
    #if 0
    namespace detail {
       struct closure_wrapper {
@@ -158,9 +160,9 @@ namespace versa::util {
 
          template <auto CB>
          static inline auto ptr() {
-            using func_type = frozen::function_type_t<&decltype(CB)::operator()>;
-            using ret_type  = frozen::return_type_t<&decltype(CB)::operator()>;
-            using param_type = frozen::param_type_t<&decltype(CB)::operator()>;
+            using func_type = ct::function_type_t<&decltype(CB)::operator()>;
+            using ret_type  = ct::return_type_t<&decltype(CB)::operator()>;
+            using param_type = ct::param_type_t<&decltype(CB)::operator()>;
             fn<func_type>(CB);
             return (func_type) exec<ret_type, func_type, param_type>(std::make_index_sequence<std::tuple_size<param_type>::value>());
          }

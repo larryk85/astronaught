@@ -41,3 +41,9 @@ namespace versa::util {
       #define VERSA_ENUM_MAX_ELEMS VERSA_ENUM_UPPER_BOUND + (-VERSA_ENUM_LOWER_BOUND)
    #endif
 #endif
+
+// min clang v12
+// min gcc v10
+// min icc v2021
+// min icx v2021
+// min kvx 4.10.0 gcc(10) __KVX__

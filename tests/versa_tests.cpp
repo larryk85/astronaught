@@ -6,8 +6,8 @@
 
 #include <versa/info.hpp>
 #include <versa/utils.hpp>
-#include <versa/frozen/traits.hpp>
-#include <versa/frozen/meta.hpp>
+#include <versa/compile_time/traits.hpp>
+#include <versa/compile_time/meta.hpp>
 #include <versa/magic_enum.hpp>
 
 inline void print_function_name(const std::source_location& location = std::source_location::current()) {
@@ -130,6 +130,7 @@ TEST_CASE("Util Tests", "[util_tests]") {
    check(false, [&a]() { a = 1; });
    REQUIRE(a == 1);
 
+/*
    enum class foo {
       a,
       b,
@@ -139,26 +140,31 @@ TEST_CASE("Util Tests", "[util_tests]") {
       f = 200
    };
 
-   //versa::frozen::detail::enums::values<foo>(std::make_index_sequence<VERSA_ENUM_MAX_ELEMS>());
-   constexpr auto mapp = versa::frozen::detail::enums::mappings<foo>();
+   //versa::ct::detail::enums::<foo>(std::make_index_sequence<VERSA_ENUM_MAX_ELEMS>());
+   //constexpr auto mapp = versa::ct::detail::enums::mappings<foo>();
 
    //constexpr auto nm = mapp[0].first.first;
 
-   //std::cout << "FFD " << versa::frozen::type_name_v<foo, false> << std::endl;
-   //std::cout << "FFE " << versa::frozen::enum_name_v<static_cast<foo>(1), false> << std::endl;
-   //std::cout << "FFG " << versa::frozen::enum_name_v<static_cast<foo>(1)> << std::endl;
+   std::cout << "FFD " << versa::ct::type_name_v<foo, false> << std::endl;
+   std::cout << "FFE " << versa::ct::enum_name_v<static_cast<foo>(1), false> << std::endl;
+   std::cout << "FFG " << versa::ct::enum_name_v<static_cast<foo>(1)> << std::endl;
 
-   //std::cout << "name(22) " << versa::frozen::detail::enums::name<foo, 0>() << std::endl;
-   //foo fa = foo::a;
+   //std::cout << "name(22) " << versa::ct::detail::enums::name<foo, 0>() << std::endl;
+   foo fa = foo::a;
 
-   //auto name = magic_enum::enum_name(fa);
-   //auto value = magic_enum::enum_integer(fa);
-   //auto color2 = magic_enum::enum_cast<foo>("a");
-   //auto color3 = magic_enum::enum_cast<foo>(0);
-   //auto colors = magic_enum::enum_values<foo>();
-   //auto names = magic_enum::enum_names<foo>();
+   auto name = magic_enum::enum_name(fa);
+   auto value = magic_enum::enum_integer(fa);
+   auto color2 = magic_enum::enum_cast<foo>("a");
+   auto color3 = magic_enum::enum_cast<foo>(0);
+   auto colors = magic_enum::enum_values<foo>();
+   auto names = magic_enum::enum_names<foo>();
 
-   //std::cout << "name " << name << " value " << value << std::endl;
+   std::cout << "name " << name << " value " << value << std::endl;
 
-
+   std::cout << "HH " << versa::ct::name<foo>() << std::endl;
+   std::cout << "HG " << versa::ct::name<foo::a>() << std::endl;
+   std::cout << "HA " << magic_enum::enum_name(foo::d) << std::endl;
+   std::cout << "HB " << magic_enum::enum_name(foo::e) << std::endl;
+   std::cout << "HC " << magic_enum::enum_name(foo::f) << std::endl;
+*/   
 }

@@ -34,11 +34,18 @@ versa_create_version_info(
    GIT_HASH
 )
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 add_library(versa INTERFACE)
 target_include_directories(versa INTERFACE
    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
    $<INSTALL_INTERFACE:include>)
+
+if (MSVC)
+   # MSVC preprocessing is not standard compliant, so we need to enable it.
+   target_compile_options(versa INTERFACE /Zc:preprocessor)
+endif()
 
 #target_compile_definitions(versa INTERFACE
 #   $<$<CONFIG:Debug>:VERSALIB_DEBUG>

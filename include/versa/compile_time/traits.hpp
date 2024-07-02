@@ -9,8 +9,9 @@
 
 #include "../info/build_info.hpp"
 #include "../utils/defs.hpp"
+#include "../utils/concepts.hpp"
 
-namespace versa::frozen {
+namespace versa::ct {
    namespace detail::return_ty {
       template <typename T>
       struct return_type;
@@ -184,4 +185,36 @@ namespace versa::frozen {
    //template <auto F>
    //using function_ptr_t = function_ptr<decltype(F)>;
 
-} // namespace versa::frozen
+   namespace detail {
+      template <typename T>
+      struct is_templated {
+         constexpr static inline bool value = false;
+      };
+
+      template <template <typename...> class T, typename... Args>
+      struct is_templated<T<Args...>> {
+         constexpr static inline bool value = true;
+      };
+
+      template <template <auto...> class T, auto... Args>
+      struct is_templated<T<Args...>> {
+         constexpr static inline bool value = true;
+      };
+
+      template <typename T>
+      struct is_reflectable {
+         constexpr static inline bool value = false;
+      };
+
+      template <versa::util::reflectable_type T>
+      struct is_reflectable<T> {
+         constexpr static inline bool value = true;
+      };
+   } // namespace detail
+
+   template <typename T>
+   constexpr static inline bool is_templated_v = detail::is_templated<T>::value;
+
+   template <typename T>
+   constexpr static inline bool is_reflectable_v = detail::is_reflectable<T>::value;
+} // namespace versa::ct

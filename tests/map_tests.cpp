@@ -6,11 +6,11 @@
 
 #include <versa/info.hpp>
 #include <versa/utils.hpp>
-#include <versa/frozen/traits.hpp>
-#include <versa/frozen/map.hpp>
+#include <versa/compile_time/traits.hpp>
+#include <versa/compile_time/map.hpp>
 
 using namespace versa;
-using namespace versa::frozen;
+using namespace versa::ct;
 
 TEST_CASE("Map Tests", "[map_tests]") {
    SECTION("Testing Constructors") {

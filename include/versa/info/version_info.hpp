@@ -3,10 +3,8 @@
 #include <cstdint>
 
 #include <compare>
-#include <optional>
-#include <string_view>
 
-#include "../frozen/string.hpp"
+#include "../compile_time/string.hpp"
 
 namespace versa::info {
    struct version_t {
@@ -33,8 +31,8 @@ namespace versa::info {
          git_hash /**< Git hash */
       }; 
 
-      using suffix_t   = std::conditional_t<N != version_info_dynamic, frozen::string<N>, std::string>;
-      using git_hash_t = std::conditional_t<M != version_info_dynamic, frozen::string<M>, std::string>;
+      using suffix_t   = std::conditional_t<N != version_info_dynamic, ct::string<N>, std::string>;
+      using git_hash_t = std::conditional_t<M != version_info_dynamic, ct::string<M>, std::string>;
 
       suffix_t   suffix   = {};
       git_hash_t git_hash = {};

@@ -18,7 +18,7 @@
  * such as comparison, concatenation, substring extraction, and more. The file also defines the `range` struct template,
  * which represents a range of indices, and provides utility functions for working with compile-time strings.
  */
-namespace versa::frozen {
+namespace versa::ct {
    namespace detail {
       template <std::size_t N, char... Cs>
       struct cstr_to_int;
@@ -271,7 +271,7 @@ namespace versa::frozen {
    };
 
    template <auto a, auto b, std::size_t i=0>
-   requires (string_type<decltype(a)> && frozen::string_type<decltype(b)>)
+   requires (string_type<decltype(a)> && ct::string_type<decltype(b)>)
    VERSA_CT_CONST static inline auto find() noexcept {
       constexpr auto a_sz = decltype(a)::size_v;
       constexpr auto b_sz = decltype(b)::size_v;
@@ -289,7 +289,7 @@ namespace versa::frozen {
    }
 
    template <auto a, auto b, std::size_t i=decltype(a)::size_v>
-   requires (string_type<decltype(a)> && frozen::string_type<decltype(b)>)
+   requires (string_type<decltype(a)> && ct::string_type<decltype(b)>)
    VERSA_CT_CONST static inline auto rfind() noexcept {
       constexpr auto a_sz = decltype(a)::size_v;
       constexpr auto b_sz = decltype(b)::size_v;
@@ -338,7 +338,7 @@ namespace versa::frozen {
          }
          return result;
       }
-   } // namespace versa::frozen::detail
+   } // namespace versa::ct::detail
 
    template <std::integral I, string FS>
    constexpr static inline I to_integral() noexcept {
@@ -357,15 +357,15 @@ namespace versa::frozen {
    template <std::integral I, string FS>
    constexpr static inline I to_integral_v = to_integral<I, FS>();
 
-} // namespace versa::frozen
+} // namespace versa::ct
 
 namespace versa::literals {
-   template <frozen::string S>
+   template <ct::string S>
    consteval inline auto operator""_fs() { return S; }
 
    template <char... Cs>
    consteval inline auto operator""_int() {
-      return frozen::integral<std::size_t, frozen::cstr_to_int_v<Cs...>>{};
+      return ct::integral<std::size_t, ct::cstr_to_int_v<Cs...>>{};
    }
 
 } // namespace versa::literals

@@ -6,7 +6,7 @@
 #include <mutex>
 #include <thread>
 
-#include "../frozen/traits.hpp"
+#include "../compile_time/traits.hpp"
 #include "../utils/misc.hpp"
 
 namespace versa::async {

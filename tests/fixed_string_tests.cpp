@@ -1,13 +1,10 @@
-#include <string>
 #define CATCH_CONFIG_WINDOWS_SEH
 #include <catch2/catch_all.hpp>
-#include <iostream>
-#include <fstream>
 
-#include <versa/frozen/string.hpp>
+#include <versa/compile_time/string.hpp>
 
 using namespace versa::util;
-using namespace versa::frozen;
+using namespace versa::ct;
 
 TEST_CASE("Compile Time String Tests", "[ct_string_tests]")
 {
@@ -101,7 +98,7 @@ TEST_CASE("Compile Time String Tests", "[ct_string_tests]")
    SECTION("Check compile time strings operations")
    {
       using namespace versa::literals;
-      using namespace versa::frozen;
+      using namespace versa::ct;
 
       constexpr string hello = "hello"_fs;
       constexpr string world = "world"_fs;
@@ -167,7 +164,7 @@ TEST_CASE("Compile Time String Tests", "[ct_string_tests]")
    {
       using namespace versa::literals;
       using namespace versa::util;
-      using namespace versa::frozen;
+      using namespace versa::ct;
 
       constexpr string hello = "hello"_fs;
       constexpr string world = "world"_fs;

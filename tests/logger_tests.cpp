@@ -4,20 +4,25 @@
 #include <iostream>
 #include <type_traits>
 
+#include <versa/utils/format.hpp>
+#include <versa/utils/misc.hpp>
+#include <versa/compile_time.hpp>
 #include <versa/logger.hpp>
 
-using namespace versa::logger;
+using namespace versa::log;
 
 /* If you add new tests or any code add them after line 42 */
-versa::logger::call_info test_func(int x, const std::string& y) {
+versa::log::call_info test_func(int x, const std::string& y) {
    (void)x;
    (void)y;
+   #line 15
    auto ci = call_info{};
    return ci;
 }
 
 TEST_CASE("Logger Tests", "[logger_tests]") {
    SECTION("Check call_info") {
+      #line 21
       auto info = call_info{};
 
       CHECK(info.file == "logger_tests.cpp");
@@ -40,7 +45,57 @@ TEST_CASE("Logger Tests", "[logger_tests]") {
       CHECK(info3.line == 34);
    }
 }
+
+TEST_CASE("Format Tests", "[format_tests]") {
+   using namespace versa::literals;
+   SECTION("Check message_wrapper") {
+      #line 47
+      auto msg = message_wrapper{"Hello, World!"};
+      CHECK(msg.value == "Hello, World!");
+      CHECK(msg.info.file == "logger_tests.cpp");
+      CHECK(msg.info.func == "CATCH2_INTERNAL_TEST_3");
+      CHECK(msg.info.line == 47);
+
+      auto msg2 = message_wrapper{"Different message"};
+      CHECK(msg2.value == "Different message");
+      CHECK(msg2.info.file == "logger_tests.cpp");
+      CHECK(msg2.info.func == "CATCH2_INTERNAL_TEST_3");
+      CHECK(msg2.info.line == 53);
+
+      const auto func = [](message_wrapper msg) {
+         CHECK(msg.value == "Hello, World!");
+         CHECK(msg.info.file == "logger_tests.cpp");
+         CHECK(msg.info.func == "CATCH2_INTERNAL_TEST_3");
+         CHECK(msg.info.line == 66);
+      };
+
+      func("Hello, World!");
+   }
+
+   SECTION("Check console logger") {
+      console_logger logger(stdout_v);
+      const auto msg1 = logger.format("Hello, World!");
+      CHECK(msg1 == "Hello, World!");
+      CHECK(logger.format("Hello, {}", "World!") == "Hello, World!");
+      CHECK(logger.format("{}, {}", "Hello", "World!") == "Hello, World!");
+      CHECK(logger.format("{1}, {0}", "World!", "Hello") == "Hello, World!");
+      CHECK(logger.format("{},{},{},{}", 0, 42.4f, "foo", 'c') == "0,42.4,foo,c");
+   }
+}
+
 /* Add new code after this point */
+
+///< TODO Add to 'utils' tests
+TEST_CASE("UtilFormat Tests", "[utilformat_tests]") {
+   using namespace versa::literals;
+   SECTION("Check format") {
+      CHECK(versa::util::format("Hello, World!"_fs) == "Hello, World!");
+      CHECK(versa::util::format(std::string("Hello, {}"), "World!") == "Hello, World!");
+      CHECK(versa::util::format(std::string_view{"{}, {}"}, "Hello", "World!") == "Hello, World!");
+      CHECK(versa::util::format(versa::ct::string{"{1}, {0}"}, "World!", "Hello") == "Hello, World!");
+      CHECK(versa::util::format("{},{},{},{}", 0, 42.4f, "foo", 'c') == "0,42.4,foo,c");
+   }
+}
 
 TEST_CASE("Color Tests", "[color_tests]") {
    SECTION("Check color") {
@@ -101,6 +156,5 @@ TEST_CASE("Color Tests", "[color_tests]") {
          std::cout << "\x1b[38;2;" << default_scheme::rgb_of<fg_red_v>().format() << "m" << "Hello, World!" << "\x1b[0m" << std::endl;
          std::cout << "\x1b[38;2;160;128;87m" << "Hello, World!" << "\x1b[0m" << std::endl;
       }
-
    }
 }

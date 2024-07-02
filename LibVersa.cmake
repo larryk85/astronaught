@@ -28,21 +28,6 @@
 
 set(_VERSA_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-#macro(versa_configure_file INC_DIR NS HEADER)
-#   configure_file(${INC_DIR}/versa/${HEADER}.in
-#                  ${CMAKE_CURRENT_BINARY_DIR}/include/${NS}/${HEADER} @ONLY)
-#endmacro()
-#
-#function(versa_get_all_targets RESULT DIR)
-#    get_property(SUBDIRS DIRECTORY "${DIR}" PROPERTY SUBDIRECTORIES)
-#    foreach(SUBDIR IN LISTS SUBDIRS)
-#        versa_get_all_targets(${RESULT} "${SUBDIR}")
-#    endforeach()
-#
-#    get_directory_property(SUB_TARGETS DIRECTORY "${DIR}" BUILDSYSTEM_TARGETS)
-#    set(${RESULT} ${${RESULT}} ${SUB_TARGETS} PARENT_SCOPE)
-#endfunction()
-
 function(versa_create_version_info)
    set(options GIT_HASH)
    set(oneValueArgs NAMESPACE MAJOR MINOR PATCH TWEAK SUFFIX INCLUDE_DIR)

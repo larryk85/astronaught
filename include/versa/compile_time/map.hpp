@@ -7,7 +7,7 @@
 
 #include "traits.hpp"
 
-namespace versa::frozen {
+namespace versa::ct {
 
    template <template <typename, typename> class Elem, typename A, typename B, typename... Elems>
    class map {
@@ -89,4 +89,4 @@ namespace versa::frozen {
    template <template <typename, typename> class Elem, typename A, typename B, typename... Args>
    map(Elem<A, B>, Args...) -> map<Elem, A, B, Elem<A, B>, Args...>;
 
-} // namespace versa::frozen
+} // namespace versa::ct

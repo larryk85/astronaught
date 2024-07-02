@@ -32,13 +32,12 @@
 *.app
 
 build/*
-build-clang/*
-build-gcc/*
-build-msvc/*
+build-*
 .history/*
 .vscode/*
 codeql_*
 codeql-*
 _codeql*
+.cache/*
 
 .fake

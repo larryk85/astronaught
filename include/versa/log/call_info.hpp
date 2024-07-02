@@ -4,12 +4,10 @@
 #include <string>
 #include <string_view>
 
-//#include <format>
-
 #include "../utils/misc.hpp"
-#include "../frozen/traits.hpp"
+#include "../compile_time/traits.hpp"
 
-namespace versa::logger {
+namespace versa::log {
    namespace detail {
       constexpr static inline auto only_file_name(std::string_view path) noexcept {
          for (std::size_t i=path.size()-1; i>0; --i) {

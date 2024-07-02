@@ -120,8 +120,78 @@ TEST_CASE("Allocator Tests", "[allocator_tests]") {
       CHECK(ta.check_ptr(ptr2) == true);
       CHECK(ta.check_ptr(ptr2 + 4) == true);
       CHECK(ta.check_ptr(ptr2 + 5) == false);
-      //
       CHECK_THROWS_MATCHES(ta.allocate<int>(1), std::runtime_error, Catch::Matchers::Message("Out of memory"));
    }
+}
 
+TEST_CASE("Discriminated Tests", "[discriminated_tests]") {
+   using namespace versa::memory;
+   SECTION("Check discriminated") {
+      auto ptr = new int(10);
+      auto d = discriminate(ptr, 1);
+      CHECK(undiscriminate<int>(d) == ptr);
+      CHECK(undiscriminate_tag(d) == 1);
+      *undiscriminate<int>(d) = 20;
+      CHECK(*ptr == 20);
+      d.tag = 11;
+      CHECK(undiscriminate_tag(d) == 11);
+      CHECK(d.tag == 11);
+      delete ptr;
+   }
+   SECTION("Check discriminated with nullptr") {
+      auto d = discriminate<int>(nullptr, 1);
+      CHECK(undiscriminate<int>(d) == nullptr);
+      CHECK(undiscriminate_tag(d) == 1);
+   }
+   SECTION("Check discriminated on static") {
+      float f   = 3.14f;
+      int32_t i = -10;
+      uint16_t b  = 42;
+
+      {
+         auto d = discriminate(&f, 1);
+         CHECK(undiscriminate<float>(d) == &f);
+         CHECK(*undiscriminate<float>(d) == 3.14f);
+         CHECK(undiscriminate_tag(d) == 1);
+      }
+
+      {
+         auto d = discriminate(&i, 2);
+         CHECK(undiscriminate<int32_t>(d) == &i);
+         CHECK(*undiscriminate<int32_t>(d) == -10);
+         CHECK(undiscriminate_tag(d) == 2);
+      }
+
+      {
+         auto d = discriminate(&b, 3);
+         CHECK(undiscriminate<uint16_t>(d) == &b);
+         CHECK(*undiscriminate<uint16_t>(d) == 42);
+         CHECK(undiscriminate_tag(d) == 3);
+      } 
+
+      f = 42.4242f;
+      i = 100;
+      b = 10;
+
+      {
+         auto d = discriminate(&f, 1);
+         CHECK(undiscriminate<float>(d) == &f);
+         CHECK(*undiscriminate<float>(d) == 42.4242f);
+         CHECK(undiscriminate_tag(d) == 1);
+      }
+
+      {
+         auto d = discriminate(&i, 2);
+         CHECK(undiscriminate<int32_t>(d) == &i);
+         CHECK(*undiscriminate<int32_t>(d) == 100);
+         CHECK(undiscriminate_tag(d) == 2);
+      }
+
+      {
+         auto d = discriminate(&b, 3);
+         CHECK(undiscriminate<uint16_t>(d) == &b);
+         CHECK(*undiscriminate<uint16_t>(d) == 10);
+         CHECK(undiscriminate_tag(d) == 3);
+      }
+   }
 }

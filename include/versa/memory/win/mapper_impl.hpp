@@ -85,7 +85,7 @@ namespace versa::memory {
             return sys_info;
          }
 
-         inline auto get_page_size() const noexcept {
+         inline std::size_t get_page_size() const noexcept {
             static const auto info = get_system_info();
             return info.dwPageSize;
          }

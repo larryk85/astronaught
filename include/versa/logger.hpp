@@ -1,4 +1,5 @@
 #pragma once
 
-#include "logger/call_info.hpp"
-#include "logger/term_color.hpp"
+#include "log/call_info.hpp"
+#include "log/term_color.hpp"
+#include "log/logger.hpp"

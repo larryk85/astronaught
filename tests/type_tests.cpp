@@ -1,0 +1,33 @@
+#include <string>
+#define CATCH_CONFIG_WINDOWS_SEH
+#include <catch2/catch_all.hpp>
+
+#include <versa/types/variant.hpp>
+
+using namespace versa::util;
+using namespace versa::types;
+
+TEST_CASE("Variant Tests", "[variant_tests]") {
+   SECTION("Check basics") {
+      using var = versa::types::variant<int, float, double, std::string>;
+      int i = 14;
+      var v = &i;
+
+      CHECK(v.tag() == 0);
+      CHECK(*v.get<int>() == 14);
+
+      float f = 3.14f;
+      v = var{&f};
+      CHECK(v.tag() == 1);
+      CHECK(*v.get<float>() == 3.14f);
+      std::cout << "Float: " << (uintptr_t)&f << std::endl;
+      std::cout << "FloatPtr: " << (uintptr_t)v.get<float>() << std::endl;
+
+      auto s = std::string{"Hello, World!"};
+      v = var{&s};
+      CHECK(v.tag() == 3);
+      CHECK(*v.get<std::string>() == "Hello, World!");
+      std::cout << "String: " << (uintptr_t)&s << std::endl;
+      std::cout << "StringPtr: " << (uintptr_t)v.get<std::string>() << std::endl;
+   }
+}
