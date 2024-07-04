@@ -1,6 +1,8 @@
 #define CATCH_CONFIG_WINDOWS_SEH
 #include <catch2/catch_all.hpp>
 
+#include <iostream>
+
 #include <versa/compile_time.hpp>
 
 using namespace versa;
@@ -133,5 +135,28 @@ TEST_CASE("Compile_Time Tests", "[compile_time_tests]") {
       CHECK(addrs[1] == &fb.b);
       CHECK(addrs[2] == &fb.c);
 
+   }
+}
+
+template <int cnt, typename R>
+struct print_randoms {
+   static void print() {
+      using rnd_t = next<R>::type;
+      std::cout << rnd_t::value << " ";
+      print_randoms<cnt-1, rnd_t>::print();
+   }
+};
+
+template <typename R>
+struct print_randoms<0, R> {
+   static void print() {
+      std::cout << next<R>::value << " " << std::endl;
+   }
+};
+
+TEST_CASE("Random Tests", "[random_tests]") {
+   SECTION("Check random number generator") {
+      std::cout << "Default Seed : " << ct::defaultseed << std::endl;
+      print_randoms<10, random<bernoulli_distribution<linear_congruential_engine<uint_fast32_t>, 1, 10>>::type>::print();
    }
 }

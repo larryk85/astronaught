@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <source_location>
 #include <type_traits>
 #include <utility>

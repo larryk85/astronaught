@@ -12,6 +12,8 @@ namespace versa::serial {
       using iterator_t       = byte_t*;
       using const_iterator_t = const byte_t*;
 
+      serializer_base() = default;
+
       constexpr inline serializer_base(std::size_t sz) 
          : _pos(0), _data(sz) {}
 
@@ -49,8 +51,8 @@ namespace versa::serial {
       constexpr inline void rewind(std::size_t sz) { _pos -= sz; }
       constexpr inline void reset() { _pos = 0; }
 
-      std::size_t               _pos = 0;
-      std::vector<std::uint8_t> _data;
+      std::size_t               _pos  = 0;
+      std::vector<std::uint8_t> _data = {};
    };
 
    template <typename S>

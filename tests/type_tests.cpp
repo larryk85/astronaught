@@ -14,20 +14,20 @@ TEST_CASE("Variant Tests", "[variant_tests]") {
       var v = &i;
 
       CHECK(v.tag() == 0);
-      CHECK(*v.get<int>() == 14);
+      CHECK(v.as<int>() == 14);
 
       float f = 3.14f;
       v = var{&f};
       CHECK(v.tag() == 1);
-      CHECK(*v.get<float>() == 3.14f);
+      CHECK(v.as<float>() == 3.14f);
       std::cout << "Float: " << (uintptr_t)&f << std::endl;
-      std::cout << "FloatPtr: " << (uintptr_t)v.get<float>() << std::endl;
+      std::cout << "FloatPtr: " << (uintptr_t)v.as<float>() << std::endl;
 
       auto s = std::string{"Hello, World!"};
       v = var{&s};
       CHECK(v.tag() == 3);
-      CHECK(*v.get<std::string>() == "Hello, World!");
+      CHECK(v.as<std::string>() == "Hello, World!");
       std::cout << "String: " << (uintptr_t)&s << std::endl;
-      std::cout << "StringPtr: " << (uintptr_t)v.get<std::string>() << std::endl;
+      std::cout << "StringPtr: " << (uintptr_t)v.ptr<std::string>() << std::endl;
    }
 }

@@ -20,6 +20,7 @@ add_test(versa_tests)
 add_test(interpolate_tests)
 add_test(serialize_tests)
 add_test(type_tests)
+add_test(utils_tests)
 
 add_test(enum_defs_1_tests)
 add_test(enum_defs_2_tests)

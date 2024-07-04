@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <cstddef>
 
 #include <array>
@@ -143,7 +144,7 @@ namespace versa::util {
       return std::strong_ordering::equal; 
    }
 
-   
+
 
    #if 0
    namespace detail {
@@ -199,5 +200,16 @@ namespace versa::util {
          return std::make_pair(f,s); 
       }
    };
-   
+   /*
+   template <typename T>
+   constexpr static inline pearson_hash(T h, std::string_view s) {
+      for (auto c = s.begin(); c != s.end(); ++c) {
+         h = pearson_hash(h, *c);
+      }
+      for (auto c : s) {
+         h = pearson_hash(h, c);
+      }
+      return h;
+   }
+   */
 } // namespace versa::util

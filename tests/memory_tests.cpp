@@ -124,49 +124,48 @@ TEST_CASE("Allocator Tests", "[allocator_tests]") {
    }
 }
 
-TEST_CASE("Discriminated Tests", "[discriminated_tests]") {
+TEST_CASE("discriminant Tests", "[discriminant_tests]") {
    using namespace versa::memory;
-   SECTION("Check discriminated") {
+   SECTION("Check discriminant") {
       auto ptr = new int(10);
-      auto d = discriminate(ptr, 1);
-      CHECK(undiscriminate<int>(d) == ptr);
-      CHECK(undiscriminate_tag(d) == 1);
-      *undiscriminate<int>(d) = 20;
+      auto d = tagged_ptr{ptr, 1};
+      CHECK(d.ptr() == ptr);
+      CHECK(d.tag() == 1);
+      d.as<int>() = 20;
       CHECK(*ptr == 20);
-      d.tag = 11;
-      CHECK(undiscriminate_tag(d) == 11);
-      CHECK(d.tag == 11);
+      d.tag(11);
+      CHECK(d.tag() == 11);
       delete ptr;
    }
-   SECTION("Check discriminated with nullptr") {
-      auto d = discriminate<int>(nullptr, 1);
-      CHECK(undiscriminate<int>(d) == nullptr);
-      CHECK(undiscriminate_tag(d) == 1);
+   SECTION("Check discriminant with nullptr") {
+      auto d = tagged_ptr(nullptr, 1);
+      CHECK(d.ptr() == nullptr);
+      CHECK(d.tag() == 1);
    }
-   SECTION("Check discriminated on static") {
+   SECTION("Check discriminant on static") {
       float f   = 3.14f;
       int32_t i = -10;
       uint16_t b  = 42;
 
       {
-         auto d = discriminate(&f, 1);
-         CHECK(undiscriminate<float>(d) == &f);
-         CHECK(*undiscriminate<float>(d) == 3.14f);
-         CHECK(undiscriminate_tag(d) == 1);
+         auto d = tagged_ptr(&f, 1);
+         CHECK(d.ptr() == &f);
+         CHECK(d.as<float>() == 3.14f);
+         CHECK(d.tag() == 1);
       }
 
       {
-         auto d = discriminate(&i, 2);
-         CHECK(undiscriminate<int32_t>(d) == &i);
-         CHECK(*undiscriminate<int32_t>(d) == -10);
-         CHECK(undiscriminate_tag(d) == 2);
+         auto d = tagged_ptr(&i, 2);
+         CHECK(d.ptr() == &i);
+         CHECK(d.as<int32_t>() == -10);
+         CHECK(d.tag() == 2);
       }
 
       {
-         auto d = discriminate(&b, 3);
-         CHECK(undiscriminate<uint16_t>(d) == &b);
-         CHECK(*undiscriminate<uint16_t>(d) == 42);
-         CHECK(undiscriminate_tag(d) == 3);
+         auto d = tagged_ptr(&b, 3);
+         CHECK(d.ptr() == &b);
+         CHECK(d.as<uint16_t>() == 42);
+         CHECK(d.tag() == 3);
       } 
 
       f = 42.4242f;
@@ -174,24 +173,24 @@ TEST_CASE("Discriminated Tests", "[discriminated_tests]") {
       b = 10;
 
       {
-         auto d = discriminate(&f, 1);
-         CHECK(undiscriminate<float>(d) == &f);
-         CHECK(*undiscriminate<float>(d) == 42.4242f);
-         CHECK(undiscriminate_tag(d) == 1);
+         auto d = tagged_ptr(&f, 1);
+         CHECK(d.ptr() == &f);
+         CHECK(d.as<float>() == 42.4242f);
+         CHECK(d.tag() == 1);
       }
 
       {
-         auto d = discriminate(&i, 2);
-         CHECK(undiscriminate<int32_t>(d) == &i);
-         CHECK(*undiscriminate<int32_t>(d) == 100);
-         CHECK(undiscriminate_tag(d) == 2);
+         auto d = tagged_ptr(&i, 2);
+         CHECK(d.ptr() == &i);
+         CHECK(d.as<int>() == 100);
+         CHECK(d.tag() == 2);
       }
 
       {
-         auto d = discriminate(&b, 3);
-         CHECK(undiscriminate<uint16_t>(d) == &b);
-         CHECK(*undiscriminate<uint16_t>(d) == 10);
-         CHECK(undiscriminate_tag(d) == 3);
+         auto d = tagged_ptr(&b, 3);
+         CHECK(d.ptr() == &b);
+         CHECK(d.as<uint8_t>() == 10);
+         CHECK(d.tag() == 3);
       }
    }
 }

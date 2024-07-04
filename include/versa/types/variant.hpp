@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../memory/discriminated.hpp"
+#include "../memory/tagged_ptr.hpp"
 #include "../utils.hpp"
 
 namespace versa::types {
@@ -35,7 +35,7 @@ namespace versa::types {
          ~variant() = default;
 
          template <typename T>
-         constexpr variant(T* t) : _data(memory::discriminate<T>(t, which_index_v<T, Ts...>)) {}
+         constexpr variant(T* t) : _data(t, which_index_v<T, Ts...>) {}
 
          variant(const variant&) = default;
          variant(variant&&) = default;
@@ -44,30 +44,47 @@ namespace versa::types {
 
          template <typename T>
          constexpr inline variant& operator=(T* t) {
-            _data = memory::discriminate<T>(t, which_index_v<T, Ts...>);
+            _data = {t, which_index_v<T, Ts...>};
             return *this;
          }
 
          constexpr inline std::uint64_t tag() const noexcept {
-            return memory::undiscriminate_tag(_data);
+            return _data.tag();
          }
 
          template <typename T>
-         constexpr inline const T* get() const noexcept {
+         constexpr inline T* ptr() noexcept {
             if (tag() == which_index_v<T, Ts...>) {
-               return memory::undiscriminate<T>(_data);
+               return _data.as_ptr<T>();
             }
             return nullptr;
          }
 
-         constexpr inline memory::discriminated data() const noexcept {
-            return _data;
+         template <typename T>
+         constexpr inline const T* ptr() const noexcept {
+            if (tag() == which_index_v<T, Ts...>) {
+               return _data.as_ptr<T>();
+            }
+            return nullptr;
+         }
+         
+         template <typename T>
+         constexpr inline const T& as() const {
+            if (tag() == which_index_v<T, Ts...>) {
+               return _data.as<T>();
+            }
+            throw std::bad_cast{};
          }
 
-         constexpr inline uint64_t data_as_uint64() const noexcept {
-            return std::bit_cast<uint64_t>(_data);
+         template <typename T>
+         constexpr inline T& as() {
+            if (tag() == which_index_v<T, Ts...>) {
+               return _data.as<T>();
+            }
+            throw std::bad_cast{};
          }
+
       private:
-         memory::discriminated _data;
+         memory::tagged_ptr _data;
    };
 } // namespace versa::types
