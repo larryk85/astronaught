@@ -15,22 +15,22 @@
  */
 
 /**
- * @def @NAMESPACE@_MAJOR_VERSION
+ * @def @NAMESPACE@_MAJOR
  * @brief The major version number of the library.
  */
 
 /**
- * @def @NAMESPACE@_MINOR_VERSION
+ * @def @NAMESPACE@_MINOR
  * @brief The minor version number of the library.
  */
 
 /**
- * @def @NAMESPACE@_PATCH_VERSION
+ * @def @NAMESPACE@_PATCH
  * @brief The patch version number of the library.
  */
 
 /**
- * @def @NAMESPACE@_TWEAK_VERSION
+ * @def @NAMESPACE@_TWEAK
  * @brief The tweak version number of the library.
  */
 
@@ -60,10 +60,10 @@
  */
 
 #define @NAMESPACE@_NAMESPACE       @NAMESPACE@  /**< The namespace used in the library. */
-#define @NAMESPACE@_MAJOR_VERSION   @MAJOR@      /**< The major version number of the library. */
-#define @NAMESPACE@_MINOR_VERSION   @MINOR@      /**< The minor version number of the library. */
-#define @NAMESPACE@_PATCH_VERSION   @PATCH@      /**< The patch version number of the library. */
-#define @NAMESPACE@_TWEAK_VERSION   @TWEAK@      /**< The tweak version number of the library. */
+#define @NAMESPACE@_MAJOR           @MAJOR@      /**< The major version number of the library. */
+#define @NAMESPACE@_MINOR           @MINOR@      /**< The minor version number of the library. */
+#define @NAMESPACE@_PATCH           @PATCH@      /**< The patch version number of the library. */
+#define @NAMESPACE@_TWEAK           @TWEAK@      /**< The tweak version number of the library. */
 #define @NAMESPACE@_VERSION_SUFFIX  "@SUFFIX@"   /**< The suffix used in the version number. */
 #define @NAMESPACE@_GIT_HASH        "@GIT_HASH@" /**< The git hash of the library. */
 

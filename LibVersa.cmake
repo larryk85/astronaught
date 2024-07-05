@@ -32,52 +32,44 @@ function(versa_create_version_info)
    set(options GIT_HASH)
    set(oneValueArgs NAMESPACE MAJOR MINOR PATCH TWEAK SUFFIX INCLUDE_DIR)
    set(multiValueArgs)
-   cmake_parse_arguments( LV_ARGS "${options}" 
-                                  "${oneValueArgs}"
-                                  "${multiValueArgs}" 
-                                  ${ARGN} )
+   cmake_parse_arguments( ARGS "${options}" 
+                               "${oneValueArgs}"
+                               "${multiValueArgs}" 
+                               ${ARGN} )
 
-   message(STATUS "Generating version information for ${LV_TARGETS}")
+   message(STATUS "Generating version information for ${PROJECT_NAME}")
 
-   if (NOT LV_ARGS_NAMESPACE) 
+   set(NAMESPACE ${ARGS_NAMESPACE})
+   if (NOT NAMESPACE) 
       set(NAMESPACE ${PROJECT_NAME})
-   else()
-      set(NAMESPACE ${LV_ARGS_NAMESPACE})
    endif()
 
-   if (NOT LV_ARGS_MAJOR)
-      set(MAJOR ${PROJECT_VERSA_MAJOR})
-   else()
-      set(MAJOR ${LV_ARGS_MAJOR})
+   set(MAJOR ${ARGS_MAJOR})
+   if (NOT MAJOR)
+      set(MAJOR ${PROJECT_VERSION_MAJOR})
    endif()
 
-   if (NOT LV_ARGS_MINOR)
-      set(MINOR ${PROJECT_VERSA_MINOR})
-   else()
-      set(MINOR ${LV_ARGS_MINOR})
+   set(MINOR ${ARGS_MINOR})
+   if (NOT MINOR)
+      set(MINOR ${PROJECT_VERSION_MINOR})
    endif()
 
-   if (NOT LV_ARGS_PATCH)
-      set(PATCH ${PROJECT_VERSA_PATCH})
-   else()
-      set(PATCH ${LV_ARGS_PATCH})
+   set(PATCH ${ARGS_PATCH})
+   if (NOT PATCH)
+      set(PATCH ${PROJECT_VERSION_PATCH})
    endif()
 
-   if (NOT LV_ARGS_TWEAK)
-      set(TWEAK ${PROJECT_VERSA_TWEAK})
-   else()
-      set(TWEAK ${LV_ARGS_TWEAK})
+   set(TWEAK ${ARGS_TWEAK})
+   if (NOT TWEAK)
+      set(TWEAK ${PROJECT_VERSION_TWEAK})
    endif()
 
-   if (NOT LV_ARGS_SUFFIX)
-      if (PROJECT_VERSA_SUFFIX)
-         set(SUFFIX "-${PROJECT_VERSA_SUFFIX}")
-      endif()
-   else()
-      set(SUFFIX ${LV_ARGS_SUFFIX})
+   set(SUFFIX ${ARGS_SUFFIX})
+   if (NOT SUFFIX)
+      set(SUFFIX "-${SUFFIX}")
    endif()
    
-   if (LV_ARGS_GIT_HASH)
+   if (ARGS_GIT_HASH)
       message(STATUS "Retrieving latest commit hash from Git repository")
       execute_process(
          COMMAND git log -1 --format=%H
@@ -87,29 +79,30 @@ function(versa_create_version_info)
       )
    endif()
    
-   set(LV_MSG "Creating version information for ${NAMESPACE} ${MAJOR}.${MINOR}.${PATCH}.${TWEAK}")
+   set(MSG "Creating version information for ${NAMESPACE} ${MAJOR}.${MINOR}.${PATCH}.${TWEAK}")
 
    if (SUFFIX)
-      set(LV_MSG "${LV_MSG}-${SUFFIX}")
-      set(LV_USE_SUFFIX 1)
+      set(MSG "${MSG}-${SUFFIX}")
+      set(USE_SUFFIX 1)
    endif()
 
    if (GIT_HASH)
-      set(LV_MSG "${LV_MSG} (${GIT_HASH})")
-      set(LV_USE_GIT_HASH 1)
+      set(MSG "${MSG} (${GIT_HASH})")
+      set(USE_GIT_HASH 1)
    endif()
 
-   message(STATUS ${LV_MSG})
+   message(STATUS ${MSG})
 
-   if (NOT LV_ARGS_INCLUDE_DIR)
-      set(LV_ARGS_INCLUDE_DIR ${_VERSA_INCLUDE_DIR}/include)
+   set(INCLUDE_DIR ${ARGS_INCLUDE_DIR})
+   if (NOT INCLUDE_DIR)
+      set(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
    endif()
 
-   configure_file(${LV_ARGS_INCLUDE_DIR}/versa/info/version.pp.in
-                  ${CMAKE_CURRENT_BINARY_DIR}/include/${NAMESPACE}/info/version.pp @ONLY)
+   configure_file(${INCLUDE_DIR}/versa/info/version.pp.in
+                  ${PROJECT_BINARY_DIR}/include/${NAMESPACE}/info/version.pp @ONLY)
 
-   configure_file(${LV_ARGS_INCLUDE_DIR}/versa/info/version.hpp.in
-                  ${CMAKE_CURRENT_BINARY_DIR}/include/${NAMESPACE}/info/version.hpp @ONLY)
+   configure_file(${INCLUDE_DIR}/versa/info/version.hpp.in
+                  ${PROJECT_BINARY_DIR}/include/${NAMESPACE}/info/version.hpp @ONLY)
 endfunction(versa_create_version_info)
  
 

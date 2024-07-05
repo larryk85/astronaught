@@ -33,7 +33,7 @@ include(cmake/Utils.cmake)
 
 versa_create_version_info(
    NAMESPACE "versa"
-   SUFFIX "rc1"
+   SUFFIX "rc2"
    GIT_HASH
 )
 
@@ -83,6 +83,7 @@ endif()
 
 if(LIBVERSA_BUILD_DOCS)
    versa_project_include_dirs(include_dirs)
+   MESSAGE(STATUS "Include Directories: ${include_dirs}")
    #add_subdirectory(docs)
-   versa_generate_doxygen_docs(SOURCE_DIR ${include_dirs})
+   versa_generate_doxygen_docs(SOURCE_DIRS ${include_dirs})
 endif()

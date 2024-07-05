@@ -1,8 +1,8 @@
 function(versa_generate_doxygen_docs)
    # Define argument types
    set(options)
-   set(oneValueArgs NAME EXTRA_FILES CONFIG_NAME SOURCE_DIR DOX_DIR DOX_OUTPUT_DIR)
-   set(multiValueArgs)
+   set(oneValueArgs NAME EXTRA_FILES CONFIG_NAME DOX_DIR DOX_OUTPUT_DIR)
+   set(multiValueArgs SOURCE_DIRS)
    # Parse function arguments
    cmake_parse_arguments(ARGS "" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -35,10 +35,11 @@ function(versa_generate_doxygen_docs)
       set(DOX_CONFIG ${DOX_DIR}/docs/Doxyfile.in)
    endif()
 
-   set(DOX_SOURCE_DIR ${ARGS_SOURCE_DIR})
-   if(NOT DOX_SOURCE_DIR)
-      set(DOX_SOURCE_DIR ${PROJECT_SOURCE_DIR})
+   set(SOURCE_DIRS ${ARGS_SOURCE_DIRS})
+   if(NOT SOURCE_DIRS)
+      set(SOURCE_DIRS ${PROJECT_SOURCE_DIRS})
    endif()
+   string(REPLACE ";" " " DOX_SOURCE_DIRS "${SOURCE_DIRS}")
 
    # Create necessary directories
    file(MAKE_DIRECTORY ${DOX_OUTPUT_DIR})
