@@ -3,9 +3,18 @@ include(../LibVersa.cmake)
 # ##################################################################################################
 # Define the main test executable.
 # ##################################################################################################
+define_property(
+   TARGET 
+   PROPERTY 
+   VERSA_IS_TEST 
+   BRIEF_DOCS "Is this target a test?" 
+   FULL_DOCS "Is this target a test?"
+)
+
 macro( add_test name )
    add_executable( ${name} ${name}.cpp )
    target_link_libraries( ${name} PRIVATE versa Catch2::Catch2WithMain )
+   set_property( TARGET ${name} PROPERTY VERSA_IS_TEST TRUE )
    catch_discover_tests( ${name} )
 endmacro()
 

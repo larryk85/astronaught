@@ -15,6 +15,7 @@ link_libraries(Threads::Threads)
 
 include(CMakeDependentOption)
 option(LIBVERSA_ENABLE_TESTS "enable building of unit tests" ON)
+option(LIBVERSA_BUILD_DOCS "Build the documentation" ON)
 
 if (MSVC)
    if (CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -24,9 +25,11 @@ if (MSVC)
    endif()
 endif()
 
-include(LibVersa.cmake)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-   set(oneValueArgs NAMESPACE MAJOR MINOR PATCH TWEAK SUFFIX INCLUDE_DIR)
+include(LibVersa.cmake)
+include(cmake/Doxy.cmake)
+include(cmake/Utils.cmake)
 
 versa_create_version_info(
    NAMESPACE "versa"
@@ -37,15 +40,17 @@ versa_create_version_info(
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(versa INTERFACE)
+## pedantic
+### -Wall -Wextra -Wpedantic -Werror
+### /W4 /WX
+
 target_include_directories(versa INTERFACE
    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
    $<INSTALL_INTERFACE:include>)
 
-if (MSVC)
-   # MSVC preprocessing is not standard compliant, so we need to enable it.
-   target_compile_options(versa INTERFACE /Zc:preprocessor)
-endif()
+target_compile_options(versa INTERFACE
+   $<$<CXX_COMPILER_ID:MSVC>:/Zc:preprocessor>)
 
 #target_compile_definitions(versa INTERFACE
 #   $<$<CONFIG:Debug>:VERSALIB_DEBUG>
@@ -74,4 +79,10 @@ if(LIBVERSA_ENABLE_TESTS)
 
    enable_testing()
    add_subdirectory(tests)
+endif()
+
+if(LIBVERSA_BUILD_DOCS)
+   versa_project_include_dirs(include_dirs)
+   #add_subdirectory(docs)
+   versa_generate_doxygen_docs(SOURCE_DIR ${include_dirs})
 endif()
