@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(libversa VERSION 1.0.0.0)
+project(astronaught VERSION 1.0.0.0)
 
-message( STATUS "Building libversa v${libversa_VERSION}..." )
+message( STATUS "Building astronaught v${astronaught_VERSION}..." )
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -14,8 +14,9 @@ find_package(Threads)
 link_libraries(Threads::Threads)
 
 include(CMakeDependentOption)
-option(LIBVERSA_ENABLE_TESTS "enable building of unit tests" ON)
-option(LIBVERSA_BUILD_DOCS "Build the documentation" ON)
+option(ASTRONAUGHT_ENABLE_TESTS   "Enable building of unit tests" ON)
+option(ASTRONAUGHT_ENABLE_DOCS    "Enable creation of the documentation" ON)
+option(ASTRONAUGHT_ENABLE_INSTALL "Enable installation" ON)
 
 if (MSVC)
    if (CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -27,41 +28,42 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-include(LibVersa.cmake)
+include(astronaught.cmake)
 include(cmake/Doxy.cmake)
 include(cmake/Utils.cmake)
 
-versa_create_version_info(
-   NAMESPACE "versa"
+astronaught_create_version_info(
+   NAMESPACE "astronaught"
    SUFFIX "rc2"
    GIT_HASH
 )
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_library(versa INTERFACE)
+add_library(astronaught INTERFACE)
+
 ## pedantic
 ### -Wall -Wextra -Wpedantic -Werror
 ### /W4 /WX
 
-target_include_directories(versa INTERFACE
+target_include_directories(astronaught INTERFACE
    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
    $<INSTALL_INTERFACE:include>)
 
-target_compile_options(versa INTERFACE
+target_compile_options(astronaught INTERFACE
    $<$<CXX_COMPILER_ID:MSVC>:/Zc:preprocessor>)
 
-#target_compile_definitions(versa INTERFACE
-#   $<$<CONFIG:Debug>:VERSALIB_DEBUG>
-#   $<$<CONFIG:Release>:VERSALIB_RELEASE>
-#   $<$<CONFIG:RelWithDebInfo>:VERSALIB_RELWITHDEBINFO>
-#   $<$<CONFIG:MinSizeRel>:VERSALIB_MINSIZEREL>)
+#target_compile_definitions(astronaught INTERFACE
+#   $<$<CONFIG:Debug>:astronaughtLIB_DEBUG>
+#   $<$<CONFIG:Release>:astronaughtLIB_RELEASE>
+#   $<$<CONFIG:RelWithDebInfo>:astronaughtLIB_RELWITHDEBINFO>
+#   $<$<CONFIG:MinSizeRel>:astronaughtLIB_MINSIZEREL>)
 
-add_library(versa::versa ALIAS versa)
+add_library(astronaught::astronaught ALIAS astronaught)
 
 include(FetchContent)
-if(LIBVERSA_ENABLE_TESTS)
+if(ASTRONAUGHT_ENABLE_TESTS)
    FetchContent_Declare(
       Catch2
       GIT_REPOSITORY https://github.com/catchorg/Catch2
@@ -81,9 +83,54 @@ if(LIBVERSA_ENABLE_TESTS)
    add_subdirectory(tests)
 endif()
 
-if(LIBVERSA_BUILD_DOCS)
-   versa_project_include_dirs(include_dirs)
-   MESSAGE(STATUS "Include Directories: ${include_dirs}")
-   #add_subdirectory(docs)
-   versa_generate_doxygen_docs(SOURCE_DIRS ${include_dirs})
+if(ASTRONAUGHT_ENABLE_DOCS)
+   astronaught_generate_doxygen_docs()
+endif()
+
+include(GNUInstallDirs)
+
+# ##################################################################################################
+# Configure version info.
+# ##################################################################################################
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/modules/astronaught-config-version.cmake.in
+               ${CMAKE_CURRENT_BINARY_DIR}/astronaught-config-version.cmake @ONLY)
+
+# ##################################################################################################
+# Installation.
+# ##################################################################################################
+if(ASTRONAUGHT_ENABLE_INSTALL)
+   include(CMakePackageConfigHelpers)
+   include(GNUInstallDirs)
+
+   message(STATUS "Installing astronaught ...")
+   set(astronaught_INCLUDE_DIRS ${CMAKE_INSTALL_INCLUDEDIR})
+   configure_package_config_file(modules/astronaught-config.cmake.in
+      ${CMAKE_CURRENT_BINARY_DIR}/astronaught-config.cmake
+      INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/astronaught
+      PATH_VARS astronaught_INCLUDE_DIRS
+   )
+   write_basic_package_version_file(
+      ${CMAKE_CURRENT_BINARY_DIR}/astronaught-config-version.cmake
+      VERSION ${astronaught_VERSION}
+      COMPATIBILITY SameMajorVersion
+   )
+
+   install(TARGETS astronaught
+           EXPORT astronaught-targets
+           LIBRARY
+           PUBLIC_HEADER
+              DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+              COMPONENT Headers
+   )
+   install(EXPORT astronaught-targets
+      NAMESPACE astronaught::
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/astronaught
+   )
+   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+           DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+   )
+   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/astronaught-config.cmake
+                 ${CMAKE_CURRENT_BINARY_DIR}/astronaught-config-version.cmake
+                 DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/astronaught
+   )
 endif()

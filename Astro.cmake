@@ -26,7 +26,7 @@
 # Example:
 # versa_create_version_info(NAMESPACE MyProject MAJOR 1 MINOR 2 PATCH 3 TWEAK 4 SUFFIX "alpha" GIT_LOG)
 
-set(_VERSA_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(_ASTRONAUGHT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 function(versa_create_version_info)
    set(options GIT_HASH)
@@ -124,32 +124,32 @@ endfunction(versa_create_version_info)
 #   endif()
 #
 #   if (NOT LV_ARGS_MAJOR)
-#      set(MAJOR ${PROJECT_VERSA_MAJOR})
+#      set(MAJOR ${PROJECT_ASTRONAUGHT_MAJOR})
 #   else()
 #      set(MAJOR ${LV_ARGS_MAJOR})
 #   endif()
 #
 #   if (NOT LV_ARGS_MINOR)
-#      set(MINOR ${PROJECT_VERSA_MINOR})
+#      set(MINOR ${PROJECT_ASTRONAUGHT_MINOR})
 #   else()
 #      set(MINOR ${LV_ARGS_MINOR})
 #   endif()
 #
 #   if (NOT LV_ARGS_PATCH)
-#      set(PATCH ${PROJECT_VERSA_PATCH})
+#      set(PATCH ${PROJECT_ASTRONAUGHT_PATCH})
 #   else()
 #      set(PATCH ${LV_ARGS_PATCH})
 #   endif()
 #
 #   if (NOT LV_ARGS_TWEAK)
-#      set(TWEAK ${PROJECT_VERSA_TWEAK})
+#      set(TWEAK ${PROJECT_ASTRONAUGHT_TWEAK})
 #   else()
 #      set(TWEAK ${LV_ARGS_TWEAK})
 #   endif()
 #
 #   if (NOT LV_ARGS_SUFFIX)
-#      if (PROJECT_VERSA_SUFFIX)
-#         set(SUFFIX "-${PROJECT_VERSA_SUFFIX}")
+#      if (PROJECT_ASTRONAUGHT_SUFFIX)
+#         set(SUFFIX "-${PROJECT_ASTRONAUGHT_SUFFIX}")
 #      endif()
 #   else()
 #      set(SUFFIX ${LV_ARGS_SUFFIX})
@@ -159,7 +159,7 @@ endfunction(versa_create_version_info)
 #      message(STATUS "Retrieving latest commit hash from Git repository")
 #      execute_process(
 #         COMMAND git log -1 --format=%H
-#         WORKING_DIRECTORY ${${PROJECT_NAME}_LIBVERSA_PROJECT_DIR}
+#         WORKING_DIRECTORY ${${PROJECT_NAME}_LIBASTRONAUGHT_PROJECT_DIR}
 #         OUTPUT_VARIABLE GIT_HASH
 #         OUTPUT_STRIP_TRAILING_WHITESPACE
 #      )
@@ -180,15 +180,15 @@ endfunction(versa_create_version_info)
 #   message(STATUS ${LV_MSG})
 #
 #   target_compile_definitions(${_target} PRIVATE 
-#      _VERSA_PROJECT_NAMESPACE=${LV_NAMESPACE}
-#      _VERSA_PROJECT_MAJOR_VERSION=${LV_MAJOR}
-#      _VERSA_PROJECT_MINOR_VERSION=${LV_MINOR}
-#      _VERSA_PROJECT_PATCH_VERSION=${LV_PATCH}
-#      _VERSA_PROJECT_TWEAK_VERSION=${LV_TWEAK}
-#      _VERSA_PROJECT_SUFFIX=${LV_SUFFIX}
-#      _VERSA_PROJECT_GIT_HASH=${LV_GIT_HASH}
-#      _VERSA_PROJECT_USE_SUFFIX=${LV_USE_SUFFIX}
-#      _VERSA_PROJECT_USE_GIT_HASH=${LV_USE_GIT_HASH}
+#      _ASTRONAUGHT_PROJECT_NAMESPACE=${LV_NAMESPACE}
+#      _ASTRONAUGHT_PROJECT_MAJOR_VERSION=${LV_MAJOR}
+#      _ASTRONAUGHT_PROJECT_MINOR_VERSION=${LV_MINOR}
+#      _ASTRONAUGHT_PROJECT_PATCH_VERSION=${LV_PATCH}
+#      _ASTRONAUGHT_PROJECT_TWEAK_VERSION=${LV_TWEAK}
+#      _ASTRONAUGHT_PROJECT_SUFFIX=${LV_SUFFIX}
+#      _ASTRONAUGHT_PROJECT_GIT_HASH=${LV_GIT_HASH}
+#      _ASTRONAUGHT_PROJECT_USE_SUFFIX=${LV_USE_SUFFIX}
+#      _ASTRONAUGHT_PROJECT_USE_GIT_HASH=${LV_USE_GIT_HASH}
 #      NSS="foo"
 #   )
 #

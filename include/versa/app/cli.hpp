@@ -17,7 +17,7 @@ namespace versa::app {
             : _default_value(def), _description("") {}
 
          constexpr inline command(T&& def, std::string_view desc) 
-            : _default_value(def), _description(desc.data(), desc.size()); {}
+            : _default_value(def), _description(desc.data(), desc.size()) {}
 
       private:
          T           _default_value;
