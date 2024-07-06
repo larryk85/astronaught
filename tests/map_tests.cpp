@@ -56,7 +56,6 @@ TEST_CASE("Map Tests", "[map_tests]") {
 
    SECTION("Testing pair_generator") {
       using genny = astro::util::pair_generator<std::string_view, double>;
-      using elem_t = genny::pair_t;
       constexpr auto g = genny{};
       
       auto p1 = g("hello", 13.4);
@@ -79,7 +78,6 @@ TEST_CASE("Map Tests", "[map_tests]") {
 
    SECTION("Testing Maps") {
       using genny = astro::util::pair_generator<std::string_view, double>;
-      using elem_t = genny::pair_t;
       constexpr auto g = genny{};
 
       auto m0 = map(g("foo", 12.12), g("bar", 23.23), g("baz", 34.34), 

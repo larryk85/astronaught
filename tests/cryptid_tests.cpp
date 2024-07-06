@@ -93,7 +93,6 @@ TEST_CASE("Cryptid UINT128 Tests", "[cryptid_uint128_tests]") {
 
       using namespace astro::literals;
 
-      uint128_t i = uint128_t{54, 45};
       uint128_t i2 = 0x000000000000002d0000000000000036_ui128;
 
       CHECK(i2.low() == 54);

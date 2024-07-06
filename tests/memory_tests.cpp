@@ -43,12 +43,13 @@ struct test_alloc : allocator_base< test_alloc<N> > {
    std::size_t index = 0;
 };
 
+/*
 consteval static inline std::size_t page_size() {
    return 4096;
 }
 
 int global_value = 0;
-/*
+
 LONG CALLBACK ExceptionHandler(PEXCEPTION_POINTERS pExceptionInfo) {
     if (pExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_ACCESS_VIOLATION) {
         global_value = 2;
@@ -91,7 +92,7 @@ TEST_CASE("Mapper Tests", "[mapper_tests]") {
       om = mm.protect<10>(mp, access_mode::read);
 
       for (std::size_t i = 0; i < 10; ++i) {
-         CHECK(reinterpret_cast<int*>(mp)[i] == i);
+         CHECK((std::size_t)reinterpret_cast<int*>(mp)[i] == i);
       }
 
       om = mm.protect<10>(mp, access_mode::none);

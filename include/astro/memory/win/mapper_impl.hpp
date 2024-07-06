@@ -89,7 +89,5 @@ namespace astro::memory {
             static const auto info = get_system_info();
             return info.dwPageSize;
          }
-
-         std::size_t mapped = 0;
    };
 } // namespace astro::memory

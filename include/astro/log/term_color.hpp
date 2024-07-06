@@ -127,14 +127,10 @@ namespace astro::log {
       std::string format() const {
          return std::to_string(r)+";"+std::to_string(g)+";"+std::to_string(b);
       }
-      #pragma warning(suppress: 4201) // nonstandard extension used: nameless struct/union
-      struct {
-         uint32_t r : 8;
-         uint32_t g : 8;
-         uint32_t b : 8;
-         uint32_t a : 8;
-      };
-      #pragma warning(default: 4201)
+      uint32_t r : 8;
+      uint32_t g : 8;
+      uint32_t b : 8;
+      uint32_t a : 8;
    };
 
    template <auto Color, rgba RGB>
@@ -257,6 +253,7 @@ namespace astro::log {
 
          template <color_type Color>
          constexpr inline rgb_color(Color c) {
+            (void)c;
          }
 
          rgb_color& operator=(const rgb_color&) = default;

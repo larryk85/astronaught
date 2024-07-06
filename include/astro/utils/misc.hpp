@@ -17,6 +17,12 @@
 
 #include "defs.hpp"
 
+// forward declaration for memcmp
+namespace astro::ct {
+   template <std::size_t N>
+   struct string;
+} // namespace astro::ct
+
 /**
  * @namespace astro::util
  * @brief Contains utility functions for the astro library.
@@ -124,27 +130,41 @@ namespace astro::util {
       return true;
    }
 
-   template <typename T>
-   consteval static inline void unused(T&& t) {
-      do {
-         (void)t;
-      } while (false);
-   }
+   template <typename... Ts>
+   consteval static inline void unused(Ts&&...) {}
 
    // helper where memcmp is not constexpr
-   template <typename T, typename U, std::size_t N>
-   constexpr static inline std::strong_ordering memcmp(const T (&lhs)[N], const U (&rhs)[N]) {
-      for (std::size_t i = 0; i < N; ++i) {
-         if (lhs[i] < rhs[i]) {
-            return std::strong_ordering::less;
-         } else if (lhs[i] > rhs[i]) {
-            return std::strong_ordering::greater;
+   template <typename T, std::size_t N>
+   concept memcmpable_type = std::is_same_v<T, std::array<char, N>> || std::is_same_v<T, astro::ct::string<N>>;
+
+   template <typename T, typename U, std::size_t M, std::size_t N>
+   consteval static inline std::strong_ordering memcmp(const T (&lhs)[M], const U (&rhs)[N]) {
+      constexpr std::size_t I = M < N ? M : N;
+      for (std::size_t i = 0; i < I; ++i) {
+         if (auto cmp = lhs[i] <=> rhs[i]; cmp != 0){
+            return cmp;
          }
       }
-      return std::strong_ordering::equal; 
+
+      if constexpr (M < N) return std::strong_ordering::less;
+      else if constexpr (M > N) return std::strong_ordering::greater;
+      else return std::strong_ordering::equal;
    }
 
+   template <template <std::size_t> class T, template <std::size_t> class U, std::size_t M, std::size_t N>
+   requires (memcmpable_type<T<M>, M> && memcmpable_type<U<N>, N>)
+   consteval static inline std::strong_ordering memcmp(const T<M>& lhs, const U<N>& rhs) {
+      constexpr std::size_t I = M < N ? M : N;
+      for (std::size_t i = 0; i < I; ++i) {
+         if (auto cmp = lhs[i] <=> rhs[i]; cmp != 0){
+            return cmp;
+         }
+      }
 
+      if constexpr (M < N) return std::strong_ordering::less;
+      else if constexpr (M > N) return std::strong_ordering::greater;
+      else return std::strong_ordering::equal;
+   }
 
    #if 0
    namespace detail {

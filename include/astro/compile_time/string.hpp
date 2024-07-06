@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-
 #include <algorithm>
 #include <array>
 #include <compare>
@@ -24,18 +23,25 @@ namespace astro::ct {
       struct cstr_to_int;
 
       template <std::size_t N, char C, char... Next>
-      struct cstr_to_int <N, C, Next...> {
+      struct cstr_to_int<N, C, Next...> {
          constexpr static inline std::size_t value = cstr_to_int<(N*10)+(C-'0'), Next...>::value;
       };
 
       template <std::size_t N>
-      struct cstr_to_int <N> {
+      struct cstr_to_int<N> {
          constexpr static inline std::size_t value = N;
       };
 
       template <std::size_t A, std::size_t B>
       consteval static inline std::size_t min() {
          return (A < B) ? A : B;
+      }
+
+      template <std::size_t N>
+      consteval static inline std::array<char, N-1> to_array(const char(&str)[N]) noexcept {
+         std::array<char, N-1> arr;
+         std::copy_n(str, N-1, arr.begin());
+         return arr;
       }
    } // namespace detail
 
@@ -44,16 +50,16 @@ namespace astro::ct {
 
    constexpr static inline std::size_t range_end_v = std::numeric_limits<std::size_t>::max();
 
-   template <std::size_t LB, std::size_t UB=range_end_v>
+   template <std::size_t LB, std::size_t UB = range_end_v>
    struct range {
-      static_assert(LB <= UB, "Lower bound must be less than upper bound");
+      static_assert(LB <= UB, "Lower bound must be less than or equal to upper bound");
       constexpr static inline std::size_t lower_bound = LB;
       constexpr static inline std::size_t upper_bound = UB;
 
-      constexpr static inline std::size_t delta(std::size_t ub=UB) noexcept { return std::min(ub-LB, UB-LB); }
+      constexpr static inline std::size_t delta(std::size_t ub = UB) noexcept { return std::min(ub - LB, UB - LB); }
       
       template <std::size_t NUB>
-      constexpr static inline std::size_t delta() noexcept { return detail::min<NUB-LB, UB-LB>(); }
+      constexpr static inline std::size_t delta() noexcept { return detail::min<NUB - LB, UB - LB>(); }
 
       constexpr static inline std::size_t size() noexcept { return delta(); }
       constexpr static inline bool empty() noexcept { return delta() == 0; }
@@ -73,13 +79,15 @@ namespace astro::ct {
    };
 
    template <std::size_t N>
-   struct string {
-      using self_t = string<N>;
+   constexpr static inline string<N-1> create_string(const char(&str)[N]) noexcept;
 
+   template <std::size_t N>
+   struct string {
       template <std::size_t M>
       using templ_t = string<M>;
 
-      constexpr static inline auto size_v = N-1;
+      constexpr static inline auto size_v = N;
+      consteval static inline std::size_t size() noexcept { return N; }
 
       string() = delete;
       string(const string&) = default;
@@ -96,7 +104,7 @@ namespace astro::ct {
       }
 
       constexpr inline const char* data() const noexcept { return &_data[0]; }
-      constexpr char* data() noexcept { return &_data[0]; }
+      constexpr inline char* data() noexcept { return &_data[0]; }
 
       constexpr inline const char& operator[](std::size_t i) const noexcept { return _data[i]; }
       constexpr inline char& operator[](std::size_t i) noexcept { return _data[i]; }
@@ -107,17 +115,14 @@ namespace astro::ct {
       }
 
       constexpr inline const char& at(std::size_t i) const { return at(i); }
-
-      consteval static inline std::size_t size() { return size_v; }
-
       constexpr inline const char* begin() const noexcept { return _data; }
       constexpr inline char* begin() noexcept { return _data; }
-      constexpr inline const char* rbegin() const noexcept { return _data+size_v-1; }
-      constexpr inline char* rbegin() noexcept { return _data+size_v-1; }
-      constexpr inline const char* end() const noexcept { return _data+size_v; }
-      constexpr inline char* end() noexcept { return _data+size_v; }
-      constexpr inline const char* rend() const noexcept { return _data-1; }
-      constexpr inline char* rend() noexcept { return _data-1; }
+      constexpr inline const char* rbegin() const noexcept { return _data + size_v - 1; }
+      constexpr inline char* rbegin() noexcept { return _data + size_v - 1; }
+      constexpr inline const char* end() const noexcept { return _data + size_v; }
+      constexpr inline char* end() noexcept { return _data + size_v; }
+      constexpr inline const char* rend() const noexcept { return _data - 1; }
+      constexpr inline char* rend() noexcept { return _data - 1; }
 
       template <std::size_t M>
       ASTRO_CT_CONST inline std::strong_ordering compare(string<M> other) const noexcept {
@@ -143,82 +148,102 @@ namespace astro::ct {
 
       template <std::size_t M>
       ASTRO_CT_CONST inline bool operator==(string<M> other) const noexcept {
-         if constexpr (size_v != decltype(other)::size_v) {
+         return compare(other) == 0;
+      }
+
+      template <std::size_t M>
+      ASTRO_CT_CONST inline bool operator<(string<M> other) const noexcept {
+         return compare(other) < 0;
+      }
+
+      template <range_t R>
+      consteval inline auto substr(R) const noexcept {
+         return string<R::delta(size_v)>{substr<R::lower_bound>(std::make_index_sequence<R::delta(size_v)>{})};
+      }
+
+      template <auto R>
+      requires (range_t<decltype(R)>)
+      consteval inline auto substr() const noexcept { return substr(R); }
+
+      template <std::size_t M>
+      ASTRO_CT_CONST inline bool starts_with(const string<M>& other) const noexcept {
+         if constexpr (size_v < M) {
             return false;
-         } else if constexpr (size_v == decltype(other)::size_v) {
-            for (std::size_t i = 0; i < size_v; ++i) {
+         } else {
+            for (std::size_t i = 0; i < M; ++i) {
                if (_data[i] != other[i]) {
                   return false;
                }
             }
             return true;
+         }
+      }
+
+      template <auto O>
+      requires (string_type<decltype(O)>)
+      ASTRO_CT_CONST inline bool starts_with() const noexcept {
+         if constexpr (size_v < O.size_v) {
+            return false;
          } else {
-            return true;
+            return eq_from<0, O>();
          }
       }
 
       template <std::size_t M>
-      ASTRO_CT_CONST inline bool operator<(string<M> other) const noexcept {
-         if constexpr (size_v < decltype(other)::size_v) {
-            return true;
-         } else if constexpr (size_v > decltype(other)::size_v) {
+      ASTRO_CT_CONST inline bool ends_with(const string<M>& other) const noexcept {
+         if constexpr (size_v < M) {
             return false;
          } else {
-            for (std::size_t i = 0; i < size_v; ++i) {
-               if (_data[i] < other[i]) {
-                  return true;
-               } else if (_data[i] > other[i]) {
+            for (std::size_t i = size_v-M; i < M; ++i) {
+               if (_data[(size_v-M) + i] != other[i]) {
                   return false;
                }
             }
-            return false;
+            return true;
          }
       }
 
-      template <range_t R>
-      ASTRO_CT_CONST inline auto substr(R r={}) const noexcept -> templ_t<R::delta(size_v)+1> {
-         (void)r;
-         return {substr<R::lower_bound>(std::make_index_sequence<R::delta(size_v)>{})};
-      }
-
-      template <auto R>
-      requires (range_t<decltype(R)>)
-      ASTRO_CT_CONST inline auto substr() const noexcept -> templ_t<decltype(R)::delta(size_v)+1> {
-         return {substr<decltype(R)::lower_bound>(std::make_index_sequence<decltype(R)::delta(size_v)>{})};
-      }
-
-
-      template <std::size_t M>
-      ASTRO_CT_CONST inline bool starts_with(string<M> other) const noexcept {
-         constexpr auto osz = decltype(other)::size_v;
-         if constexpr (size_v < osz) {
+      template <auto O>
+      requires (string_type<decltype(O)>)
+      ASTRO_CT_CONST inline bool ends_with() const noexcept {
+         if constexpr (size_v < O.size_v) {
             return false;
          } else {
-            return substr(range<0, osz>{}) == other;
+
+            return eq_from<size_v-O.size_v, O>();
          }
+      }
+
+      ASTRO_CT_CONST inline string<N> reverse() const noexcept {
+         std::array<char, size_v> arr;
+         std::reverse_copy(begin(), end(), arr.begin());
+         return string<N>{arr};
       }
 
       template <std::size_t M>
-      ASTRO_CT_CONST inline bool ends_with(string<M> other) const noexcept {
-         constexpr auto osz = decltype(other)::size_v;
-         if constexpr (size_v < osz) {
-            return false;
-         } else {
-            return substr(range<size_v-osz>{}) == other;
-         }
+      ASTRO_CT_CONST inline string<N - M> trim_back() const noexcept {
+         constexpr std::size_t sz = N - M;
+         std::array<char, sz> arr;
+         std::copy_n(begin(), sz, arr.begin());
+         return string<sz>{arr};
       }
 
-      ASTRO_CT_CONST inline auto reverse() const noexcept -> templ_t<N> {
-         return {reverse(std::make_index_sequence<size_v>{})};
+      template <std::size_t M>
+      ASTRO_CT_CONST inline string<N - M> trim_front() const noexcept {
+         constexpr std::size_t sz = N - M;
+         std::array<char, sz> arr;
+         std::copy_n(begin()+M, sz, arr.begin());
+         return string<sz>{arr};
       }
+
 
       template <std::size_t M>
       ASTRO_CT_CONST inline auto concat(string<M> other) const noexcept {
          constexpr std::size_t sz = size_v + M;
          std::array<char, sz> arr;
          std::copy_n(begin(), size_v, arr.begin());
-         std::copy_n(other.begin(), other.size_v, arr.begin()+size_v);
-         return templ_t<sz>{arr};
+         std::copy_n(other.begin(), other.size_v, arr.begin() + size_v);
+         return string<sz>{arr};
       }
 
       template <std::size_t M>
@@ -235,20 +260,45 @@ namespace astro::ct {
       }
 
       template <std::size_t... Is>
-      ASTRO_CT_CONST inline auto reverse(std::index_sequence<Is...>) const noexcept {
-         return std::array{_data[size_v-Is-1]...,'\0'};
+      consteval inline string<N> reverse(std::index_sequence<Is...>) const noexcept {
+         std::array<char, size_v> arr;
+         std::copy_backward(begin(), end(), arr.end());
+         return {arr};
+      }
+
+      template <std::size_t I, std::size_t M>
+      consteval inline bool eq_from(string<M> other) const noexcept {
+         for (std::size_t i = 0; i < M; ++i) {
+            if (_data[I + i] != other[i]) {
+               return false;
+            }
+         }
+         return true;
+      }
+
+      template <std::size_t I, auto O>
+      consteval inline bool eq_from() const noexcept {
+         for (std::size_t i = 0; i < O.size_v; ++i) {
+            if (_data[I + i] != O[i]) {
+               return false;
+            }
+         }
+         return true;
       }
 
       template <std::size_t LB, std::size_t... Is>
-      ASTRO_CT_CONST inline auto substr(std::index_sequence<Is...>) const noexcept {
+      consteval inline auto substr(std::index_sequence<Is...>) const noexcept {
          constexpr std::size_t Delta = sizeof...(Is);
          static_assert(LB <= size(), "Lower bound out of range");
-         static_assert(Delta+LB <= size(), "Upper bound out of range");
-         return std::array{_data[Is+LB]..., '\0'};
+         static_assert(Delta + LB <= size(), "Upper bound out of range");
+         return string<Delta>{std::array<char, Delta>{_data[Is + LB]...}};
       }
 
-      [[no_unique_address]] char _data[size_v];
+      char _data[size_v];
    };
+
+   template <std::size_t N>
+   constexpr static inline string<N-1> create_string(const char(&str)[N]) noexcept { return ct::string(str).template trim_back<1>(); }
 
    template <typename T>
    concept integral_type = std::is_integral_v<T>;
@@ -263,44 +313,40 @@ namespace astro::ct {
    };
 
    template <class T>
-   concept string_type  = requires {
-      {T::size_v} -> std::convertible_to<std::size_t>;
-      {T::_data} -> std::convertible_to<const char*>;
+   concept string_type = requires {
+      { T::size_v } -> std::convertible_to<std::size_t>;
+      { T::_data } -> std::convertible_to<const char*>;
    };
 
-   template <auto a, auto b, std::size_t i=0>
-   requires (string_type<decltype(a)> && ct::string_type<decltype(b)>)
+   template <auto A, auto B, std::size_t I = 0>
+   requires (string_type<decltype(A)> && string_type<decltype(B)>)
    ASTRO_CT_CONST static inline auto find() noexcept {
-      constexpr auto a_sz = decltype(a)::size_v;
-      constexpr auto b_sz = decltype(b)::size_v;
+      constexpr auto b_sz = decltype(B)::size_v;
 
-      if constexpr (a_sz < b_sz) {
-         return error_range_v;
-      } else {
-         if constexpr (a.starts_with(b)) {
-            return range<i, i+b_sz>{};
+      if constexpr (!A.template eq_from<I, B>()) {
+         if constexpr (I + b_sz >= decltype(A)::size_v) {
+            return error_range_v;
          } else {
-            constexpr auto sub_a = a.template substr<range<i>>();
-            return find<sub_a, b, i+1>();
+            return find<A, B, I+1>();
          }
+      } else {
+         return range<I, I + b_sz>{};
       }
    }
 
-   template <auto a, auto b, std::size_t i=decltype(a)::size_v>
-   requires (string_type<decltype(a)> && ct::string_type<decltype(b)>)
+   template <auto A, auto B, std::size_t I = decltype(A)::size_v>
+   requires (string_type<decltype(A)> && string_type<decltype(B)>)
    ASTRO_CT_CONST static inline auto rfind() noexcept {
-      constexpr auto a_sz = decltype(a)::size_v;
-      constexpr auto b_sz = decltype(b)::size_v;
+      constexpr auto b_sz = decltype(B)::size_v;
 
-      if constexpr (a_sz < b_sz) {
-         return error_range_v;
-      } else {
-         if constexpr (a.ends_with(b)) {
-            return range<i-b_sz, i>{};
+      if constexpr (!A.template eq_from<I - b_sz, B>()) {
+         if constexpr (I - b_sz == 0) {
+            return error_range_v;
          } else {
-            constexpr auto sub_a = a.template substr<range<0, i>>();
-            return rfind<sub_a, b, i-1>();
+            return rfind<A, B, I - 1>();
          }
+      } else {
+         return range<I - b_sz, I>{};
       }
    }
 
@@ -308,24 +354,6 @@ namespace astro::ct {
    static inline std::string to_string(string<N> fs) noexcept {
       return std::string(fs.data(), fs.size());
    }
-
-   template <auto V, bool B>
-   struct checker_v {
-      constexpr static inline bool value = B;
-   };
-
-   template <typename T, bool B>
-   struct checker {
-      constexpr static inline bool value = B;
-   };
-
-   template <auto T>
-   struct $ {};
-
-   template <typename CS, typename... Ts>
-   [[deprecated]] constexpr static inline void ct_dump() noexcept {}
-  
-   #define CT_DUMP(...) ct_dump< __VA_ARGS__>()
 
    namespace detail {
       template <std::integral I, string FS>
@@ -336,18 +364,15 @@ namespace astro::ct {
          }
          return result;
       }
-   } // namespace astro::ct::detail
+   } // namespace detail
 
    template <std::integral I, string FS>
    constexpr static inline I to_integral() noexcept {
-      constexpr auto digs = std::numeric_limits<I>::digits;
       if constexpr (FS[0] == '-') {
          constexpr auto res = detail::to_integral<std::size_t, FS.substr(range<1>{})>();
-         //static_assert(res < (1ul << digs), "Integral value out of range");
          return -static_cast<I>(res);
       } else {
          constexpr auto res = detail::to_integral<std::size_t, FS>();
-         //static_assert(res < (1ul << (sizeof(I)*8)), "Integral value out of range");
          return static_cast<I>(res);
       }
    }
@@ -359,11 +384,11 @@ namespace astro::ct {
 
 namespace astro::literals {
    template <ct::string S>
-   consteval inline auto operator""_fs() { return S; }
+   consteval inline ct::string<S.size()-1> operator""_fs() noexcept { 
+      return S.template trim_back<1>(); 
+   }
 
    template <char... Cs>
-   consteval inline auto operator""_int() {
-      return ct::integral<std::size_t, ct::cstr_to_int_v<Cs...>>{};
-   }
+   consteval inline auto operator""_int() { return ct::integral<std::size_t, ct::cstr_to_int_v<Cs...>>{}; }
 
 } // namespace astro::literals

@@ -61,7 +61,9 @@ struct no : public nn<int, float, char> {
 
 template <typename... Ptrs>
 struct ptrs {
-   constexpr ptrs(Ptrs&&... ptrs){}
+   constexpr ptrs(Ptrs&&... ptrs){
+      util::unused(std::forward<Ptrs>(ptrs)...);
+   }
    using ptr_types = std::tuple<Ptrs...>;
 };
 

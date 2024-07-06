@@ -51,8 +51,7 @@ target_include_directories(astronaught INTERFACE
 if(ASTRONAUGHT_ENABLE_PEDANTIC)
    target_compile_options(astronaught INTERFACE
       $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic -Werror>
-      $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wpedantic -Werror>
-      $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>)
+      $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wpedantic -Werror>)
 endif()
 
 target_compile_options(astronaught INTERFACE

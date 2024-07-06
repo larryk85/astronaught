@@ -92,7 +92,7 @@ TEST_CASE("UtilFormat Tests", "[utilformat_tests]") {
       CHECK(astro::util::format("Hello, World!"_fs) == "Hello, World!");
       CHECK(astro::util::format(std::string("Hello, {}"), "World!") == "Hello, World!");
       CHECK(astro::util::format(std::string_view{"{}, {}"}, "Hello", "World!") == "Hello, World!");
-      CHECK(astro::util::format(astro::ct::string{"{1}, {0}"}, "World!", "Hello") == "Hello, World!");
+      CHECK(astro::util::format(astro::ct::create_string("{1}, {0}"), "World!", "Hello") == "Hello, World!");
       CHECK(astro::util::format("{},{},{},{}", 0, 42.4f, "foo", 'c') == "0,42.4,foo,c");
    }
 }

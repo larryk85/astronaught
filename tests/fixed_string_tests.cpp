@@ -12,6 +12,41 @@ TEST_CASE("Compile Time String Tests", "[ct_string_tests]")
    {
       string str("Hello, World!");
 
+      CHECK(str.size() == 14);
+      CHECK(str[0] == 'H');
+      CHECK(str[1] == 'e');
+      CHECK(str[2] == 'l');
+      CHECK(str[3] == 'l');
+      CHECK(str[4] == 'o');
+      CHECK(str[5] == ',');
+      CHECK(str[6] == ' ');
+      CHECK(str[7] == 'W');
+      CHECK(str[8] == 'o');
+      CHECK(str[9] == 'r');
+      CHECK(str[10] == 'l');
+      CHECK(str[11] == 'd');
+      CHECK(str[12] == '!');
+      CHECK(str[13] == '\0');
+
+      string str2 = str;
+      CHECK(str2.size() == 14);
+
+      str2[0] = 'h';
+      CHECK(str2[0] == 'h');
+      CHECK(str[0] == 'H');
+
+      string str3 = std::move(str2);
+      CHECK(str3.size() == 14);
+      CHECK(str3[0] == 'h');
+
+      str3[0] = 'J';
+
+      CHECK(str3[0] == 'J');
+   }
+
+   SECTION("Check compile time string construction") {
+      constexpr auto str = create_string("Hello, World!");
+
       CHECK(str.size() == 13);
       CHECK(str[0] == 'H');
       CHECK(str[1] == 'e');
@@ -29,18 +64,6 @@ TEST_CASE("Compile Time String Tests", "[ct_string_tests]")
 
       string str2 = str;
       CHECK(str2.size() == 13);
-
-      str2[0] = 'h';
-      CHECK(str2[0] == 'h');
-      CHECK(str[0] == 'H');
-
-      string str3 = std::move(str2);
-      CHECK(str3.size() == 13);
-      CHECK(str3[0] == 'h');
-
-      str3[0] = 'J';
-
-      CHECK(str3[0] == 'J');
    }
 
    SECTION("Check compile time string comparison")
@@ -140,21 +163,21 @@ TEST_CASE("Compile Time String Tests", "[ct_string_tests]")
       CHECK(world2.size() == 5);
       CHECK(world2 == "world"_fs);
 
-      auto found = find<hello_world, hello>();
+      constexpr auto found = find<hello_world, hello>();
 
       CHECK(found.lower_bound == 0);
       CHECK(found.upper_bound == 5);
 
-      auto not_found = find<hello_world, "hey"_fs>();
+      constexpr auto not_found = find<hello_world, "hey"_fs>();
       CHECK(not_found == error_range_v);
 
-      auto found2 = find<hello_world, "low"_fs>();
+      constexpr auto found2 = find<hello_world, "low"_fs>();
       CHECK(found2.lower_bound == 3);
       CHECK(found2.upper_bound == 6);
 
-      auto found3 = rfind<hello_world, "ello"_fs>();
-      CHECK(found3.lower_bound == 0);
-      CHECK(found3.upper_bound == 4);
+      constexpr auto found3 = rfind<hello_world, "ello"_fs>();
+      CHECK(found3.lower_bound == 1);
+      CHECK(found3.upper_bound == 5);
 
       constexpr auto rev_hello = hello.reverse();
       CHECK(rev_hello == "olleh"_fs);

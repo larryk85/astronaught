@@ -168,7 +168,7 @@ namespace astro::cryptid {
 
             for (int i = 127; i >= 0; --i) {
                remainder._value.high = (remainder._value.high << 1) | (remainder._value.low >> 63);
-               remainder._value.low = (remainder._value.low << 1) | (dividend._value.high >> i) & 1;
+               remainder._value.low = (remainder._value.low << 1) | ((dividend._value.high >> i) & 1);
                if (remainder._value.high > other._value.high || (remainder._value.high == other._value.high && remainder._value.low >= other._value.low)) {
                   remainder -= other;
                   if (i >= 64) {
@@ -196,7 +196,7 @@ namespace astro::cryptid {
 
          std::string to_string() const noexcept {
             std::ostringstream oss;
-            oss << "0x" << std::hex << std::setw(16) << std::setfill('0') <<  _value.high 
+            oss << "0x" << std::hex << std::setw(16) << std::setfill('0') << _value.high 
                 << std::setw(16) << std::setfill('0') << _value.low;
             return oss.str();
          }
