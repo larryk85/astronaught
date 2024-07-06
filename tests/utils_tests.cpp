@@ -1,9 +1,9 @@
 #define CATCH_CONFIG_WINDOWS_SEH
 #include <catch2/catch_all.hpp>
 
-#include <versa/utils.hpp>
+#include <astro/utils.hpp>
 
-using namespace versa::util;
+using namespace astro::util;
 
 std::string foo(int, float);
 
@@ -15,9 +15,9 @@ struct bar {
 
 TEST_CASE("Misc Tests", "[misc_tests]") {
    SECTION("Check demangle tests") {
-      const auto demangled = versa::util::demangle<decltype(foo)>();
+      const auto demangled = astro::util::demangle<decltype(foo)>();
       std::cout << "Demangled: " << demangled << std::endl;
-      const auto demangled2 = versa::util::demangle<bar<decltype(foo), 2>>();
+      const auto demangled2 = astro::util::demangle<bar<decltype(foo), 2>>();
       std::cout << "Demangeld: " << demangled2 << std::endl;
    }
 }

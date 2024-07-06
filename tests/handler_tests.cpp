@@ -4,9 +4,9 @@
 #include <iostream>
 #include <fstream>
 
-#include <versa/async.hpp>
+#include <astro/async.hpp>
 
-using namespace versa::signals;
+using namespace astro::signals;
 
 #ifndef SIGSEGV
 #define SIGSEGV EXCEPTION_ACCESS_VIOLATION
@@ -46,27 +46,27 @@ TEST_CASE("Handler Tests", "[handler_tests]") {
 
       CHECK(a == 42);
 
-      VERSA_TRY(exec) {
+      ASTRO_TRY(exec) {
          a = 24;
-      } VERSA_CATCH {
+      } ASTRO_CATCH {
          CHECK(false); // This should never be called
       }
 
       CHECK(a == 24);
 
 
-      VERSA_TRY(exec) {
+      ASTRO_TRY(exec) {
          fail();
-      } VERSA_CATCH {
+      } ASTRO_CATCH {
          CHECK(true);
          a = 0xdeadbeef;
       }
 
       CHECK(a == 0xdeadbeef);
 
-      VERSA_TRY(exec) {
+      ASTRO_TRY(exec) {
          fail();
-      } VERSA_CATCH {
+      } ASTRO_CATCH {
          CHECK(true);
          a = 0xbeefbeef;
       }

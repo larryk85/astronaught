@@ -4,13 +4,13 @@
 #include <fstream>
 #include <source_location>
 
-#include <versa/info.hpp>
-#include <versa/utils.hpp>
-#include <versa/compile_time/traits.hpp>
-#include <versa/compile_time/map.hpp>
+#include <astro/info.hpp>
+#include <astro/utils.hpp>
+#include <astro/compile_time/traits.hpp>
+#include <astro/compile_time/map.hpp>
 
-using namespace versa;
-using namespace versa::ct;
+using namespace astro;
+using namespace astro::ct;
 
 TEST_CASE("Map Tests", "[map_tests]") {
    SECTION("Testing Constructors") {
@@ -55,7 +55,7 @@ TEST_CASE("Map Tests", "[map_tests]") {
    }
 
    SECTION("Testing pair_generator") {
-      using genny = versa::util::pair_generator<std::string_view, double>;
+      using genny = astro::util::pair_generator<std::string_view, double>;
       using elem_t = genny::pair_t;
       constexpr auto g = genny{};
       
@@ -78,7 +78,7 @@ TEST_CASE("Map Tests", "[map_tests]") {
    }
 
    SECTION("Testing Maps") {
-      using genny = versa::util::pair_generator<std::string_view, double>;
+      using genny = astro::util::pair_generator<std::string_view, double>;
       using elem_t = genny::pair_t;
       constexpr auto g = genny{};
 

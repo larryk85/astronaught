@@ -4,9 +4,9 @@
 #include <iostream>
 #include <type_traits>
 
-#include <versa/async.hpp>
+#include <astro/async.hpp>
 
-using namespace versa::async;
+using namespace astro::async;
 
 TEST_CASE("Async Tests", "[async_tests]") {
    SECTION("Check executor") {

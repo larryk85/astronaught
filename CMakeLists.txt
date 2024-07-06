@@ -14,9 +14,10 @@ find_package(Threads)
 link_libraries(Threads::Threads)
 
 include(CMakeDependentOption)
-option(ASTRONAUGHT_ENABLE_TESTS   "Enable building of unit tests" ON)
-option(ASTRONAUGHT_ENABLE_DOCS    "Enable creation of the documentation" ON)
-option(ASTRONAUGHT_ENABLE_INSTALL "Enable installation" ON)
+option(ASTRONAUGHT_ENABLE_TESTS    "Enable building of unit tests" ON)
+option(ASTRONAUGHT_ENABLE_DOCS     "Enable creation of the documentation" ON)
+option(ASTRONAUGHT_ENABLE_INSTALL  "Enable installation" ON)
+option(ASTRONAUGHT_ENABLE_PEDANTIC "Enable pedantic warnings" OFF)
 
 if (MSVC)
    if (CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -28,13 +29,13 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-include(astronaught.cmake)
+include(cmake/Astro.cmake)
 include(cmake/Doxy.cmake)
 include(cmake/Utils.cmake)
 
 astronaught_create_version_info(
-   NAMESPACE "astronaught"
-   SUFFIX "rc2"
+   NAMESPACE "astro"
+   SUFFIX    "rc2"
    GIT_HASH
 )
 
@@ -42,25 +43,28 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(astronaught INTERFACE)
 
-## pedantic
-### -Wall -Wextra -Wpedantic -Werror
-### /W4 /WX
-
 target_include_directories(astronaught INTERFACE
    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
    $<INSTALL_INTERFACE:include>)
 
+if(ASTRONAUGHT_ENABLE_PEDANTIC)
+   target_compile_options(astronaught INTERFACE
+      $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic -Werror>
+      $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wpedantic -Werror>
+      $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>)
+endif()
+
 target_compile_options(astronaught INTERFACE
    $<$<CXX_COMPILER_ID:MSVC>:/Zc:preprocessor>)
 
-#target_compile_definitions(astronaught INTERFACE
-#   $<$<CONFIG:Debug>:astronaughtLIB_DEBUG>
-#   $<$<CONFIG:Release>:astronaughtLIB_RELEASE>
-#   $<$<CONFIG:RelWithDebInfo>:astronaughtLIB_RELWITHDEBINFO>
-#   $<$<CONFIG:MinSizeRel>:astronaughtLIB_MINSIZEREL>)
+target_compile_definitions(astronaught INTERFACE
+   $<$<CONFIG:Debug>:ASTRONAUGHT_DEBUG>
+   $<$<CONFIG:Release>:ASTRONAUGHT_RELEASE>
+   $<$<CONFIG:RelWithDebInfo>:ASTRONAUGHT_RELWITHDEBINFO>
+   $<$<CONFIG:MinSizeRel>:ASTRONAUGHT_MINSIZEREL>)
 
-add_library(astronaught::astronaught ALIAS astronaught)
+add_library(astro::naught ALIAS astronaught)
 
 include(FetchContent)
 if(ASTRONAUGHT_ENABLE_TESTS)
@@ -92,7 +96,7 @@ include(GNUInstallDirs)
 # ##################################################################################################
 # Configure version info.
 # ##################################################################################################
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/modules/astronaught-config-version.cmake.in
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/astronaught-config-version.cmake.in
                ${CMAKE_CURRENT_BINARY_DIR}/astronaught-config-version.cmake @ONLY)
 
 # ##################################################################################################
@@ -104,7 +108,7 @@ if(ASTRONAUGHT_ENABLE_INSTALL)
 
    message(STATUS "Installing astronaught ...")
    set(astronaught_INCLUDE_DIRS ${CMAKE_INSTALL_INCLUDEDIR})
-   configure_package_config_file(modules/astronaught-config.cmake.in
+   configure_package_config_file(cmake/astronaught-config.cmake.in
       ${CMAKE_CURRENT_BINARY_DIR}/astronaught-config.cmake
       INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/astronaught
       PATH_VARS astronaught_INCLUDE_DIRS

@@ -2,14 +2,14 @@
 #define CATCH_CONFIG_WINDOWS_SEH
 #include <catch2/catch_all.hpp>
 
-#include <versa/types/variant.hpp>
+#include <astro/types/variant.hpp>
 
-using namespace versa::util;
-using namespace versa::types;
+using namespace astro::util;
+using namespace astro::types;
 
 TEST_CASE("Variant Tests", "[variant_tests]") {
    SECTION("Check basics") {
-      using var = versa::types::variant<int, float, double, std::string>;
+      using var = astro::types::variant<int, float, double, std::string>;
       int i = 14;
       var v = &i;
 

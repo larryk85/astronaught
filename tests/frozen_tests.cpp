@@ -4,11 +4,11 @@
 #include <iostream>
 #include <fstream>
 
-#include <versa/compile_time.hpp>
-#include <versa/utils.hpp>
+#include <astro/compile_time.hpp>
+#include <astro/utils.hpp>
 
-using namespace versa;
-using namespace versa::ct;
+using namespace astro;
+using namespace astro::ct;
 
 int test_func_0(int, float, char) { return 0; }
 float test_func_1(float, std::string, std::ofstream) { return 0; }
@@ -114,8 +114,8 @@ TEST_CASE("ct Tests", "[frozen_tests]") {
       std::cout << "Hello" << std::endl;
    };
 
-   //call_cb(versa::util::detail::closure_wrapper::ptr(cl));
-   //auto p = versa::util::closure<cl>();
+   //call_cb(astro::util::detail::closure_wrapper::ptr(cl));
+   //auto p = astro::util::closure<cl>();
    //std::cout << "func " << type_name_v<function_type<
       //&decltype(cl2)::operator()>> << std::endl;
    auto cb = closure::ptr<cl2>(cl2);

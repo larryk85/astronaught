@@ -1,0 +1,8 @@
+#pragma once
+
+#include <astro/version_info.hpp>
+#include <@NAMESPACE@/info/version.pp>
+
+namespace @NAMESPACE@::info {
+   constexpr static inline astro::info::version_info version_v = {@NAMESPACE@_MAJOR, @NAMESPACE@_MINOR, @NAMESPACE@_PATCH, @NAMESPACE@_TWEAK, @NAMESPACE@_SUFFIX, @NAMESPACE@_GIT_HASH};
+} // namespace @NAMESPACE@::info

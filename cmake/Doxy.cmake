@@ -1,6 +1,6 @@
 # FILEPATH: cmake/Doxy.cmake
 
-# This CMake script defines a function `versa_generate_doxygen_docs` that generates Doxygen documentation for a project.
+# This CMake script defines a function `astronaught_generate_doxygen_docs` that generates Doxygen documentation for a project.
 # The function takes several arguments, including options and values, to customize the documentation generation process.
 # It first parses the function arguments using `cmake_parse_arguments` and sets default values for the arguments if not provided.
 # Then, it ensures that Doxygen is available by using `find_package(Doxygen REQUIRED)`.
@@ -14,7 +14,7 @@
 
 include(cmake/Utils.cmake)
 
-function(versa_generate_doxygen_docs)
+function(astronaught_generate_doxygen_docs)
    # Define argument types
    set(options ONLY_PROVIDED_DIRS VERBOSE)
    set(oneValueArgs NAME EXTRA_FILES CONFIG_NAME DOX_DIR DOX_OUTPUT_DIR)
@@ -30,7 +30,7 @@ function(versa_generate_doxygen_docs)
       set(VERBOSE FALSE)
    endif()
 
-   versa_project_include_dirs(include_dirs)
+   astronaught_project_include_dirs(include_dirs)
    if (VERBOSE)
       message(STATUS "Found Project Include Directories: ${include_dirs}")
    endif()
@@ -97,10 +97,10 @@ function(versa_generate_doxygen_docs)
    endif()
 
    # Configure Doxygen file and variables
-   set(DOX_FILE ${DOX_OUTPUT_DIR}/Doxyfile)
-   set(DOX_INDEX_FILE ${DOX_OUTPUT_DIR}/html/index.html)
+   set(DOX_FILE            ${DOX_OUTPUT_DIR}/Doxyfile)
+   set(DOX_INDEX_FILE      ${DOX_OUTPUT_DIR}/html/index.html)
    set(DOX_PROJECT_VERSION ${PROJECT_VERSION})
-   set(DOX_PROJECT_BRIEF ${PROJECT_DESCRIPTION})
+   set(DOX_PROJECT_BRIEF   ${PROJECT_DESCRIPTION})
 
    # Configure the Doxyfile with current settings
    configure_file(${DOX_CONFIG} ${DOX_FILE} @ONLY)

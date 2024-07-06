@@ -2,10 +2,10 @@
 #define CATCH_CONFIG_WINDOWS_SEH
 #include <catch2/catch_all.hpp>
 
-#include <versa/serial.hpp>
+#include <astro/serial.hpp>
 
-using namespace versa::util;
-using namespace versa::serial;
+using namespace astro::util;
+using namespace astro::serial;
 
 TEST_CASE("Serial Tests", "[serial_tests]") {
    SECTION("Check basics") {
@@ -46,6 +46,6 @@ TEST_CASE("Serial Tests", "[serial_tests]") {
       std::string str = "Hello, World!";
       a.push(str);
 
-      CHECK(a.pos() == sizeof(f)+sizeof(d)+str.size());
+      CHECK(static_cast<std::size_t>(a.pos()) == sizeof(f)+sizeof(d)+str.size());
    }
 }

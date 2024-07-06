@@ -4,10 +4,10 @@
 #define CATCH_CONFIG_WINDOWS_SEH
 #include <catch2/catch_all.hpp>
 
-#include <versa/utils/easing.hpp>
+#include <astro/utils/easing.hpp>
 
-using namespace versa;
-using namespace versa::util;
+using namespace astro;
+using namespace astro::util;
 
 #define INTERP_CHECK(interp_type, type, exp)             \
    for (std::size_t i=0; i < 32; i++) {                  \

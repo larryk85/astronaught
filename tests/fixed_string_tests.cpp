@@ -1,10 +1,10 @@
 #define CATCH_CONFIG_WINDOWS_SEH
 #include <catch2/catch_all.hpp>
 
-#include <versa/compile_time/string.hpp>
+#include <astro/compile_time/string.hpp>
 
-using namespace versa::util;
-using namespace versa::ct;
+using namespace astro::util;
+using namespace astro::ct;
 
 TEST_CASE("Compile Time String Tests", "[ct_string_tests]")
 {
@@ -97,8 +97,8 @@ TEST_CASE("Compile Time String Tests", "[ct_string_tests]")
 
    SECTION("Check compile time strings operations")
    {
-      using namespace versa::literals;
-      using namespace versa::ct;
+      using namespace astro::literals;
+      using namespace astro::ct;
 
       constexpr string hello = "hello"_fs;
       constexpr string world = "world"_fs;
@@ -162,9 +162,9 @@ TEST_CASE("Compile Time String Tests", "[ct_string_tests]")
 
    SECTION("Check compile time string conversions and printing")
    {
-      using namespace versa::literals;
-      using namespace versa::util;
-      using namespace versa::ct;
+      using namespace astro::literals;
+      using namespace astro::util;
+      using namespace astro::ct;
 
       constexpr string hello = "hello"_fs;
       constexpr string world = "world"_fs;

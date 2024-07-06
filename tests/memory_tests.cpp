@@ -4,11 +4,11 @@
 #include <iostream>
 #include <fstream>
 
-#include <versa/info.hpp>
-#include <versa/utils.hpp>
-#include <versa/memory.hpp>
+#include <astro/info.hpp>
+#include <astro/utils.hpp>
+#include <astro/memory.hpp>
 
-using namespace versa::memory;
+using namespace astro::memory;
 
 template <std::size_t N>
 struct test_alloc : allocator_base< test_alloc<N> > {
@@ -125,7 +125,7 @@ TEST_CASE("Allocator Tests", "[allocator_tests]") {
 }
 
 TEST_CASE("discriminant Tests", "[discriminant_tests]") {
-   using namespace versa::memory;
+   using namespace astro::memory;
    SECTION("Check discriminant") {
       auto ptr = new int(10);
       auto d = tagged_ptr{ptr, 1};

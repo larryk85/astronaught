@@ -4,9 +4,9 @@
 #include <iostream>
 #include <fstream>
 
-#include <versa/async.hpp>
+#include <astro/async.hpp>
 
-using namespace versa::util;
+using namespace astro::util;
 
 TEST_CASE("Process Tests", "[process_tests]") {
    SECTION("Check process_base") {

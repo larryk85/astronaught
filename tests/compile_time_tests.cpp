@@ -3,11 +3,11 @@
 
 #include <iostream>
 
-#include <versa/compile_time.hpp>
+#include <astro/compile_time.hpp>
 
-using namespace versa;
-using namespace versa::ct;
-using namespace versa::util;
+using namespace astro;
+using namespace astro::ct;
+using namespace astro::util;
 
 struct TestStruct {
    int a;
@@ -69,7 +69,7 @@ struct foobar : public reflectable<foobar> {
    int a;
    float b;
    double c;
-   VERSA_REFL(a,b,c)
+   ASTRO_REFL(a,b,c)
 };
 
 TEST_CASE("Compile_Time Tests", "[compile_time_tests]") {
@@ -98,7 +98,6 @@ TEST_CASE("Compile_Time Tests", "[compile_time_tests]") {
 
    SECTION("Check values") {
       constexpr int a = 10;
-      constexpr float b = 3.14f;
       constexpr double c = 3.14;
 
       CHECK(value_of_v<a> == "0xa");

@@ -4,15 +4,15 @@
 #include <iostream>
 #include <type_traits>
 
-#include <versa/utils/format.hpp>
-#include <versa/utils/misc.hpp>
-#include <versa/compile_time.hpp>
-#include <versa/logger.hpp>
+#include <astro/utils/format.hpp>
+#include <astro/utils/misc.hpp>
+#include <astro/compile_time.hpp>
+#include <astro/logger.hpp>
 
-using namespace versa::log;
+using namespace astro::log;
 
 /* If you add new tests or any code add them after line 42 */
-versa::log::call_info test_func(int x, const std::string& y) {
+astro::log::call_info test_func(int x, const std::string& y) {
    (void)x;
    (void)y;
    #line 15
@@ -47,7 +47,7 @@ TEST_CASE("Logger Tests", "[logger_tests]") {
 }
 
 TEST_CASE("Format Tests", "[format_tests]") {
-   using namespace versa::literals;
+   using namespace astro::literals;
    SECTION("Check message_wrapper") {
       #line 47
       auto msg = message_wrapper{"Hello, World!"};
@@ -87,13 +87,13 @@ TEST_CASE("Format Tests", "[format_tests]") {
 
 ///< TODO Add to 'utils' tests
 TEST_CASE("UtilFormat Tests", "[utilformat_tests]") {
-   using namespace versa::literals;
+   using namespace astro::literals;
    SECTION("Check format") {
-      CHECK(versa::util::format("Hello, World!"_fs) == "Hello, World!");
-      CHECK(versa::util::format(std::string("Hello, {}"), "World!") == "Hello, World!");
-      CHECK(versa::util::format(std::string_view{"{}, {}"}, "Hello", "World!") == "Hello, World!");
-      CHECK(versa::util::format(versa::ct::string{"{1}, {0}"}, "World!", "Hello") == "Hello, World!");
-      CHECK(versa::util::format("{},{},{},{}", 0, 42.4f, "foo", 'c') == "0,42.4,foo,c");
+      CHECK(astro::util::format("Hello, World!"_fs) == "Hello, World!");
+      CHECK(astro::util::format(std::string("Hello, {}"), "World!") == "Hello, World!");
+      CHECK(astro::util::format(std::string_view{"{}, {}"}, "Hello", "World!") == "Hello, World!");
+      CHECK(astro::util::format(astro::ct::string{"{1}, {0}"}, "World!", "Hello") == "Hello, World!");
+      CHECK(astro::util::format("{},{},{},{}", 0, 42.4f, "foo", 'c') == "0,42.4,foo,c");
    }
 }
 

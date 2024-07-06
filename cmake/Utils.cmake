@@ -1,4 +1,19 @@
-function(versa_get_all_targets targets)
+# FILEPATH: cmake/Utils.cmake
+
+# Function to get all targets in the project
+#
+# This function retrieves all targets in the project by traversing the directory structure
+# and collecting the targets from each directory. It stores the result in the specified variable.
+#
+# Arguments:
+# - targets: The variable to store the list of targets
+#
+# Example usage:
+# ```
+# astronaught_get_all_targets(all_targets)
+# message("All targets: ${all_targets}")
+# ```
+function(astronaught_get_all_targets targets)
    set(dir_queue ${PROJECT_SOURCE_DIR})
    set(result)
 
@@ -15,10 +30,28 @@ function(versa_get_all_targets targets)
    set(${targets} ${result} PARENT_SCOPE)
 endfunction()
 
-function(versa_is_test target is_test)
+# Function to check if a target is a test target
+#
+# This function checks if the specified target is a test target by inspecting the
+# `astronaught_IS_TEST` property of the target. It sets the result in the specified variable.
+#
+# Arguments:
+# - target: The target to check
+# - is_test: The variable to store the result (TRUE or FALSE)
+#
+# Example usage:
+# ```
+# astronaught_is_test(my_target is_test)
+# if (is_test)
+#     message("Target is a test")
+# else()
+#     message("Target is not a test")
+# endif()
+# ```
+function(astronaught_is_test target is_test)
    get_property(is_test_ 
       TARGET ${target} 
-      PROPERTY VERSA_IS_TEST)
+      PROPERTY astronaught_IS_TEST)
    if (${is_test_})
       set(${is_test} TRUE PARENT_SCOPE)
    else()
@@ -26,7 +59,25 @@ function(versa_is_test target is_test)
    endif()
 endfunction()
 
-function(versa_is_lib target is_lib)
+# Function to check if a target is a library target
+#
+# This function checks if the specified target is a library target by inspecting the
+# `TYPE` property of the target. It sets the result in the specified variable.
+#
+# Arguments:
+# - target: The target to check
+# - is_lib: The variable to store the result (TRUE or FALSE)
+#
+# Example usage:
+# ```
+# astronaught_is_lib(my_target is_lib)
+# if (is_lib)
+#     message("Target is a library")
+# else()
+#     message("Target is not a library")
+# endif()
+# ```
+function(astronaught_is_lib target is_lib)
    get_target_property(type_prop ${target} TYPE)
    if (${type_prop} STREQUAL "INTERFACE_LIBRARY" OR
        ${type_prop} STREQUAL "STATIC_LIBRARY" OR
@@ -38,7 +89,21 @@ function(versa_is_lib target is_lib)
    endif()
 endfunction()
 
-function(versa_include_dirs target)
+# Function to retrieve include directories for a target
+#
+# This function retrieves the include directories for the specified target. It distinguishes
+# between INTERFACE_LIBRARY targets and other targets, and stores the result in the specified variable.
+#
+# Arguments:
+# - target: The target to retrieve include directories for
+# - include_dirs: The variable to store the include directories
+#
+# Example usage:
+# ```
+# astronaught_include_dirs(my_target include_dirs)
+# message("Include directories: ${include_dirs}")
+# ```
+function(astronaught_include_dirs target include_dirs)
    get_property(type_prop TARGET ${target} PROPERTY TYPE)
    if (${type_prop} STREQUAL "INTERFACE_LIBRARY")
      set(INCLUDE_DIRS INTERFACE_INCLUDE_DIRECTORIES)
@@ -67,7 +132,21 @@ function(versa_include_dirs target)
    set(${ARGV1} ${build_interface_dirs} PARENT_SCOPE)
 endfunction()
 
-function(versa_project_include_dirs include_dirs)
+# Function to retrieve project-wide include directories
+#
+# This function retrieves the project-wide include directories by traversing the directory structure
+# and collecting the include directories from each library target. It excludes include directories
+# that belong to dependencies. It stores the result in the specified variable.
+#
+# Arguments:
+# - include_dirs: The variable to store the project-wide include directories
+#
+# Example usage:
+# ```
+# astronaught_project_include_dirs(project_include_dirs)
+# message("Project include directories: ${project_include_dirs}")
+# ```
+function(astronaught_project_include_dirs include_dirs)
    set(dir_queue ${PROJECT_SOURCE_DIR})
    set(result)
 
@@ -81,10 +160,10 @@ function(versa_project_include_dirs include_dirs)
       get_property(sub_targets DIRECTORY ${current_dir} PROPERTY BUILDSYSTEM_TARGETS)
       list(REMOVE_DUPLICATES sub_targets)
       foreach(target ${sub_targets})
-         versa_is_test(${target} is_test)
-         versa_is_lib(${target} is_lib)
+         astronaught_is_test(${target} is_test)
+         astronaught_is_lib(${target} is_lib)
          if(NOT is_test AND is_lib)
-            versa_include_dirs(${target} inc_dirs)
+            astronaught_include_dirs(${target} inc_dirs)
             if(inc_dirs)
                string(REGEX MATCH ".*\/_deps\/.*" is_dep ${inc_dirs})
             endif()

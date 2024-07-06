@@ -1,11 +1,11 @@
 #define CATCH_CONFIG_WINDOWS_SEH
 #include <catch2/catch_all.hpp>
 
-#include <versa/compile_time.hpp>
-#include <versa/cryptid/uint128.hpp>
+#include <astro/compile_time.hpp>
+#include <astro/cryptid/uint128.hpp>
 
-using namespace versa;
-using namespace versa::cryptid;
+using namespace astro;
+using namespace astro::cryptid;
 
 
 struct none_t {
@@ -91,7 +91,7 @@ TEST_CASE("Cryptid UINT128 Tests", "[cryptid_uint128_tests]") {
       CHECK(ih.low() == 0);
       CHECK(ih.high() == 45);
 
-      using namespace versa::literals;
+      using namespace astro::literals;
 
       uint128_t i = uint128_t{54, 45};
       uint128_t i2 = 0x000000000000002d0000000000000036_ui128;
