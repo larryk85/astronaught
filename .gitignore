@@ -38,7 +38,9 @@ build-*
 codeql_*
 codeql-*
 _codeql*
+codeql/*
 .cache/*
+astro-ql/*
 
 .fake
 .continue/*
