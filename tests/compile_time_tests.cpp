@@ -80,7 +80,7 @@ TEST_CASE("Compile_Time Tests", "[compile_time_tests]") {
 
       CHECK(nameof<int>() == "int");
       CHECK(nameof<decltype(a)>() == "const int");
-      CHECK(nameof<decltype(&a)>() == "const int*");
+      CHECK((nameof<decltype(&a)>() == "const int*" || nameof<decltype(&a)>() == "const int *"));
       CHECK((valueof<a>() == "0xa" || valueof<a>() == "10"));
 
       CHECK(nameof<TestStruct>() == "TestStruct");
