@@ -47,7 +47,7 @@ inline static std::optional<std::string> execute_quiet(std::string_view prog, co
       return std::nullopt;
    }
 
-   constexpr size_t             array_size = 64;
+   constexpr size_t             array_size = 1024;
    std::array<char, array_size> buff{};
 
    std::size_t n       = 0;

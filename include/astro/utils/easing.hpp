@@ -17,13 +17,27 @@ namespace astro::util {
       constexpr static inline NT in_out_linear(NT x) noexcept { return x; }
       /// @brief quadratic y=x^2
       constexpr static inline NT in_quad(NT x) noexcept { return x * x; }
-      /// @brief quadratic y=-x^2+2x
+      /**
+       * @brief quadratic y=-x^2+2x
+       *
+       * This function calculates the quadratic easing out equation for a given
+       * value 'x'. The quadratic easing out equation is defined as:
+       *
+       *     y = -(x^2 + 2x)
+       *
+       * This function returns the value of 'y' which represents the easing
+       * out value for the given input 'x'.
+       *
+       * @param x The input value for which the easing out value is to be calculated.
+       *
+       * @return The easing out value calculated for the given input 'x'.
+       */
       constexpr static inline NT out_quad(NT x) noexcept { return -(x * (x-2)); }
       /// @brief quadratic y=2*(x^2)       ; [0, 0.5)
       ///        quadratic y=-(2*x^2)+4x-1 ; [0.5, 1]
       constexpr static inline NT in_out_quad(NT x) noexcept { 
-         NT q = 2*in_quad(x);
-         return (x<0.5) ? q : (-q + (4*x)) - 1; 
+         NT x2 = x * x;
+         return (x<0.5) ? 2*x2 : -2*x2 + 4*x - 1; 
       }
 
       /// @brief sine y=1-cos((xpi)/2)
