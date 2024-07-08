@@ -18,7 +18,7 @@ TEST_CASE("Async Tests", "[async_tests]") {
          return int64_t(x+ui)+y.size();
       }};
 
-      auto v1= exec.exec(42, "Call from exec(...)");
+      auto v1 = exec.exec(42, "Call from exec(...)");
       auto v2 = exec(24, "Call from operator()(...)");
       auto v3 = exec.exec_sync(12, "Call from exec_sync(...)");
 

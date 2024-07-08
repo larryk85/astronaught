@@ -392,3 +392,4 @@ namespace astro::literals {
    consteval inline auto operator""_int() { return ct::integral<std::size_t, ct::cstr_to_int_v<Cs...>>{}; }
 
 } // namespace astro::literals
+

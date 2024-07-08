@@ -4,6 +4,7 @@
 #include <fstream>
 #include <source_location>
 
+//#include <astro/debug.hpp>
 #include <astro/info.hpp>
 #include <astro/utils.hpp>
 #include <astro/compile_time/traits.hpp>
@@ -129,42 +130,4 @@ TEST_CASE("Util Tests", "[util_tests]") {
    REQUIRE(a == 0);
    check(false, [&a]() { a = 1; });
    REQUIRE(a == 1);
-
-/*
-   enum class foo {
-      a,
-      b,
-      c,
-      d = -44,
-      e = 100,
-      f = 200
-   };
-
-   //astro::ct::detail::enums::<foo>(std::make_index_sequence<ASTRO_ENUM_MAX_ELEMS>());
-   //constexpr auto mapp = astro::ct::detail::enums::mappings<foo>();
-
-   //constexpr auto nm = mapp[0].first.first;
-
-   std::cout << "FFD " << astro::ct::type_name_v<foo, false> << std::endl;
-   std::cout << "FFE " << astro::ct::enum_name_v<static_cast<foo>(1), false> << std::endl;
-   std::cout << "FFG " << astro::ct::enum_name_v<static_cast<foo>(1)> << std::endl;
-
-   //std::cout << "name(22) " << astro::ct::detail::enums::name<foo, 0>() << std::endl;
-   foo fa = foo::a;
-
-   auto name = magic_enum::enum_name(fa);
-   auto value = magic_enum::enum_integer(fa);
-   auto color2 = magic_enum::enum_cast<foo>("a");
-   auto color3 = magic_enum::enum_cast<foo>(0);
-   auto colors = magic_enum::enum_values<foo>();
-   auto names = magic_enum::enum_names<foo>();
-
-   std::cout << "name " << name << " value " << value << std::endl;
-
-   std::cout << "HH " << astro::ct::name<foo>() << std::endl;
-   std::cout << "HG " << astro::ct::name<foo::a>() << std::endl;
-   std::cout << "HA " << magic_enum::enum_name(foo::d) << std::endl;
-   std::cout << "HB " << magic_enum::enum_name(foo::e) << std::endl;
-   std::cout << "HC " << magic_enum::enum_name(foo::f) << std::endl;
-*/   
 }
