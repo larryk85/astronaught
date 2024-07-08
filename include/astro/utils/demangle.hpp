@@ -31,7 +31,7 @@ namespace astro::util {
    static std::string demangle(std::string_view name) noexcept {
       int status;
       std::size_t len;
-      char* nm = abi::__cxa_demangle(name.data(), nullptr, len, &status);
+      char* nm = abi::__cxa_demangle(name.data(), nullptr, &len, &status);
       if (status) {
          return {nm, len};
       } else {

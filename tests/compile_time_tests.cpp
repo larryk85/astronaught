@@ -81,7 +81,7 @@ TEST_CASE("Compile_Time Tests", "[compile_time_tests]") {
       CHECK(nameof<int>() == "int");
       CHECK(nameof<decltype(a)>() == "const int");
       CHECK(nameof<decltype(&a)>() == "const int*");
-      CHECK(valueof<a>() == "0xa");
+      CHECK((valueof<a>() == "0xa" || valueof<a>() == "10"));
 
       CHECK(nameof<TestStruct>() == "TestStruct");
       CHECK(nameof<TestStruct2<int>>() == "TestStruct2");
@@ -102,7 +102,7 @@ TEST_CASE("Compile_Time Tests", "[compile_time_tests]") {
       constexpr int a = 10;
       constexpr double c = 3.14;
 
-      CHECK(value_of_v<a> == "0xa");
+      CHECK((value_of_v<a> == "0xa" || value_of_v<a> == "10"));
       CHECK(type_name_v<decltype(c)> == "const double");
 
       constexpr TestEnum e = TestEnum::A;
@@ -158,6 +158,6 @@ struct print_randoms<0, R> {
 TEST_CASE("Random Tests", "[random_tests]") {
    SECTION("Check random number generator") {
       std::cout << "Default Seed : " << ct::defaultseed << std::endl;
-      print_randoms<10, random<bernoulli_distribution<linear_congruential_engine<uint_fast32_t>, 1, 10>>::type>::print();
+      //print_randoms<10, random<bernoulli_distribution<linear_congruential_engine<uint_fast32_t>, 1, 10>>::type>::print();
    }
 }

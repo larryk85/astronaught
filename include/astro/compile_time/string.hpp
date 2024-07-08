@@ -78,6 +78,12 @@ namespace astro::ct {
       { R::upper_bound } -> std::convertible_to<std::size_t>;
    };
 
+   template <class T>
+   concept string_type = requires {
+      { T::size_v } -> std::convertible_to<std::size_t>;
+      { T::_data } -> std::convertible_to<const char*>;
+   };
+
    template <std::size_t N>
    constexpr static inline string<N-1> create_string(const char(&str)[N]) noexcept;
 
@@ -180,7 +186,7 @@ namespace astro::ct {
       }
 
       template <auto O>
-      requires (string_type<decltype(O)>)
+      requires (ct::string_type<decltype(O)>)
       ASTRO_CT_CONST inline bool starts_with() const noexcept {
          if constexpr (size_v < O.size_v) {
             return false;
@@ -204,7 +210,7 @@ namespace astro::ct {
       }
 
       template <auto O>
-      requires (string_type<decltype(O)>)
+      requires (ct::string_type<decltype(O)>)
       ASTRO_CT_CONST inline bool ends_with() const noexcept {
          if constexpr (size_v < O.size_v) {
             return false;
@@ -312,14 +318,8 @@ namespace astro::ct {
       constexpr inline value_type operator()() const noexcept { return value; }
    };
 
-   template <class T>
-   concept string_type = requires {
-      { T::size_v } -> std::convertible_to<std::size_t>;
-      { T::_data } -> std::convertible_to<const char*>;
-   };
-
    template <auto A, auto B, std::size_t I = 0>
-   requires (string_type<decltype(A)> && string_type<decltype(B)>)
+   requires (ct::string_type<decltype(A)> && ct::string_type<decltype(B)>)
    ASTRO_CT_CONST static inline auto find() noexcept {
       constexpr auto b_sz = decltype(B)::size_v;
 
@@ -335,7 +335,7 @@ namespace astro::ct {
    }
 
    template <auto A, auto B, std::size_t I = decltype(A)::size_v>
-   requires (string_type<decltype(A)> && string_type<decltype(B)>)
+   requires (ct::string_type<decltype(A)> && ct::string_type<decltype(B)>)
    ASTRO_CT_CONST static inline auto rfind() noexcept {
       constexpr auto b_sz = decltype(B)::size_v;
 
