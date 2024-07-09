@@ -9,9 +9,9 @@
 namespace astro::io {
 
    enum class stdio : uint32_t {
-      stdout = 1,
-      stderr = 2,
-      stdlog = 3
+      out = 1,
+      err = 2,
+      log = 3
    };
    
    template <typename Derived>

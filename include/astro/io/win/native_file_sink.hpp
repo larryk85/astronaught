@@ -2,7 +2,9 @@
 
 #include "../sink.hpp"
 
+#define NOMINMAX
 #include <windows.h>
+#undef NOMINMAX
 
 namespace astro::io {
 
@@ -10,8 +12,8 @@ namespace astro::io {
       native_file_sink(HANDLE handle) noexcept 
          : handle(handle) {}
 
-      constexpr inline int32_t write_impl(std::string_view s) noexcept {
-         int32_t result = 0;
+      inline int32_t write_impl(std::string_view s) noexcept {
+         DWORD result = 0;
          if (handle == INVALID_HANDLE_VALUE)
             return -1;
          if (::WriteFile(handle, s.data(), static_cast<DWORD>(s.size()), &result, nullptr))
@@ -26,11 +28,11 @@ namespace astro::io {
    inline namespace native {
       template <stdio Sink>
       constexpr inline auto get_stdio_sink() noexcept {
-         if constexpr (Sink == stdio::stdout) {
+         if constexpr (Sink == stdio::out) {
             return native_file_sink{GetStdHandle(STD_OUTPUT_HANDLE)};
-         } else if constexpr (Sink == stdio::stderr) {
+         } else if constexpr (Sink == stdio::err) {
             return native_file_sink{GetStdHandle(STD_ERROR_HANDLE)};
-         } else if constexpr (Sink == stdio::stdlog) {
+         } else if constexpr (Sink == stdio::log) {
             return native_file_sink{GetStdHandle(STD_ERROR_HANDLE)};
          }
       }

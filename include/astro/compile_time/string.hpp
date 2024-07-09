@@ -257,6 +257,10 @@ namespace astro::ct {
          return concat(other);
       }
 
+      ASTRO_CT_CONST inline operator std::string_view() const noexcept {
+         return to_string_view();
+      }
+
       ASTRO_CT_CONST inline std::string_view to_string_view() const noexcept {
          return std::string_view(data(), size_v);
       }
@@ -385,7 +389,7 @@ namespace astro::ct {
 namespace astro::literals {
    template <ct::string S>
    consteval inline ct::string<S.size()-1> operator""_fs() noexcept { 
-      return S.template trim_back<1>(); 
+      return S.template trim_back<1>(); // remove the null-terminator
    }
 
    template <char... Cs>

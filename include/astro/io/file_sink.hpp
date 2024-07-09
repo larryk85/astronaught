@@ -22,19 +22,19 @@ namespace astro::io {
    namespace cstd {
       template <stdio Sink>
       constexpr inline auto get_stdio_sink() noexcept {
-         if constexpr (Sink == stdio::stdout) {
-            return file_sink{::stdout};
-         } else if constexpr (Sink == stdio::stderr) {
-            return file_sink{::stderr};
-         } else if constexpr (Sink == stdio::stdlog) {
-            return file_sink{::stderr};
+         if constexpr (Sink == stdio::out) {
+            return file_sink{stdout};
+         } else if constexpr (Sink == stdio::err) {
+            return file_sink{stderr};
+         } else if constexpr (Sink == stdio::log) {
+            return file_sink{stderr};
          }
       }
    } // namespace cstd
 
 } // namespace astro::io
 
-#if ASTRO_OS == ASTRO_OS_WINDOWS
+#if ASTRO_OS == ASTRO_WINDOWS_BUILD
 #include "win/native_file_sink.hpp"
 #else
 #include "unix/native_file_sink.hpp"

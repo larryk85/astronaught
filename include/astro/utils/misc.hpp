@@ -6,6 +6,7 @@
 #include <array>
 #include <compare>
 #include <concepts>
+#include <random>
 #include <stdexcept>
 #include <string>
 #include <string_view>

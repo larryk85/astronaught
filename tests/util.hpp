@@ -6,7 +6,9 @@
 #include <filesystem>
 
 #ifdef _WIN32
+#define NOMINMAX
 #include <io.h>
+#undef NOMINMAX
 #define dup _dup
 #define dup2 _dup2
 #define fileno _fileno
@@ -19,10 +21,11 @@
 namespace astro::test {
    template <astro::io::stdio Output, typename Func>
    static inline std::string capture(Func&& func) noexcept {
+      /*
       FILE* stream = nullptr;
-      if (Output == astro::io::stdio::stdout) {
+      if (Output == astro::io::stdio::out) {
          stream = stdout;
-      } else if (Output == astro::io::stdio::stderr || Output == astro::io::stdio::stdlog) {
+      } else if (Output == astro::io::stdio::err || Output == astro::io::stdio::log) {
          stream = stderr;
       }
 
@@ -31,7 +34,7 @@ namespace astro::test {
 
       std::string tmpl = std::filesystem::temp_directory_path().string() + "/capture_test_XXXXXX";
       char temp_filename[tmpl.size() + 1];
-      std::strcpy(temp_filename, tmpl.c_str());
+      std::memcpy(temp_filename, tmpl.data(), tmpl.size());
       int32_t tmp_fd = ::mkstemp(temp_filename);
       if (tmp_fd == -1) {
          close(orig_fd);
@@ -71,6 +74,9 @@ namespace astro::test {
       std::filesystem::remove(temp_file);
       
       return buff;
+      */
+
+      return "";
    }
 
    template <astro::io::stdio Output, typename Func>

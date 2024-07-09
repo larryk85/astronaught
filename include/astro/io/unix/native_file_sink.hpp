@@ -23,11 +23,11 @@ namespace astro::io {
    inline namespace native {
       template <stdio Sink>
       constexpr inline auto get_stdio_sink() noexcept {
-         if constexpr (Sink == stdio::stdout) {
+         if constexpr (Sink == stdio::out) {
             return native_file_sink{::stdout};
-         } else if constexpr (Sink == stdio::stderr) {
+         } else if constexpr (Sink == stdio::err) {
             return native_file_sink{::stderr};
-         } else if constexpr (Sink == stdio::stdlog) {
+         } else if constexpr (Sink == stdio::log) {
             return native_file_sink{::stderr};
          }
       }
