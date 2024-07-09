@@ -7,7 +7,7 @@
 #include "../utils/misc.hpp"
 #include "../compile_time/traits.hpp"
 
-namespace astro::log {
+namespace astro::io {
    namespace detail {
       constexpr static inline auto only_file_name(std::string_view path) noexcept {
          for (std::size_t i=path.size()-1; i>0; --i) {

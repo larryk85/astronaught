@@ -1,6 +1,8 @@
-#include <string>
 #define CATCH_CONFIG_WINDOWS_SEH
 #include <catch2/catch_all.hpp>
+
+#include <iostream>
+#include <string>
 
 #include <astro/types/variant.hpp>
 

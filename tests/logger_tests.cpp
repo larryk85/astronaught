@@ -7,12 +7,12 @@
 #include <astro/utils/format.hpp>
 #include <astro/utils/misc.hpp>
 #include <astro/compile_time.hpp>
-#include <astro/logger.hpp>
+#include <astro/io.hpp>
 
-using namespace astro::log;
+using namespace astro::io;
 
 /* If you add new tests or any code add them after line 42 */
-astro::log::call_info test_func(int x, const std::string& y) {
+astro::io::call_info test_func(int x, const std::string& y) {
    (void)x;
    (void)y;
    #line 15

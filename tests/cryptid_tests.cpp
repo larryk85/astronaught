@@ -1,6 +1,9 @@
 #define CATCH_CONFIG_WINDOWS_SEH
 #include <catch2/catch_all.hpp>
 
+#include <iostream>
+#include <iomanip>
+
 #include <astro/compile_time.hpp>
 #include <astro/cryptid/uint128.hpp>
 

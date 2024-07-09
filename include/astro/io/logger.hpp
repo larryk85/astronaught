@@ -8,7 +8,7 @@
 #include "call_info.hpp"
 #include "term_color.hpp"
 
-namespace astro::log {
+namespace astro::io {
    struct message_wrapper {
       constexpr inline message_wrapper(std::string_view value, call_info info={}) noexcept
          : value(value), info(info) {}

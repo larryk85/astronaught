@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <stdexcept>
 
-namespace astro::log {
+namespace astro::io {
    enum class style : uint8_t {
       reset = 0,
       bold  = 1,

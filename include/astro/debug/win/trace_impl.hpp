@@ -16,14 +16,14 @@ namespace astro::debug {
    constexpr static inline auto MAX_SYMBOL_NAME_LENGTH = 512;
    
    template <std::size_t MaxFrames = 128>
-   class tracer_impl {
+   class backtracer {
       public:
          /**
           * Function that performs a backtrace by capturing the stack frames.
           *
           * @constructor
           */
-         backtrace() {
+         backtracer() {
             _proc = GetCurrentProcess();
             SymInitialize(_proc, nullptr, true);
             _frames = CaptureStackBackTrace(0, MaxFrames, _stack.data(), nullptr);

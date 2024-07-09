@@ -14,10 +14,4 @@ struct bar {
 };
 
 TEST_CASE("Misc Tests", "[misc_tests]") {
-   SECTION("Check demangle tests") {
-      const auto demangled = astro::util::demangle<decltype(foo)>();
-      std::cout << "Demangled: " << demangled << std::endl;
-      const auto demangled2 = astro::util::demangle<bar<decltype(foo), 2>>();
-      std::cout << "Demangeld: " << demangled2 << std::endl;
-   }
 }
