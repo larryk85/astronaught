@@ -71,6 +71,16 @@ TEST_CASE("Random String Tests", "[utils][random_string]") {
    }
 }
 
+TEST_CASE("File Tests", "[utils][file]") {
+   SECTION("Check file generation") {
+      auto f = astro::util::fopen("test.txt", astro::util::fmode_read);
+      CHECK(f != 0);
+      auto df = astro::util::fduplicate(f);
+      CHECK(df != 0);
+      CHECK(astro::util::fclose(f));
+   }
+}
+
 TEST_CASE("Random File Tests", "[utils][random_string][temporary_file]") {
    SECTION("Check file name generation") {
       auto tmp_dir = std::filesystem::temp_directory_path();

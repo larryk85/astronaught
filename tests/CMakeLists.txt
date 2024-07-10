@@ -30,7 +30,7 @@ add_test(map_tests)
 add_test(memory_tests)
 #add_test(interpolate_tests)
 add_test(serialize_tests)
-add_test(type_tests)
+add_test(types_tests)
 add_test(utils_tests)
 
 add_test(enum_defs_1_tests)

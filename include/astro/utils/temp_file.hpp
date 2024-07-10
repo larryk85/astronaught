@@ -42,15 +42,17 @@ namespace astro::util {
       return (std::filesystem::temp_directory_path()/fn).string();
    }  
 
+   /*
    template <typename FileType, typename S>
    requires (astro::ct::string_type<S> || util::string_type<S> || util::cstring_type<S>)
    static inline std::string generate_temp_file(S tmpl, std::string_view charset = default_random_string_charset) {
-      const auto fn = generate_temp_file_name<S, local>(tmpl, charset);
+      const auto fn = generate_temp_file_name<S>(tmpl, charset);
       if constexpr (std::is_same_v<FileType, FILE*) {
          FILE* fp = fopen(fn.c_str(), "w");
          fclose(fp);
       } 
    }
+   */
 
 }
 
