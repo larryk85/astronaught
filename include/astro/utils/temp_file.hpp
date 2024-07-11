@@ -32,7 +32,7 @@ namespace astro::util {
 
    template <std::size_t N>
    static inline std::string generate_random_string(const char (&tmpl)[N], std::string_view charset = default_random_string_charset) {
-      return generate_random_string(ct::create_string<N>(tmpl)); 
+      return generate_random_string(ct::string(tmpl)); 
    }
 
    template <typename S>

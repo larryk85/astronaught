@@ -28,7 +28,7 @@ TEST_CASE("Random String Tests", "[utils][random_string]") {
       CHECK(rs.size() == 13);
       rs = "Hello, World-%%-%%-%%"_rs;
 
-      CHECK(rs.size() == 22);
+      CHECK(rs.size() == 21);
       CHECK((std::string_view)rs != "Hello, World-%%-%%-%%");
 
       astro::ct::string tmpl = "Hello, World-%%-%%-%%"_fs;

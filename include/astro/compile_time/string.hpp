@@ -85,12 +85,7 @@ namespace astro::ct {
    };
 
    template <std::size_t N>
-   constexpr static inline string<N-1> create_string(const char(&str)[N]) noexcept;
-
-   template <std::size_t N>
    struct string {
-      template <std::size_t M>
-      using templ_t = string<M>;
 
       constexpr static inline auto size_v = N;
       consteval static inline std::size_t size() noexcept { return N; }
@@ -101,7 +96,8 @@ namespace astro::ct {
       string& operator=(const string&) = default;
       string& operator=(string&&) = default;
 
-      constexpr inline string(const char (&str)[N]) noexcept {
+      template <std::size_t M>
+      constexpr inline string(const char (&str)[M]) noexcept {
          std::copy_n(str, size_v, _data);
       }
 
@@ -307,8 +303,9 @@ namespace astro::ct {
       char _data[size_v];
    };
 
-   template <std::size_t N>
-   constexpr static inline string<N-1> create_string(const char(&str)[N]) noexcept { return ct::string(str).template trim_back<1>(); }
+   /// deduction guide for string to account for null-terminator
+   template <std::size_t M>
+   string(const char(&str)[M]) -> string<M-1>;
 
    template <typename T>
    concept integral_type = std::is_integral_v<T>;
@@ -321,6 +318,16 @@ namespace astro::ct {
       constexpr inline operator value_type() const noexcept { return value; }
       constexpr inline value_type operator()() const noexcept { return value; }
    };
+
+   template <auto A, char C, int64_t I = 0>
+   requires (ct::string_type<decltype(A)>)
+   ASTRO_CT_CONST static inline int64_t find() noexcept {
+      if constexpr (A[I] == C) {
+         return I;
+      } else {
+         return find<A, C, I+1>();
+      }
+   }
 
    template <auto A, auto B, std::size_t I = 0>
    requires (ct::string_type<decltype(A)> && ct::string_type<decltype(B)>)
@@ -337,6 +344,17 @@ namespace astro::ct {
          return range<I, I + b_sz>{};
       }
    }
+
+   template <auto A, char C, int64_t I = static_cast<int64_t>(decltype(A)::size_v)>
+   requires (ct::string_type<decltype(A)>)
+   ASTRO_CT_CONST static inline int64_t rfind() noexcept {
+      if constexpr (A[I] == C) {
+         return I;
+      } else {
+         return find<A, C, I-1>();
+      }
+   }
+
 
    template <auto A, auto B, std::size_t I = decltype(A)::size_v>
    requires (ct::string_type<decltype(A)> && ct::string_type<decltype(B)>)
@@ -388,12 +406,14 @@ namespace astro::ct {
 
 namespace astro::literals {
    template <ct::string S>
-   consteval inline ct::string<S.size()-1> operator""_fs() noexcept { 
-      return S.template trim_back<1>(); // remove the null-terminator
+   consteval inline ct::string<S.size()> operator""_fs() noexcept { 
+      return S; 
+      //return S.template trim_back<1>(); // remove the null-terminator
    }
 
    template <char... Cs>
    consteval inline auto operator""_int() { return ct::integral<std::size_t, ct::cstr_to_int_v<Cs...>>{}; }
 
 } // namespace astro::literals
+
 

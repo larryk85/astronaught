@@ -12,7 +12,7 @@ TEST_CASE("Compile Time String Tests", "[ct_string_tests]")
    {
       string str("Hello, World!");
 
-      CHECK(str.size() == 14);
+      CHECK(str.size() == 13);
       CHECK(str[0] == 'H');
       CHECK(str[1] == 'e');
       CHECK(str[2] == 'l');
@@ -26,17 +26,16 @@ TEST_CASE("Compile Time String Tests", "[ct_string_tests]")
       CHECK(str[10] == 'l');
       CHECK(str[11] == 'd');
       CHECK(str[12] == '!');
-      CHECK(str[13] == '\0');
 
       string str2 = str;
-      CHECK(str2.size() == 14);
+      CHECK(str2.size() == 13);
 
       str2[0] = 'h';
       CHECK(str2[0] == 'h');
       CHECK(str[0] == 'H');
 
       string str3 = std::move(str2);
-      CHECK(str3.size() == 14);
+      CHECK(str3.size() == 13);
       CHECK(str3[0] == 'h');
 
       str3[0] = 'J';
@@ -45,7 +44,7 @@ TEST_CASE("Compile Time String Tests", "[ct_string_tests]")
    }
 
    SECTION("Check compile time string construction") {
-      constexpr auto str = create_string("Hello, World!");
+      constexpr auto str = string("Hello, World!");
 
       CHECK(str.size() == 13);
       CHECK(str[0] == 'H');

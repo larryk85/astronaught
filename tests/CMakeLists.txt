@@ -32,6 +32,7 @@ add_test(memory_tests)
 add_test(serialize_tests)
 add_test(types_tests)
 add_test(utils_tests)
+add_test(testing_tests)
 
 add_test(enum_defs_1_tests)
 add_test(enum_defs_2_tests)
