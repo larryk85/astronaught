@@ -300,6 +300,8 @@ namespace astro::ct {
          return string<Delta>{std::array<char, Delta>{_data[Is + LB]...}};
       }
 
+      constexpr inline decltype(auto) data2() const noexcept { return _data; }
+
       char _data[size_v];
    };
 
@@ -322,10 +324,14 @@ namespace astro::ct {
    template <auto A, char C, int64_t I = 0>
    requires (ct::string_type<decltype(A)>)
    ASTRO_CT_CONST static inline int64_t find() noexcept {
-      if constexpr (A[I] == C) {
-         return I;
+      if constexpr (I >= decltype(A)::size_v) {
+         return -1;
       } else {
-         return find<A, C, I+1>();
+         if constexpr (A[I] == C) {
+            return I;
+         } else {
+            return find<A, C, I+1>();
+         }
       }
    }
 
@@ -348,10 +354,14 @@ namespace astro::ct {
    template <auto A, char C, int64_t I = static_cast<int64_t>(decltype(A)::size_v)>
    requires (ct::string_type<decltype(A)>)
    ASTRO_CT_CONST static inline int64_t rfind() noexcept {
-      if constexpr (A[I] == C) {
-         return I;
+      if constexpr (I < 0) {
+         return -1;
       } else {
-         return find<A, C, I-1>();
+         if constexpr (A[I] == C) {
+            return I;
+         } else {
+            return find<A, C, I-1>();
+         }
       }
    }
 
