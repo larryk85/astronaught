@@ -15,6 +15,7 @@
 
 #include "../info/build_info.hpp"
 #include "../compile_time/traits.hpp"
+#include "../cryptid/uint128.hpp"
 
 #include "defs.hpp"
 
@@ -221,6 +222,52 @@ namespace astro::util {
          return std::make_pair(f,s); 
       }
    };
+
+
+   #ifdef __has_builtin
+
+      #if __has_builtin(__builtin_bswap128)
+         constexpr static inline cryptid::uint128_t bswap128(cryptid::uint128_t x) noexcept { return __builtin_bswap128(x); }
+      #else
+         constexpr static inline cryptid::uint128_t bswap128(cryptid::uint128_t x) noexcept { 
+            return { _byteswap_uint64(x.high()), _byteswap_uint64(x.low()) };
+         }
+      #endif
+
+      #if __has_builtin(__builtin_bswap64)
+         constexpr static inline uint64_t bswap64(uint64_t x) noexcept { return __builtin_bswap64(x); }
+      #else
+         constexpr static inline uint64_t bswap64(uint64_t x) noexcept { return _byteswap_uint64(x); }
+      #endif
+
+      #if __has_builtin(__builtin_bswap32)
+         constexpr static inline uint32_t bswap32(uint32_t x) noexcept { return __builtin_bswap32(x); }
+      #else
+         constexpr static inline uint32_t bswap32(uint32_t x) noexcept { return _byteswap_ulong(x); }
+      #endif
+
+      #if __has_builtin(__builtin_bswap16)
+         constexpr static inline uint16_t bswap16(uint16_t x) noexcept { return __builtin_bswap16(x); }
+      #else
+         constexpr static inline uint16_t bswap16(uint16_t x) noexcept { return _byteswap_ushort(x); }
+      #endif
+
+   #endif
+
+   template <typename T>
+   concept integral_type = std::is_integral_v<T> || std::is_same_v<T, cryptid::uint128_t>;
+
+#if 0
+   template <integral_type T>
+   constexpr static inline auto byteswap(T v) noexcept {
+      if constexpr (sizeof(T) == 1) return v;
+      else if constexpr (sizeof(T) == 2)  return static_cast<T>(bswap16(static_cast<uint16_t>(v)));
+      else if constexpr (sizeof(T) == 4)  return static_cast<T>(bswap32(static_cast<uint32_t>(v)));
+      else if constexpr (sizeof(T) == 8)  return static_cast<T>(bswap64(static_cast<uint64_t>(v)));
+      else if constexpr (sizeof(T) == 16) return static_cast<T>(bswap128(static_cast<cryptid::uint128_t>(v)));
+   }
+#endif
+
    /*
    template <typename T>
    constexpr static inline pearson_hash(T h, std::string_view s) {

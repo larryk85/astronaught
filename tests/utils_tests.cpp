@@ -93,3 +93,57 @@ TEST_CASE("Random File Tests", "[utils][random_string][temporary_file]") {
       CHECK(fn.starts_with((tmp_dir/"tmp-").string()));
    }
 }
+
+#if 0
+TEST_CASE("Byteswap Tests", "[utils][byteswap]") {
+   SECTION("Check byteswap 1 byte") {
+      CHECK(byteswap<uint8_t>(0x12) == 0x12);
+      static_assert(std::is_same_v<decltype(byteswap<uint8_t>(0)), uint8_t>);
+      uint8_t n = 34;
+      CHECK(byteswap(n) == 34);
+      int8_t n2 = 42;
+      CHECK(byteswap(n2) == 42);
+   }
+
+   SECTION("Check byteswap 2 bytes" ) {
+      CHECK(byteswap<uint16_t>(0x1234) == 0x3412);
+      static_assert(std::is_same_v<decltype(byteswap<uint16_t>(0)), uint16_t>);
+      uint16_t n = 0x1234;
+      CHECK(byteswap(n) == 0x3412);
+      //int16_t n2 = 0x5678;
+      //CHECK(byteswap(n2) == 0x7856);
+      //static_assert(std::is_same_v<decltype(byteswap(n2)), int16_t>);
+   }
+
+   SECTION("Check byteswap 4 bytes") {
+      CHECK(byteswap<uint32_t>(0x12345678) == 0x78563412);
+      static_assert(std::is_same_v<decltype(byteswap<uint32_t>(0)), uint32_t>);
+      uint32_t n = 0x12345678;
+      CHECK(byteswap(n) == 0x78563412);
+      int32_t n2 = 0xabcdef12;
+      CHECK(byteswap(n2) == 0x12efcdab);
+      static_assert(std::is_same_v<decltype(byteswap(n2)), int32_t>);
+   }
+
+   SECTION("Check byteswap 8 bytes") {
+      CHECK(byteswap<uint64_t>(0x1234567890ABCDEF) == 0xEFCDAB9078563412ul);
+      static_assert(std::is_same_v<decltype(byteswap<uint64_t>(0)), uint64_t>);
+      uint64_t n = 0x1234567890ABCDEFul;
+      CHECK(byteswap(n) == 0xEFCDAB9078563412ul);
+      int64_t n2 = 0xabcdef1234567890ul;
+      CHECK(byteswap(n2) == 0x9078563412EFCDABul);
+      static_assert(std::is_same_v<decltype(byteswap(n2)), int64_t>);
+   }
+
+   SECTION("Check byteswap 16 bytes") {
+      using namespace astro::cryptid;
+      CHECK(byteswap<uint128_t>(0x1234567890ABCDEF1234567890ABCDEF_ui128) == 0xEFCDAB9078563412EFCDAB9078563412_ui128);
+      static_assert(std::is_same_v<decltype(byteswap<uint128_t>(0_ui128)), uint128_t>);
+      uint128_t n = 0x1234567890ABCDEF1234567890ABCDEF_ui128;
+      CHECK(byteswap(n) == 0xEFCDAB9078563412EFCDAB9078563412_ui128);
+      //int128_t n2 = 0xabcdef1234567890abcdef1234567890abcdef_ui128;
+      //CHECK(byteswap(n2) == 0x9078563412efcdab9078563412efcdab_ui128);
+      //static_assert(std::is_same_v<decltype(byteswap(n2)), int128_t>);
+   }
+}
+#endif
