@@ -181,8 +181,7 @@ namespace astro::ct {
          }
       }
 
-      template <auto O>
-      requires (ct::string_type<decltype(O)>)
+      template <ct::string O>
       ASTRO_CT_CONST inline bool starts_with() const noexcept {
          if constexpr (size_v < O.size_v) {
             return false;
@@ -300,6 +299,8 @@ namespace astro::ct {
          return string<Delta>{std::array<char, Delta>{_data[Is + LB]...}};
       }
 
+      constexpr inline decltype(auto) data2() const noexcept { return _data; }
+
       char _data[size_v];
    };
 
@@ -319,15 +320,41 @@ namespace astro::ct {
       constexpr inline value_type operator()() const noexcept { return value; }
    };
 
-   template <auto A, char C, int64_t I = 0>
+   template <auto A, int64_t I, char... Cs>
    requires (ct::string_type<decltype(A)>)
-   ASTRO_CT_CONST static inline int64_t find() noexcept {
-      if constexpr (A[I] == C) {
-         return I;
+   ASTRO_CT_CONST static inline int64_t find_first_impl() noexcept {
+      if constexpr (I >= decltype(A)::size_v) {
+         return -1;
       } else {
-         return find<A, C, I+1>();
+         if constexpr (((A[I] == Cs) || ...)) {
+            return I;
+         } else {
+            return find_first_impl<A, I+1, Cs...>();
+         }
       }
    }
+
+   template <auto A, char... Cs>
+   requires (ct::string_type<decltype(A)>)
+   ASTRO_CT_CONST static inline int64_t find_first() noexcept { return find_first_impl<A, 0, Cs...>(); }
+
+   template <auto A, int64_t I, char... Cs>
+   requires (ct::string_type<decltype(A)>)
+   ASTRO_CT_CONST static inline int64_t find_first_not_impl() noexcept {
+      if constexpr (I >= decltype(A)::size_v) {
+         return -1;
+      } else {
+         if constexpr (((A[I] != Cs) && ...)) {
+            return I;
+         } else {
+            return find_first_not_impl<A, I+1, Cs...>();
+         }
+      }
+   }
+
+   template <auto A, char... Cs>
+   requires (ct::string_type<decltype(A)>)
+   ASTRO_CT_CONST static inline int64_t find_first_not() noexcept { return find_first_not_impl<A, 0, Cs...>(); }
 
    template <auto A, auto B, std::size_t I = 0>
    requires (ct::string_type<decltype(A)> && ct::string_type<decltype(B)>)
@@ -345,14 +372,44 @@ namespace astro::ct {
       }
    }
 
-   template <auto A, char C, int64_t I = static_cast<int64_t>(decltype(A)::size_v)>
+   template <auto A, int64_t I, char... Cs>
    requires (ct::string_type<decltype(A)>)
-   ASTRO_CT_CONST static inline int64_t rfind() noexcept {
-      if constexpr (A[I] == C) {
-         return I;
+   ASTRO_CT_CONST static inline int64_t rfind_first_impl() noexcept {
+      if constexpr (I < 0) {
+         return -1;
       } else {
-         return find<A, C, I-1>();
+         if constexpr (((A[I] == Cs) || ...)) {
+            return I;
+         } else {
+            return rfind_first_impl<A, I-1, Cs...>();
+         }
       }
+   }
+
+   template <auto A, char... Cs>
+   requires (ct::string_type<decltype(A)>)
+   ASTRO_CT_CONST static inline int64_t rfind_first() noexcept {
+      return rfind_first_impl<A, decltype(A)::size_v - 1, Cs...>();
+   }
+
+   template <auto A, int64_t I, char... Cs>
+   requires (ct::string_type<decltype(A)>)
+   ASTRO_CT_CONST static inline int64_t rfind_first_not_impl() noexcept {
+      if constexpr (I < 0) {
+         return -1;
+      } else {
+         if constexpr (((A[I] != Cs) && ...)) {
+            return I;
+         } else {
+            return rfind_first_not_impl<A, I-1, Cs...>();
+         }
+      }
+   }
+
+   template <auto A, char... Cs>
+   requires (ct::string_type<decltype(A)>)
+   ASTRO_CT_CONST static inline int64_t rfind_first_not() noexcept {
+      return rfind_first_not_impl<A, decltype(A)::size_v - 1, Cs...>();
    }
 
 

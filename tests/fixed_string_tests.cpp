@@ -1,5 +1,6 @@
 #define CATCH_CONFIG_WINDOWS_SEH
 #include <catch2/catch_all.hpp>
+#include <iostream>
 
 #include <astro/compile_time/string.hpp>
 
@@ -217,5 +218,17 @@ TEST_CASE("Compile Time String Tests", "[ct_string_tests]")
       // constexpr auto byte2 = "256"_fs;
       // byte_char = to_integral_v<unsigned char, byte2>;
       // CHECK(byte_char == 256);
+   }
+
+   SECTION("Check find functions") {
+      using namespace astro::literals;
+      constexpr auto test_str = "  hello,,, world!!!  "_fs;
+
+      constexpr auto idx = find_first_not<test_str, ' '>();
+      CHECK(find_first_not<test_str, ' '>() == 2);
+      CHECK(find_first_not<test_str, ' ', 'h', 'e'>() == 4);
+      CHECK(find_first_not<test_str, ' ', 'h', 'e', 'l'>() == 6);
+      CHECK(rfind_first_not<test_str, ' '>() == test_str.size() - 3);
+      CHECK(rfind_first_not<test_str, ' ', '!'>() == test_str.size() - 6);
    }
 }
