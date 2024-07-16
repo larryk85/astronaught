@@ -20,7 +20,7 @@
 # - `GIT_HASH`: Optional flag to include the latest commit hash in the version information. If provided, it retrieves the commit hash using the `git log` command.
 # - `INCLUDE_DIR`: This is the location of the astronaught/version.h.in, version.hpp.in, etc.
 # - `LANG`: The language to use for the version information. If not provided, it defaults to the language of your project. Currently, only C and C++ are supported.
-#           If set to C, the generated files will use C-style structs, functions and macros in version.h. 
+#           If set to C, the generated files will use C-style structs, functions and macros in version.h.
 #           If set to C++/CXX/CPP, the generated files will use C++-style classes, functions and namespaces in version.hpp.in.
 
 # Example:
@@ -30,15 +30,15 @@ function(astronaught_create_version_info)
    set(options GIT_HASH)
    set(oneValueArgs NAMESPACE MAJOR MINOR PATCH TWEAK SUFFIX INCLUDE_DIR)
    set(multiValueArgs)
-   cmake_parse_arguments( ARGS "${options}" 
+   cmake_parse_arguments( ARGS "${options}"
                                "${oneValueArgs}"
-                               "${multiValueArgs}" 
+                               "${multiValueArgs}"
                                ${ARGN} )
 
    message(STATUS "Generating version information for ${PROJECT_NAME}")
 
    set(NAMESPACE ${ARGS_NAMESPACE})
-   if (NOT NAMESPACE) 
+   if (NOT NAMESPACE)
       set(NAMESPACE ${PROJECT_NAME})
    endif()
 
@@ -66,7 +66,7 @@ function(astronaught_create_version_info)
    if (NOT SUFFIX)
       set(SUFFIX "-${SUFFIX}")
    endif()
-   
+
    if (ARGS_GIT_HASH)
       message(STATUS "Retrieving latest commit hash from Git repository")
       execute_process(
@@ -76,7 +76,7 @@ function(astronaught_create_version_info)
          OUTPUT_STRIP_TRAILING_WHITESPACE
       )
    endif()
-   
+
    set(MSG "Creating version information for ${NAMESPACE} ${MAJOR}.${MINOR}.${PATCH}.${TWEAK}")
 
    if (SUFFIX)
@@ -102,3 +102,46 @@ function(astronaught_create_version_info)
    configure_file(${INCLUDE_DIR}/astro/info/version.hpp.in
                   ${PROJECT_BINARY_DIR}/include/${NAMESPACE}/info/version.hpp @ONLY)
 endfunction(astronaught_create_version_info)
+
+function(astro_options_print)
+   set(options)
+   set(oneValueArgs)
+   set(multiValueArgs OPTIONS)
+   cmake_parse_arguments( ARGS "${options}"
+                               "${oneValueArgs}"
+                               "${multiValueArgs}"
+                               ${ARGN} )
+
+   string(LENGTH "${PROJECT_NAME}" NLEN)
+
+   set(vers_str "${PROJECT_NAME} v${${PROJECT_NAME}_VERSION}")
+   string(LENGTH "${vers_str}" VSLEN)
+
+   set(ops_avail "options available")
+   string(LENGTH "${ops_avail}" OALEN)
+
+   string(REPEAT "─" ${VSLEN} vers_border)
+   string(REPEAT "─" ${OALEN} ops_avail_border)
+   set(sub_top_title "╭─┤${PROJECT_NAME} v${${PROJECT_NAME}_VERSION}╞══╡${ops_avail}")
+   string(LENGTH ${sub_top_title} STLEN)
+   math(EXPR TBLN "${VSLEN} + ${OALEN} + 10")
+   math(EXPR TBLN_HALF "${TBLN} / 2")
+   math(EXPR TBLN_QTR "${TBLN} / 4")
+   math(EXPR TBLN_ "${TBLN} / 4")
+   string(REPEAT "─" ${TBLN_HALF} bar)
+   string(REPEAT " " ${TBLN_HALF} space)
+
+   message(STATUS "  ╭${vers_border}╮  ╭${ops_avail_border}╮")
+   message(STATUS "${sub_top_title}${sub_top_border}├───╮")
+   message(STATUS "│ ╰${vers_border}╯  ╰${ops_avail_border}╯   │")
+   message(STATUS "├${bar}╥${bar}┤")
+   message(STATUS "│${space}║${space}│")
+   message(STATUS "│${space}║${space}│")
+   foreach(option IN ITEMS
+      "│ ASTRONAUGHT_ENABLE_TESTS    : ${ASTRONAUGHT_ENABLE_TESTS} - Enable building of unit tests"
+      "┊ ASTRONAUGHT_ENABLE_DOCS     : ${ASTRONAUGHT_ENABLE_DOCS} - Enable creation of the documentation"
+      "┊ ASTRONAUGHT_ENABLE_INSTALL  : ${ASTRONAUGHT_ENABLE_INSTALL} - Enable installation"
+      "│ ASTRONAUGHT_ENABLE_PEDANTIC : ${ASTRONAUGHT_ENABLE_PEDANTIC} - Enable pedantic warnings")
+      message(STATUS "${option}")
+   endforeach()
+endfunction()

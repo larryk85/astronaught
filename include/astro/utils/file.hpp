@@ -7,11 +7,8 @@
 #include <fstream>
 #include <string_view>
 
-#if ASTRO_OS == ASTRO_WINDOWS_BUILD
-   #include "win/file_ops.hpp"
-#else
-   #include "unix/file_ops.hpp"
-#endif
+#include "file_ops.hpp"
+#include "file_mode.hpp"
 
 namespace astro::util {
 
@@ -20,26 +17,35 @@ namespace astro::util {
          using path_t = std::filesystem::path;
 
          file() = default;
-         inline file(const file& other) 
+         inline file(const file& other)
             : _file(fduplicate(other._file)) {
          }
 
          file(file&& other) = default;
 
-         inline file(const path_t& path, int32_t mode = 0) 
+         inline file(const path_t& path, file_mode mode = file_mode::error)
             : _file(fopen(path.string(), mode)), _mode(mode), _path(path) {
          }
 
          inline file& operator=(const file& other) {
             _file = fduplicate(other._file);
-            return *this;   
+            return *this;
          }
 
          file& operator=(file&& other) = default;
 
-         ~file() {
-            if (_file) {
-               fclose(_file);
+         ~file() { close(); }
+
+         inline bool close() noexcept { return fclose(_file); }
+
+         inline bool open(const path_t& path, file_mode mode = file_mode::error) noexcept {
+            if (close()) {
+               _file = fopen(path.string(), mode);
+               _mode = mode;
+               _path = path;
+               return is_fd_invalid(_file);
+            } else {
+               return false;
             }
          }
 
@@ -52,12 +58,12 @@ namespace astro::util {
          inline operator std::fstream() {
             auto fd = to_cfile(_file, _mode);
             util::check(fd, "Failed to create std::fstream from file: " + _path.string());
-            return std::fstream(fd);
+            return std::fstream(); //fd);
          }
 
       private:
          file_type _file = 0;
-         int32_t   _mode = 0;
+         file_mode _mode = file_mode::error;
          path_t    _path = "";
    };
 

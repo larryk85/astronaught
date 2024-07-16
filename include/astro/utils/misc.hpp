@@ -227,7 +227,7 @@ namespace astro::util {
    #ifdef __has_builtin
 
       #if __has_builtin(__builtin_bswap128)
-         constexpr static inline cryptid::uint128_t bswap128(cryptid::uint128_t x) noexcept { return __builtin_bswap128(x); }
+         constexpr static inline cryptid::uint128_t bswap128(cryptid::uint128_t x) noexcept { return std::bit_cast<cryptid::uint128_t>(__builtin_bswap128(std::bit_cast<__int128 unsigned>(x))); }
       #else
          constexpr static inline cryptid::uint128_t bswap128(cryptid::uint128_t x) noexcept { 
             return { _byteswap_uint64(x.high()), _byteswap_uint64(x.low()) };

@@ -28,49 +28,54 @@ void call_cb(void (*cb)(int, int, char)) {
    cb(1, 2, 'a');
 }
 
- struct closure {
-         template <auto CB, typename R, typename FP, typename... Args>
-         static constexpr inline R exec(Args&&... args) {
-            return (R) (*(FP*)fn<CB>())(std::forward<Args>(args)...);
-         }
+struct closure {
+   template <auto CB, typename R, typename FP, typename... Args>
+   static constexpr inline R exec(Args&&... args) {
+      return (R) (*(FP*)fn<CB>())(std::forward<Args>(args)...);
+   }
 
-         template <auto CB, typename R, typename FT, class Params, std::size_t... Is>
-         static constexpr inline FT exec0(std::index_sequence<Is...>) {
-            return (FT) exec<CB, R, FT, std::tuple_element_t<Is, Params>...>;
-         }
+   template <auto CB, typename R, typename FT, class Params, std::size_t... Is>
+   static constexpr inline FT exec0(std::index_sequence<Is...>) {
+      return (FT) exec<CB, R, FT, std::tuple_element_t<Is, Params>...>;
+   }
 
-         //template <auto CB>
-         //static inline auto ptr() {
-         //   using func_type = ct::function_type_t<&decltype(CB)::operator()>;
-         //   using ret_type  = ct::return_type_t<&decltype(CB)::operator()>;
-         //   using param_type = ct::param_type_t<&decltype(CB)::operator()>;
-         //   fn<func_type>(CB);
-         //   return (func_type) exec<ret_type, func_type, param_type>(std::make_index_sequence<std::tuple_size<param_type>::value>());
-         //}
-      //template <typename Ret = void, typename F = Ret(*)(int, int, char), typename T>
-      template <auto Fn, typename F>
-      static inline decltype(auto) ptr(F& f) {
-         using ty = decltype(&decltype(Fn)::operator());
-         using r = return_type<ty>;
-         using p = param_type<ty>;
-         using ft = function_type<ty>;
-         using fp = function_ptr<ft>;
-         std::cout << "FP " << nameof<fp>() << std::endl;
+   //template <auto CB>
+   //static inline auto ptr() {
+   //   using func_type = ct::function_type_t<&decltype(CB)::operator()>;
+   //   using ret_type  = ct::return_type_t<&decltype(CB)::operator()>;
+   //   using param_type = ct::param_type_t<&decltype(CB)::operator()>;
+   //   fn<func_type>(CB);
+   //   return (func_type) exec<ret_type, func_type, param_type>(std::make_index_sequence<std::tuple_size<param_type>::value>());
+   //}
+   //template <typename Ret = void, typename F = Ret(*)(int, int, char), typename T>
+   template <auto Fn, typename F>
+   static inline decltype(auto) ptr(F& f) {
+      using ty = decltype(&decltype(Fn)::operator());
+      using r = return_type<ty>;
+      using p = param_type<ty>;
+      using ft = function_type<ty>;
+      using fp = function_ptr<ft>;
+      std::cout << "FP " << nameof<fp>() << std::endl;
 
-         fn<Fn>(&f);
-         return (fp) exec0<Fn, r, fp, p>(std::make_index_sequence<std::tuple_size<p>::value>());
-      }
+      fn<Fn>(&f);
+      return (fp) exec0<Fn, r, fp, p>(std::make_index_sequence<std::tuple_size<p>::value>());
+   }
 
-      template <auto Fn>
-      static inline void* fn(void* new_fn = nullptr) {
-         static void* fn;
-         if (new_fn != nullptr)
-            fn = new_fn;
-         return fn;
-      }
-   };
+   template <auto Fn>
+   static inline void* fn(void* new_fn = nullptr) {
+      static void* fn;
+      if (new_fn != nullptr)
+         fn = new_fn;
+      return fn;
+   }
+};
+
+void foo(int aa, float bb, std::string cc) {
+   std::cout << aa << " " << bb << " " << cc << std::endl;
+}
 
 TEST_CASE("ct Tests", "[frozen_tests]") {
+   foo(aa: 24, bb: 3.14f, cc: "hello");
    SECTION("Check return types") {
       CHECK(std::is_same_v<return_type_t<test_func_0>, int>);
       CHECK(std::is_same_v<return_type_t<test_func_1>, float>);

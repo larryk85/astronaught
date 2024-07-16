@@ -26,7 +26,7 @@ namespace astro::signals {
       signal sig;
       std::uint32_t code;
    };
-   
+
    template <class... Handlers>
    class executor {
       public:
@@ -45,5 +45,5 @@ namespace astro::signals {
    };
 } // namespace astro::signals
 
-#define ASTRO_TRY(ex /*executor with handlers set*/) if (sigsetjmp(*astro::util::get_jmp().get(), 1)==0) 
-#define ASTRO_CATCH   else 
+#define ASTRO_TRY(ex /*executor with handlers set*/) if (sigsetjmp(*astro::util::get_jmp().get(), 1)==0)
+#define ASTRO_CATCH   else

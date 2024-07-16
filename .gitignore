@@ -45,3 +45,5 @@ astro-ql/*
 .fake
 .continue/*
 .prompts/*
+
+checks.json

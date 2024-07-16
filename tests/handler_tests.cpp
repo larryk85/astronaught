@@ -6,7 +6,7 @@
 
 #include <astro/async.hpp>
 
-using namespace astro::signals;
+using namespace astro::async;
 
 #ifndef SIGSEGV
 #define SIGSEGV EXCEPTION_ACCESS_VIOLATION

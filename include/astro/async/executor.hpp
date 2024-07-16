@@ -47,4 +47,5 @@ namespace astro::async {
          function_type _func;
          std::mutex    _mutex;
    };
+   
 };

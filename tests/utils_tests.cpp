@@ -1,6 +1,8 @@
 #define CATCH_CONFIG_WINDOWS_SEH
 #include <catch2/catch_all.hpp>
 
+#include <errno.h>
+
 #include <astro/utils.hpp>
 #include <astro/compile_time.hpp>
 
@@ -49,9 +51,9 @@ TEST_CASE("Random String Tests", "[utils][random_string]") {
       astro::ct::string tmpl = "Hello, World-%%-%%-%%"_fs;
       rs = generate_random_string(tmpl, charset);
 
-      const auto is_custom_valid = [&](const auto& tmpl, const auto& s) {
+      const auto is_custom_valid = [&](const auto& tmp, const auto& s) {
          CHECK(tmpl.size() == s.size());
-         CHECK((std::string_view)tmpl != s);
+         CHECK((std::string_view)tmp != s);
          for (std::size_t i=0; i < s.size(); i++) {
             if (tmpl[i] == '%') {
                CHECK(charset.find(s[i]) != charset.npos);
@@ -73,11 +75,17 @@ TEST_CASE("Random String Tests", "[utils][random_string]") {
 
 TEST_CASE("File Tests", "[utils][file]") {
    SECTION("Check file generation") {
-      auto f = astro::util::fopen("test.txt", astro::util::fmode_read);
-      CHECK(f != 0);
+      auto f = astro::util::fopen("./test.txt", astro::util::file_mode::write);
+      CHECK(!astro::util::is_fd_invalid(f));
       auto df = astro::util::fduplicate(f);
-      CHECK(df != 0);
-      CHECK(astro::util::fclose(f));
+      CHECK(!astro::util::is_fd_invalid(df));
+      std::string_view str = "testing file tests";
+      auto written = astro::util::fwrite(f, str.data(), str.size());
+      CHECK(written == str.size());
+      CHECK(astro::util::fclose(df));
+      //auto f = astro::util::fopen("./util.hpp", astro::util::fmode_read);
+      //CHECK(df != 0);
+      //CHECK(astro::util::fclose(f));
    }
 }
 
@@ -86,7 +94,7 @@ TEST_CASE("Random File Tests", "[utils][random_string][temporary_file]") {
       auto tmp_dir = std::filesystem::temp_directory_path();
       auto fn = generate_temp_file_name("");
 
-      CHECK(tmp_dir.string() == fn);
+      CHECK(fn.starts_with(tmp_dir.string()));
 
       fn = generate_temp_file_name("tmp-%%%-%%%");
       is_valid((tmp_dir / "tmp-%%%-%%%").string(), fn);
