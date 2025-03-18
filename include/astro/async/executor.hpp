@@ -15,8 +15,8 @@ namespace astro::async {
       public:
          using function_type = decltype(std::function(std::declval<F>()));
 
-         inline executor(F&& func)
-            : _func(std::forward<F>(func)),
+         inline executor(F&& task)
+            : _task(std::forward<F>(task)),
               _mutex() {
          }
 
@@ -29,7 +29,7 @@ namespace astro::async {
          template <typename... Args>
          inline auto exec(Args&&... args) {
             std::lock_guard<std::mutex> lock(_mutex);
-            return std::async(std::launch::async, _func, std::forward<Args>(args)...);
+            return std::async(std::launch::async, _task, std::forward<Args>(args)...);
          }
 
          template <typename... Args>
@@ -38,14 +38,12 @@ namespace astro::async {
          template <typename... Args>
          inline auto exec_sync(Args&&... args) {
             std::lock_guard<std::mutex> lock(_mutex);
-            return _func(std::forward<Args>(args)...);
+            return _task(std::forward<Args>(args)...);
          }
 
-
-
       private:
-         function_type _func;
+         function_type _task;
          std::mutex    _mutex;
    };
-   
-};
+
+} // namespace astro::async

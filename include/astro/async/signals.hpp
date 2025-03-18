@@ -32,12 +32,12 @@ namespace astro::signals {
       public:
          inline executor(Handlers... handlers) : handlers(std::forward<Handlers>(handlers)...) {}
 
-         template <typename Func>
-         requires std::invocable<Func>
-         inline void operator()(Func&& func) {
+         template <typename Handler>
+         requires std::invocable<Handler>
+         inline void operator()(Handler&& handler) {
             int32_t v = setjmp(*util::get_jmp().get());
             util::check(v == 0, "signal handler failure");
-            func();
+            handler();
          }
 
       private:

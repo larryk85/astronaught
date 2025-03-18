@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.18)
 
 project(astronaught VERSION 1.0.0.0)
 
@@ -17,48 +17,6 @@ option(ASTRONAUGHT_ENABLE_DOCS     "Enable creation of the documentation" ON)
 option(ASTRONAUGHT_ENABLE_INSTALL  "Enable installation" ON)
 option(ASTRONAUGHT_ENABLE_PEDANTIC "Enable pedantic warnings" OFF)
 
-# Function to pretty print project info and options
-#function(astro_options_print TERM_LEN)
-#   set(options)
-#   set(oneValueArgs LINE_LEN)
-#   set(multiValueArgs)
-#   cmake_parse_arguments( ARGS "${options}"
-#                               "${oneValueArgs}"
-#                               "${multiValueArgs}"
-#                               ${ARGN} )
-#
-#   string(TOLOWER ${PROJECT_NAME} PNAME)
-#   string(LENGTH "${PNAME}" NLEN)
-#
-#   set(vers_str "${PNAME} v${${PROJECT_NAME}_VERSION}")
-#   string(LENGTH "${vers_str}" VSLEN)
-#
-#   set(ops_avail "options available")
-#   string(LENGTH "${ops_avail}" OALEN)
-#
-#   string(REPEAT "─" ${VSLEN} vers_border)
-#   string(REPEAT "─" ${OALEN} ops_avail_border)
-#   set(sub_top_title "╭─┤${PNAME} v${${PROJECT_NAME}_VERSION}╞══╡${ops_avail}")
-#   string(LENGTH ${sub_top_title} STLEN)
-#   math(EXPR TBLN "${VSLEN} + ${OALEN} + 10")
-#   math(EXPR TBLN_HALF "${TBLN} / 2")
-#   string(REPEAT "─" ${TBLN_HALF} top_border)
-#
-#   message(STATUS "  ╭${vers_border}╮  ╭${ops_avail_border}╮")
-#   message(STATUS "${sub_top_title}${sub_top_border}├───╮")
-#   message(STATUS "│ ╰${vers_border}╯  ╰${ops_avail_border}╯   │")
-#   message(STATUS "├${top_border}╥${top_border}┤")
-#   message(STATUS "│${top_border}║${top_border}│")
-#   message(STATUS "│${top_border}║${top_border}│")
-#   foreach(option IN ITEMS
-#      "│ ASTRONAUGHT_ENABLE_TESTS    : ${ASTRONAUGHT_ENABLE_TESTS} - Enable building of unit tests"
-#      "┊ ASTRONAUGHT_ENABLE_DOCS     : ${ASTRONAUGHT_ENABLE_DOCS} - Enable creation of the documentation"
-#      "┊ ASTRONAUGHT_ENABLE_INSTALL  : ${ASTRONAUGHT_ENABLE_INSTALL} - Enable installation"
-#      "│ ASTRONAUGHT_ENABLE_PEDANTIC : ${ASTRONAUGHT_ENABLE_PEDANTIC} - Enable pedantic warnings")
-#      message(STATUS "${option}")
-#   endforeach()
-#endfunction()
-
 message( STATUS "Building astronaught v${astronaught_VERSION}..." )
 if (MSVC)
    if (CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -70,11 +28,18 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+#add_executable(test_cpp ${PROJECT_SOURCE_DIR}/scripts/test.cpp)
+
 include(cmake/Astro.cmake)
 include(cmake/Doxy.cmake)
 include(cmake/Utils.cmake)
 
-astro_options_print()
+astro_options_print(
+   OPTIONS ASTRONAUGHT_ENABLE_TESTS
+           ASTRONAUGHT_ENABLE_DOCS
+           ASTRONAUGHT_ENABLE_INSTALL
+           ASTRONAUGHT_ENABLE_PEDANTIC
+)
 
 astronaught_create_version_info(
    NAMESPACE "astro"

@@ -75,7 +75,6 @@ void foo(int aa, float bb, std::string cc) {
 }
 
 TEST_CASE("ct Tests", "[frozen_tests]") {
-   foo(aa: 24, bb: 3.14f, cc: "hello");
    SECTION("Check return types") {
       CHECK(std::is_same_v<return_type_t<test_func_0>, int>);
       CHECK(std::is_same_v<return_type_t<test_func_1>, float>);
@@ -112,6 +111,7 @@ TEST_CASE("ct Tests", "[frozen_tests]") {
       CHECK(std::is_same_v<function_type<decltype(test_func_2)>, void(bool,decltype(std::cout),double)>);
    }
 
+#if 0
    auto cl = [&](int sig, float* info, void* ucontext) -> void {
    };
 
@@ -127,4 +127,5 @@ TEST_CASE("ct Tests", "[frozen_tests]") {
    //call_cb(cb);
 
    std::cout << "Func " << type_name_v<function_type<decltype(cb)>> << std::endl;
+#endif
 }

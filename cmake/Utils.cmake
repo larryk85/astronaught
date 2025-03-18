@@ -49,10 +49,10 @@ endfunction()
 # endif()
 # ```
 function(astronaught_is_test target is_test)
-   get_property(is_test_ 
-      TARGET ${target} 
+   get_property(is_test_val
+      TARGET ${target}
       PROPERTY astronaught_IS_TEST)
-   if (${is_test_})
+   if (${is_test_val})
       set(${is_test} TRUE PARENT_SCOPE)
    else()
       set(${is_test} FALSE PARENT_SCOPE)

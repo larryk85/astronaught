@@ -45,7 +45,7 @@
  */
 
 /**
- * @def @NAMESPACE@_VERSION_SUFFIX
+ * @def @NAMESPACE@_SUFFIX
  * @brief The suffix used in the version number.
  */
 
@@ -64,7 +64,7 @@
 #define @NAMESPACE@_MINOR           @MINOR@      /**< The minor version number of the library. */
 #define @NAMESPACE@_PATCH           @PATCH@      /**< The patch version number of the library. */
 #define @NAMESPACE@_TWEAK           @TWEAK@      /**< The tweak version number of the library. */
-#define @NAMESPACE@_VERSION_SUFFIX  "@SUFFIX@"   /**< The suffix used in the version number. */
+#define @NAMESPACE@_SUFFIX          "@SUFFIX@"   /**< The suffix used in the version number. */
 #define @NAMESPACE@_GIT_HASH        "@GIT_HASH@" /**< The git hash of the library. */
 
 #define @NAMESPACE@_CREATE_INFO(NM) \

@@ -17,8 +17,15 @@
 #include "../../utils/misc.hpp"
 
 namespace astro::cryptid {
+   /**
+    * Calculates the carry bit of a 64-bit addition.
+    *
+    * @param a the first operand of the addition
+    * @param b the second operand of the addition
+    *
+    * @return the carry bit of the addition, which is 1 if the sum is less than the first operand, and 0 otherwise
+    */
    constexpr static inline add_64_bit_carry(uint64_t a, uint64_t b) noexcept {
-      uint64_t sum = a + b;
-      return (sum < a) ? 1 : 0;
+      return ((a+b) < a) ? 1 : 0;
    }
 } // namespace astro::cryptid
