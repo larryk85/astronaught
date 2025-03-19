@@ -2,7 +2,7 @@
 
 # FILEPATH: cmake/Astro.cmake
 
-# This CMake script defines a macro called `astronaught_create_version_info` that is used to generate version information for a project.
+# This CMake script defines a macro called `astro_create_version_info` that is used to generate version information for a project.
 # The macro takes several arguments, including `NAMESPACE`, `MAJOR`, `MINOR`, `PATCH`, `TWEAK`, and `SUFFIX`, which can be provided by the user.
 # If any of these arguments are not provided, the macro will use default values based on the project's version information.
 # The macro also supports an optional `GIT_LOG` flag, which, when enabled, retrieves the latest commit hash from the Git repository.
@@ -10,7 +10,7 @@
 # These generated files will contain the version information and can be included in the project's source code.
 
 # Usage:
-# astronaught_create_version_info(NAMESPACE <namespace> [MAJOR <major>] [MINOR <minor>] [PATCH <patch>] [TWEAK <tweak>] [SUFFIX <suffix>] [GIT_LOG])
+# astro_create_version_info(NAMESPACE <namespace> [MAJOR <major>] [MINOR <minor>] [PATCH <patch>] [TWEAK <tweak>] [SUFFIX <suffix>] [GIT_LOG])
 
 # Arguments:
 # - `NAMESPACE`: The namespace for the version information. If not provided, it defaults to the project's namespace.
@@ -22,14 +22,14 @@
 # - `GIT_HASH`: Optional flag to include the latest commit hash in the version information. If provided, it retrieves the commit hash using the `git log` command.
 # - `INCLUDE_DIR`: This is the location of the astronaught/version.h.in, version.hpp.in, etc.
 # Example:
-# astronaught_create_version_info(NAMESPACE MyProject MAJOR 1 MINOR 2 PATCH 3 TWEAK 4 SUFFIX "alpha" GIT_LOG)
+# astro_create_version_info(NAMESPACE MyProject MAJOR 1 MINOR 2 PATCH 3 TWEAK 4 SUFFIX "alpha" GIT_LOG)
 
 cmake_minimum_required(VERSION 3.18)
 
 include(ExternalProject)
 include(GNUInstallDirs)
 
-function(astronaught_create_version_info)
+function(astro_create_version_info)
    set(options GIT_HASH)
    set(oneValueArgs NAMESPACE MAJOR MINOR PATCH TWEAK SUFFIX INCLUDE_DIR)
    set(multiValueArgs)
@@ -101,7 +101,7 @@ function(astronaught_create_version_info)
 
    configure_file(${INCLUDE_DIR}/astro/info/version.hpp.in
                   ${PROJECT_BINARY_DIR}/include/${NAMESPACE}/info/version.hpp @ONLY)
-endfunction(astronaught_create_version_info)
+endfunction(astro_create_version_info)
 
 function(astro_color_map token output)
    string(ASCII 27 Esc)

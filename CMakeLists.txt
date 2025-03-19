@@ -41,7 +41,7 @@ astro_options_print(
            ASTRONAUGHT_ENABLE_PEDANTIC
 )
 
-astronaught_create_version_info(
+astro_create_version_info(
    NAMESPACE "astro"
    SUFFIX    "rc2"
    GIT_HASH
