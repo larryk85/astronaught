@@ -12,6 +12,8 @@
 #include <string_view>
 #include <iostream>
 
+#include "../info/build_info.hpp"
+
 #if ASTRO_OS == ASTRO_WINDOWS_BUILD
    #include "win/file_ops.hpp"
 #else
@@ -19,11 +21,8 @@
 #endif
 
 #include "file_mode.hpp"
-#include "misc.hpp"
 
-namespace astro::util {
-   using file_type = detail::file_type; // OS defined
-
+namespace astro::fs {
    /**
     * @brief Opens a file.
     * @tparam Mode The mode to open the file with.
@@ -32,7 +31,7 @@ namespace astro::util {
     * @throws None.
     */
    static inline file_type fopen(std::string_view path, file_mode mode) noexcept {
-      return detail::fopen_impl(path, mode);
+      return fopen_impl(path, mode);
    }
 
    /**
@@ -40,7 +39,7 @@ namespace astro::util {
     * @param fd The file descriptor to check.
     * @return True if the file descriptor is open, false otherwise.
     */
-   static inline bool is_fd_open(file_type fd) noexcept { return detail::is_fd_open_impl(fd); }
+   static inline bool is_fd_open(file_type fd) noexcept { return is_fd_open_impl(fd); }
 
    /**
     * @brief  Checks if a file descriptor / handle is invalid.
@@ -48,14 +47,14 @@ namespace astro::util {
     * @return true
     * @return false
     */
-   static inline bool is_fd_invalid(file_type handle) noexcept { return detail::is_fd_invalid_impl(handle); }
+   static inline bool is_fd_invalid(file_type handle) noexcept { return is_fd_invalid_impl(handle); }
 
    /**
     * @brief Closes a file handle.
     * @param handle The handle to close.
     * @return True if the handle was successfully closed, false otherwise.
     */
-   static inline bool fclose(file_type handle) noexcept { return detail::fclose_impl(handle) == 0; }
+   static inline bool fclose(file_type handle) noexcept { return fclose_impl(handle) == 0; }
 
 
    /**
@@ -63,7 +62,7 @@ namespace astro::util {
     * @param handle The handle to duplicate.
     * @return The duplicated handle.
     */
-   static inline file_type fduplicate(file_type handle) noexcept { return detail::fduplicate_impl(handle); }
+   static inline file_type fduplicate(file_type handle) noexcept { return fduplicate_impl(handle); }
 
    /**
     * @brief Writes to a file.
@@ -74,7 +73,7 @@ namespace astro::util {
     * @throws None.
     */
    static inline std::int64_t fwrite(file_type handle, const void* data, std::size_t size) noexcept {
-      return detail::fwrite_impl(handle, data, size);
+      return fwrite_impl(handle, data, size);
    }
 
    /**
@@ -86,7 +85,7 @@ namespace astro::util {
     * @throws None.
     */
    static inline std::int64_t fread(file_type handle, void* data, std::size_t size) noexcept {
-      return detail::fread_impl(handle, data, size);
+      return fread_impl(handle, data, size);
    }
 
    /**
@@ -105,7 +104,7 @@ namespace astro::util {
          file_mode_str[1] = 'b';
       }
 
-      return detail::to_cfile_impl(handle, mode, std::string_view{file_mode_str, 4});
+      return to_cfile_impl(handle, mode, std::string_view{file_mode_str, 4});
    }
 
-} // namespace astro::util
+} // namespace astro::fs

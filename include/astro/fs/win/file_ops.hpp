@@ -11,7 +11,7 @@
 #include <filesystem>
 #include <string_view>
 
-#include "../misc.hpp"
+#include "../../utils/misc.hpp"
 #include "../file_mode.hpp"
 
 #define NOMINMAX
@@ -22,6 +22,7 @@
 
 namespace astro::util::detail {
    using file_type = HANDLE;
+   constexpr static inline file_type invalid_file = INVALID_HANDLE_VALUE;
 
    static inline file_type fopen_impl(std::string_view path, file_mode mode) noexcept {
       DWORD access_mode = static_cast<DWORD>(mode) & ~(static_cast<DWORD>(file_mode::append));
@@ -45,7 +46,7 @@ namespace astro::util::detail {
    }
 
    static inline bool is_fd_invalid_impl(file_type handle) noexcept {
-      return handle == INVALID_HANDLE_VALUE;
+      return handle == invalid_file;
    }
 
    /**
@@ -57,7 +58,7 @@ namespace astro::util::detail {
    static inline file_type fduplicate_impl(file_type handle) noexcept {
       file_type dup = 0;
       bool res = ::DuplicateHandle(GetCurrentProcess(), handle, GetCurrentProcess(), &dup, 0, FALSE, DUPLICATE_SAME_ACCESS);
-      check(res, "Failed to duplicate handle");
+      util::check(res, "Failed to duplicate handle");
       return dup;
    }
 

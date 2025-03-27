@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <cstddef>
 
-namespace astro::util {
+namespace astro::fs {
 
    /**
     * @brief File mode constants.
@@ -54,4 +54,4 @@ namespace astro::util {
       return ((to_test & against) == to_test) ? flags : 0;
    }
 
-} // namespace astro::util
+} // namespace astro::fs

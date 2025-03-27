@@ -6,11 +6,12 @@
 #include <filesystem>
 #include <fstream>
 #include <string_view>
+#include <utility>
 
 #include "file_ops.hpp"
 #include "file_mode.hpp"
 
-namespace astro::util {
+namespace astro::fs {
 
    class file {
       public:
@@ -27,6 +28,10 @@ namespace astro::util {
             : _file(fopen(path.string(), mode)), _mode(mode), _path(path) {
          }
 
+         inline file(const file_type& f)
+            : _file(f) {
+         }
+
          inline file& operator=(const file& other) {
             _file = fduplicate(other._file);
             return *this;
@@ -34,7 +39,7 @@ namespace astro::util {
 
          file& operator=(file&& other) = default;
 
-         ~file() { close(); }
+         ~file() { if (_file != invalid_file) close(); }
 
          inline bool close() noexcept { return fclose(_file); }
 
@@ -47,6 +52,14 @@ namespace astro::util {
             } else {
                return false;
             }
+         }
+
+         inline bool is_open() const noexcept {
+            return is_fd_open(_file);
+         }
+
+         inline operator bool() const noexcept {
+            return is_fd_open(_file);
          }
 
          inline operator FILE*() {
@@ -62,9 +75,9 @@ namespace astro::util {
          }
 
       private:
-         file_type _file = 0;
+         file_type _file = invalid_file;
          file_mode _mode = file_mode::error;
          path_t    _path = "";
    };
 
-}
+} // namespace astro::fs

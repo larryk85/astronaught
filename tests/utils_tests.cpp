@@ -3,6 +3,7 @@
 
 #include <errno.h>
 
+#include <astro/fs.hpp>
 #include <astro/utils.hpp>
 #include <astro/compile_time.hpp>
 
@@ -75,14 +76,14 @@ TEST_CASE("Random String Tests", "[utils][random_string]") {
 
 TEST_CASE("File Tests", "[utils][file]") {
    SECTION("Check file generation") {
-      auto f = astro::util::fopen("./test.txt", astro::util::file_mode::write);
-      CHECK(!astro::util::is_fd_invalid(f));
-      auto df = astro::util::fduplicate(f);
-      CHECK(!astro::util::is_fd_invalid(df));
+      auto f = astro::fs::fopen("./test.txt", astro::fs::file_mode::write);
+      CHECK(!astro::fs::is_fd_invalid(f));
+      auto df = astro::fs::fduplicate(f);
+      CHECK(!astro::fs::is_fd_invalid(df));
       std::string_view str = "testing file tests";
-      auto written = astro::util::fwrite(f, str.data(), str.size());
+      auto written = astro::fs::fwrite(f, str.data(), str.size());
       CHECK(written == str.size());
-      CHECK(astro::util::fclose(df));
+      CHECK(astro::fs::fclose(df));
       //auto f = astro::util::fopen("./util.hpp", astro::util::fmode_read);
       //CHECK(df != 0);
       //CHECK(astro::util::fclose(f));

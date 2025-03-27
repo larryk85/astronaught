@@ -1,14 +1,14 @@
 #pragma once
 
-#include "../sink.hpp"
+#include "../../io/sink.hpp"
 
 #define NOMINMAX
 #include <windows.h>
 #undef NOMINMAX
 
-namespace astro::io {
+namespace astro::fs {
 
-   struct native_file_sink : sink<native_file_sink> {
+   struct native_file_sink : io::sink<native_file_sink> {
       native_file_sink(HANDLE handle) noexcept 
          : handle(handle) {}
 
@@ -26,16 +26,16 @@ namespace astro::io {
    };
 
    inline namespace native {
-      template <stdio Sink>
+      template <io::stdio Sink>
       constexpr inline auto get_stdio_sink() noexcept {
-         if constexpr (Sink == stdio::out) {
+         if constexpr (Sink == io::stdio::out) {
             return native_file_sink{GetStdHandle(STD_OUTPUT_HANDLE)};
-         } else if constexpr (Sink == stdio::err) {
+         } else if constexpr (Sink == io::stdio::err) {
             return native_file_sink{GetStdHandle(STD_ERROR_HANDLE)};
-         } else if constexpr (Sink == stdio::log) {
+         } else if constexpr (Sink == io::stdio::log) {
             return native_file_sink{GetStdHandle(STD_ERROR_HANDLE)};
          }
       }
    }
 
-} // namespace astro::io
+} // namespace astro::fs
