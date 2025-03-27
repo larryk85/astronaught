@@ -9,7 +9,7 @@
 
 #include "../utils.hpp"
 
-namespace astro::signals {
+namespace astro::async {
 
    enum class signal : std::uint8_t {
       access_violation,

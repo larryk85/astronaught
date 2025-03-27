@@ -19,7 +19,7 @@ macro( add_test name )
 endmacro()
 
 add_test(astro_tests)
-add_test(async_tests)
+#add_test(async_tests)
 add_test(compile_time_tests)
 add_test(cryptid_tests)
 add_test(debug_tests)

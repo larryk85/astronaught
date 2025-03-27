@@ -230,7 +230,16 @@ namespace astro::util {
          constexpr static inline cryptid::uint128_t bswap128(cryptid::uint128_t x) noexcept { return std::bit_cast<cryptid::uint128_t>(__builtin_bswap128(std::bit_cast<__int128 unsigned>(x))); }
       #else
          constexpr static inline cryptid::uint128_t bswap128(cryptid::uint128_t x) noexcept { 
-            return { _byteswap_uint64(x.high()), _byteswap_uint64(x.low()) };
+            #if defined(_MSC_VER)
+                return { _byteswap_uint64(x.high()), _byteswap_uint64(x.low()) };
+            #elif defined(__GNUC__) || defined(__clang__)
+                return { __builtin_bswap64(x.high()), __builtin_bswap64(x.low()) };
+            #else
+                return { ((x.high() & 0xFF) << 56) | ((x.high() & 0xFF00) << 40) | ((x.high() & 0xFF0000) << 24) | ((x.high() & 0xFF000000) << 8) |
+                         ((x.high() >> 8) & 0xFF000000) | ((x.high() >> 24) & 0xFF0000) | ((x.high() >> 40) & 0xFF00) | ((x.high() >> 56) & 0xFF),
+                         ((x.low() & 0xFF) << 56) | ((x.low() & 0xFF00) << 40) | ((x.low() & 0xFF0000) << 24) | ((x.low() & 0xFF000000) << 8) |
+                         ((x.low() >> 8) & 0xFF000000) | ((x.low() >> 24) & 0xFF0000) | ((x.low() >> 40) & 0xFF00) | ((x.low() >> 56) & 0xFF) };
+            #endif
          }
       #endif
 

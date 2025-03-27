@@ -25,7 +25,7 @@ namespace astro::util::detail {
       uint32_t access_mode = 0;
       access_mode |= set_if<uint32_t>(file_mode::read, mode, O_RDONLY);
       access_mode |= set_if<uint32_t>(file_mode::write, mode, O_WRONLY | O_CREAT);
-      if (access_mode & O_WRONLY == O_WRONLY && access_mode & O_RDONLY == O_RDONLY)
+      if ((access_mode & O_WRONLY) == O_WRONLY && (access_mode & O_RDONLY) == O_RDONLY)
          access_mode = O_RDWR | O_CREAT;
       access_mode |= set_if<uint32_t>(file_mode::append, mode, O_APPEND);
       return ::open(path.data(), access_mode, 0666);

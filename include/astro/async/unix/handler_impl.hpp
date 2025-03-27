@@ -8,9 +8,9 @@
 #include <cstdint>
 #include <functional>
 
-#include "../../utils.hpp"
-#include "../../jmp.hpp"
-#include "../../signals.hpp"
+#include "../../utils/jmp.hpp"
+#include "../../utils/closure_wrapper.hpp"
+#include "../signals.hpp"
 
 namespace astro::async {
    constexpr static inline uint32_t signal_to_unix_signal(signal sig) {
@@ -34,9 +34,9 @@ namespace astro::async {
       }
    }
 
-   template <astro::signals::signal Signal>
+   template <astro::async::signal Signal>
    struct handler {
-      constexpr static inline astro::signals::signal signal = Signal;
+      constexpr static inline astro::async::signal signal = Signal;
       constexpr static inline uint32_t signaln = signal_to_unix_signal(Signal);
       template <typename Func>
       inline handler(Func fn) {
